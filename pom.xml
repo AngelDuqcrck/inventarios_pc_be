@@ -12,7 +12,7 @@
 	<artifactId>inventarios_pc_be</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>inventarios_pc_be</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Backend del Sistema de Gestion de Inventarios de Equipos de Computo</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -55,6 +55,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 	</dependencies>
 
