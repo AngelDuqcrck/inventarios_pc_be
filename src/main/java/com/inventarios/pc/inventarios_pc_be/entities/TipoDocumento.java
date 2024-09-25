@@ -10,20 +10,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-//Esta es la entidad que genera la tabla en la base de datos  que va almacenar los distintos tipos de estados que puede tener un dispositivo/periferico
+//Esta es la entidad que genera la tabla en la base de datos de tipos de documento, que es para identificar el tipo de documento del usuario
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "estado_dispositivos")
-public class EstadoDispositivo {
-
+@Table(name = "tipo_documentos")
+public class TipoDocumento {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY )
     private Integer id;
 
     @NotEmpty
     private String nombre;
+
 }
