@@ -32,6 +32,6 @@ public class SedePC {
 
     @NotEmpty
     @Column(nullable = false)
-    private String dirección;
+    private String direccion;
 
 }

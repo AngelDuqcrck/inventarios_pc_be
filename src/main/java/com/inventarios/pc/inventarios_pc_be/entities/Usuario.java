@@ -54,12 +54,10 @@ public class Usuario {
     private TipoDocumento tipoDocumento;
 
     @NotEmpty
-    @UniqueElements
     @Column(nullable = false, unique = true)
     private String cedula;
 
     @NotEmpty
-    @UniqueElements
     @Column(nullable = false, unique = true)
     private String correo;
 
@@ -73,22 +71,23 @@ public class Usuario {
      * Números (0-9)
      * Caracteres especiales (!, @, #, $, %, etc.)
      */
+    //@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$", message = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")
     @NotEmpty
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres.")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$", message = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")
     private String contraseña;
 
     /*
      * Se valida q el numero de telefono solo reciba numeros, que inicie por 3 y que contenga maximo 10 digitos
      */
-    @Pattern(
+    /*
+     * @Pattern(
         regexp = "^3\\d{9}$",
         message = "El teléfono debe comenzar con el número 3, contener solo números y tener exactamente 10 dígitos."
     )
+     */
     @Size(min = 10, max = 10)
     private String telefono;
 
-    @NotEmpty
     private Date fechaNacimiento;
 
     @ManyToOne

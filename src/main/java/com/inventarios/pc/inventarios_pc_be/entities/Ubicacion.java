@@ -30,7 +30,7 @@ public class Ubicacion {
 
     @NotEmpty
     @Column(nullable = false)
-    private Integer nombre;
+    private String nombre;
 
     @ManyToOne
     @JoinColumn(name = "area_id")
