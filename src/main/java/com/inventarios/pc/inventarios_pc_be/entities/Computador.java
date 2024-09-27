@@ -47,19 +47,19 @@ public class Computador {
 
     @ManyToOne
     @JoinColumn(name = "procesador_id")
-    private Procesador procesador;
+    private Componente procesador;
 
     @ManyToOne
     @JoinColumn(name = "ram_id")
-    private MemoriaRAM ram;
+    private Componente ram;
 
     @ManyToOne
     @JoinColumn(name = "almacenamiento_id")
-    private Almacenamiento almacenamiento;
+    private Componente almacenamiento;
 
     @ManyToOne
     @JoinColumn(name = "tipo_almacenamiento_id")
-    private TipoAlmacenamiento tipoAlmacenamiento;
+    private Componente tipoAlmacenamiento;
 
     @NotEmpty
     @UniqueElements
