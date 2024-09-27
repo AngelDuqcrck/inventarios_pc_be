@@ -1,5 +1,7 @@
 package com.inventarios.pc.inventarios_pc_be.controllers;
 
+import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenRefreshRequest;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenRefreshResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,18 +42,37 @@ public class AuthController {
         return new Response("Usuario creado exitosamente");
        }
     }
-    
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginDTO loginDTO){
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
-        (loginDTO.getCorreo(), loginDTO.getContraseña()));
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginDTO loginDTO) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(), loginDTO.getContraseña())
+        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token = jwtGenerador.generarToken(authentication);
 
-        return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
+        String accessToken = jwtGenerador.generarToken(authentication);
+        String refreshToken = jwtGenerador.generarRefreshToken(authentication);
+
+
+        return new ResponseEntity<>(new AuthResponse(accessToken, refreshToken), HttpStatus.OK);
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<TokenRefreshResponse> refreshToken(@RequestBody TokenRefreshRequest request) {
+        String refreshToken = request.getRefreshToken();
+        if (jwtGenerador.validarRefreshToken(refreshToken)) {
+            String correo = jwtGenerador.obtenerCorreoDeJWT(refreshToken);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            // Generar nuevo Access Token y Refresh Token
+            String newAccessToken = jwtGenerador.generarToken(authentication);
+            String newRefreshToken = jwtGenerador.generarRefreshToken(authentication);
+
+            return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, newRefreshToken));
+        }
+        return ResponseEntity.status(401).body(null);
+    }
 }

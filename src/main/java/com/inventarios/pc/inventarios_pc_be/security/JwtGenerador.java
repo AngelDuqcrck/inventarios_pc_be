@@ -29,6 +29,20 @@ public class JwtGenerador {
         return  token;
     }
 
+    // Método para generar un Refresh Token
+    public String generarRefreshToken(Authentication authentication){
+        String correo = authentication.getName();
+        Date tiempoActual = new Date();
+        Date expiracionRefreshToken = new Date(tiempoActual.getTime() + ConstantesSeguridad.JWT_EXPIRATION_TIME_REFRESH_TOKEN);
+
+        return Jwts.builder()
+                .setSubject(correo)
+                .setIssuedAt(tiempoActual)
+                .setExpiration(expiracionRefreshToken)
+                .signWith(SignatureAlgorithm.HS512, ConstantesSeguridad.JWT_FIRMA)
+                .compact();
+    }
+
     //Metodo para extaer un correo a partir de un token
     public String obtenerCorreoDeJWT(String token){
         Claims claims = Jwts.parser()
@@ -46,6 +60,16 @@ public class JwtGenerador {
             return  true;
         } catch (Exception e){
             throw  new AuthenticationCredentialsNotFoundException("JWT ha expirado o es incorrecto");
+        }
+    }
+
+    // Validar si el Refresh Token ha expirado
+    public Boolean validarRefreshToken(String token){
+        try {
+            Claims claims = Jwts.parser().setSigningKey(ConstantesSeguridad.JWT_FIRMA).parseClaimsJws(token).getBody();
+            return !claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false; // Refresh Token inválido o expirado
         }
     }
 }
