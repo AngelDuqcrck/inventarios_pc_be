@@ -29,6 +29,8 @@ public class Componente {
     @NotEmpty
     private String nombre;
 
+    private Boolean deleteFlag;
+
     @ManyToOne
     @JoinColumn(name = "tipo_componente_id")
     private TipoComponente tipoComponente;

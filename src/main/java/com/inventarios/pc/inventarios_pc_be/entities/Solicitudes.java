@@ -33,4 +33,8 @@ public class Solicitudes {
     @ManyToOne
     @JoinColumn(name = "tipo_solicitudes_id")
     private TipoSolicitudes tipoSolicitudes;
+
+    @ManyToOne
+    @JoinColumn(name = "estado_solicitudes_id")
+    private EstadoSolicitudes estadoSolicitudes;
 }

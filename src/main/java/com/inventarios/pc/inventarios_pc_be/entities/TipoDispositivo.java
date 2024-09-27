@@ -26,4 +26,6 @@ public class TipoDispositivo {
 
     @NotEmpty
     private String nombre;
+
+    private Boolean deleteFlag;
 }

@@ -19,4 +19,6 @@ public class TipoComponente {
 
     @NotEmpty
     private String nombre;
+
+    private Boolean deleteFlag;
 }

@@ -18,4 +18,6 @@ public class EstadoSolicitudes {
 
     @NotEmpty
     private String nombre;
+
+    private Boolean deleteFlag;
 }

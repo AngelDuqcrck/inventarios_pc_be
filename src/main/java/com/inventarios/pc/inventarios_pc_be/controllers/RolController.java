@@ -14,7 +14,7 @@ import com.inventarios.pc.inventarios_pc_be.services.implementations.RolServiceI
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
 
 @RestController
-@RequestMapping("/admin/rol")
+@RequestMapping("/rol")
 public class RolController {
     
     @Autowired

@@ -17,4 +17,6 @@ public class EstadoTickets {
 
     @NotEmpty
     private String nombre;
+
+    private Boolean deleteFlag;
 }

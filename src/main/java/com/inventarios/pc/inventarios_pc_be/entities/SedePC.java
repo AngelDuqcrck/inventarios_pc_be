@@ -34,4 +34,5 @@ public class SedePC {
     @Column(nullable = false)
     private String direccion;
 
+    private Boolean deleteFlag;
 }

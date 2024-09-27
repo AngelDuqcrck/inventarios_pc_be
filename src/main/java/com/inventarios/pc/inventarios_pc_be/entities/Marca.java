@@ -26,5 +26,8 @@ public class Marca {
 
     @NotEmpty
     private String nombre;
+
+    private Boolean deleteFlag;
+    
 }
 
