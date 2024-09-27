@@ -25,5 +25,7 @@ public class Rol {
     @NotEmpty
     @Column(nullable = false, length = 100)
     private String nombre;
+
+    private Boolean deleteFlag;
     
 }

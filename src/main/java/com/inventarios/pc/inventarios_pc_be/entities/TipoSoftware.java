@@ -19,4 +19,6 @@ public class TipoSoftware {
     @NotEmpty
     private String nombre;
 
+    private Boolean deleteFlag;
+
 }

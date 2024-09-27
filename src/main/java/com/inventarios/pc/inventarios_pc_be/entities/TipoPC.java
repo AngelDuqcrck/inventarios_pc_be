@@ -20,5 +20,8 @@ public class TipoPC {
     @NotEmpty
     private String nombre;
 
+    private Boolean deleteFlag;
+
+    
 }
 

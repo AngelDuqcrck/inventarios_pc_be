@@ -22,6 +22,9 @@ public class SoftwarePC {
 
     private String version;
 
+
+    private Boolean deleteFlag;
+    
     @ManyToOne
     @JoinColumn(name = "tipo_software_id")
     private TipoSoftware tipoSoftware;

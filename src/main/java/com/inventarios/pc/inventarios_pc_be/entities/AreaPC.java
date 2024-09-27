@@ -1,5 +1,7 @@
 package com.inventarios.pc.inventarios_pc_be.entities;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +30,8 @@ public class AreaPC {
     @NotEmpty
     @Column(nullable = false)
     private String nombre;
+
+    private Boolean deleteFlag;
 
     @ManyToOne
     @JoinColumn(name = "sede_id")

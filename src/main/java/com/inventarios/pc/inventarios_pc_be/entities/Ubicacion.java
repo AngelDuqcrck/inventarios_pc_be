@@ -36,4 +36,5 @@ public class Ubicacion {
     @JoinColumn(name = "area_id")
     private AreaPC areaId;
 
+    private Boolean deleteFlag;
 }

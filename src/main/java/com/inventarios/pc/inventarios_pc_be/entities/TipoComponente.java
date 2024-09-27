@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
-//Esta es la entidad que crea en la base de datos la tabla tipo de almacenamiento donde se guarda los tipos de unidades de almacenamiento que puede tener un equipo
+//Esta es la entidad que genera la tabla de tipos de dispositivos en la base de datos que es para clasificar los tipos de perifericos que puede tener conectado un equipo
 @Entity
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tipo_almacenamiento")
-public class TipoAlmacenamiento {
+@Builder
+@Table(name = "tipo_componentes")
+public class TipoComponente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -19,4 +20,5 @@ public class TipoAlmacenamiento {
     @NotEmpty
     private String nombre;
 
+    private Boolean deleteFlag;
 }

@@ -20,4 +20,6 @@ public class TipoSolicitudes {
     @NotEmpty
     private String nombre;
 
+
+    private Boolean deleteFlag;
 }
