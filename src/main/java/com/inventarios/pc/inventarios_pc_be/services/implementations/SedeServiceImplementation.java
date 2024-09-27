@@ -47,7 +47,6 @@ public class SedeServiceImplementation implements ISedeService{
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
         }
         BeanUtils.copyProperties(sedeDTO, sedePC);
-        sedePC.setId(id);
         SedePC sedeActualizada = sedeRepository.save(sedePC);
         SedeDTO sedeActualizadaDTO = new SedeDTO();
         BeanUtils.copyProperties(sedeActualizada, sedeActualizadaDTO);

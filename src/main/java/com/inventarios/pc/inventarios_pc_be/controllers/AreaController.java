@@ -1,6 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.controllers;
 
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -19,61 +19,61 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.services.implementations.SedeServiceImplementation;
+import com.inventarios.pc.inventarios_pc_be.services.implementations.AreaServiceImplementation;
+import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 
 @RestController
-@RequestMapping("/sede")
-public class SedeController {
-
-
+@RequestMapping("/area")
+public class AreaController {
+    
     @Autowired
-    private SedeServiceImplementation sedeServiceImplementation;
+    AreaServiceImplementation areaServiceImplementation;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearSede(@RequestBody SedeDTO sedeDTO) {
-        sedeServiceImplementation.crearSede(sedeDTO);
+    public ResponseEntity<HttpResponse> crearArea(@RequestBody AreaDTO areaDTO) throws LocationNotFoundException {
+        areaServiceImplementation.crearArea(areaDTO);
 
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Sede creada exitosamente"),
+                        "Área creada exitosamente"),
                 HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<SedeDTO>> listarSedes() {
+    public ResponseEntity<List<AreaDTO>> listarAreas() {
         return ResponseEntity.ok(
-                sedeServiceImplementation.listarSedes().stream().map(sede -> {
-                    SedeDTO sedeDTO = new SedeDTO();
-                    BeanUtils.copyProperties(sede, sedeDTO);
-                    return sedeDTO;
+                areaServiceImplementation.listarAreas().stream().map(area -> {
+                    AreaDTO areaDTO = new AreaDTO();
+                    BeanUtils.copyProperties(area, areaDTO);
+                    areaDTO.setSedeId(area.getSedeId().getId());
+                    return areaDTO;
                 }).collect(Collectors.toList()));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/actualizar/{sedeId}")
-    public ResponseEntity<HttpResponse> actualizarSede(@PathVariable Integer sedeId, @RequestBody SedeDTO sedeDTO)
+    @PutMapping("/actualizar/{areaId}")
+    public ResponseEntity<HttpResponse> actualizarArea(@PathVariable Integer areaId, @RequestBody AreaDTO areaDTO)
             throws LocationNotFoundException {
-        sedeServiceImplementation.actualizarSede(sedeId, sedeDTO);
+        areaServiceImplementation.actualizarArea(areaId, areaDTO);
 
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Sede actualizada exitosamente"),
+                        "Área actualizada exitosamente"),
                 HttpStatus.OK);
 
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/eliminar/{sedeId}")
-    public ResponseEntity<HttpResponse> eliminarSede(@PathVariable Integer sedeId) throws LocationNotFoundException, DeleteNotAllowedException {
-        sedeServiceImplementation.eliminarSede(sedeId);
+    @DeleteMapping("/eliminar/{areaId}")
+    public ResponseEntity<HttpResponse> eliminarSede(@PathVariable Integer areaId) throws LocationNotFoundException, DeleteNotAllowedException {
+        areaServiceImplementation.eliminarArea(areaId);
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Sede eliminada exitosamente"),
+                        "Área eliminada exitosamente"),
                 HttpStatus.OK);
     }
-
 }
