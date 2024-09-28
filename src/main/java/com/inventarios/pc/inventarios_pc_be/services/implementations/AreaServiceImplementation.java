@@ -15,6 +15,9 @@ import com.inventarios.pc.inventarios_pc_be.repositories.SedeRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 
+/**
+ * Implementación del servicio para gestionar las áreas del sistema.
+ */
 @Service
 public class AreaServiceImplementation implements IAreaService {
     
@@ -29,6 +32,13 @@ public class AreaServiceImplementation implements IAreaService {
     @Autowired
     SedeRepository sedeRepository;
 
+    /**
+     * Crea una nueva área en el sistema.
+     *
+     * @param areaDTO El objeto {@link AreaDTO} con los datos del área a crear.
+     * @return Un objeto {@link AreaDTO} con los datos del área recién creada.
+     * @throws LocationNotFoundException Si no se encuentra la sede especificada.
+     */
     @Override
     public AreaDTO crearArea(AreaDTO areaDTO) throws LocationNotFoundException{
         AreaPC areaPC = new AreaPC();
@@ -48,11 +58,24 @@ public class AreaServiceImplementation implements IAreaService {
         return areaCreadaDTO;
     }
 
+    /**
+     * Lista todas las áreas registradas en el sistema.
+     *
+     * @return Una lista de objetos {@link AreaPC} que representan todas las áreas.
+     */
     @Override
     public List<AreaPC> listarAreas(){
         return(List<AreaPC>) areaRepository.findAll();
     }
 
+    /**
+     * Actualiza los datos de un área existente.
+     *
+     * @param id El ID del área a actualizar.
+     * @param areaDTO El objeto {@link AreaDTO} con los nuevos datos del área.
+     * @return Un objeto {@link AreaDTO} con los datos del área actualizada.
+     * @throws LocationNotFoundException Si no se encuentra el área o la sede especificada.
+     */
     @Override
     public AreaDTO actualizarArea(Integer id, AreaDTO areaDTO) throws LocationNotFoundException{
         AreaPC areaPC = areaRepository.findById(id).orElse(null);
@@ -75,6 +98,13 @@ public class AreaServiceImplementation implements IAreaService {
         return areaActualizadaDTO;
     }
 
+    /**
+     * Elimina (deshabilita) un área del sistema, marcándola como eliminada.
+     *
+     * @param id El ID del área a eliminar.
+     * @throws LocationNotFoundException Si no se encuentra el área especificada.
+     * @throws DeleteNotAllowedException Si la eliminación del área no está permitida.
+     */
     @Override
     public void eliminarArea(Integer id)throws LocationNotFoundException, DeleteNotAllowedException{
         AreaPC areaPC = areaRepository.findById(id).orElse(null);

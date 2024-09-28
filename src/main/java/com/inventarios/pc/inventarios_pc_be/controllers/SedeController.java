@@ -22,7 +22,9 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException
 import com.inventarios.pc.inventarios_pc_be.services.implementations.SedeServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
-
+/**
+ * Controlador para manejar operaciones CRUD relacionadas con Sedes.
+ */
 @RestController
 @RequestMapping("/sede")
 public class SedeController {
@@ -31,6 +33,12 @@ public class SedeController {
     @Autowired
     private SedeServiceImplementation sedeServiceImplementation;
 
+     /**
+     * Crea una nueva sede.
+     *
+     * @param sedeDTO Datos de la sede a crear.
+     * @return Respuesta HTTP con el estado de la operación.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
     public ResponseEntity<HttpResponse> crearSede(@RequestBody SedeDTO sedeDTO) {
@@ -42,6 +50,11 @@ public class SedeController {
                 HttpStatus.OK);
     }
 
+    /**
+     * Lista todas las sedes.
+     *
+     * @return Lista de sedes en formato DTO.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<List<SedeDTO>> listarSedes() {
@@ -53,6 +66,14 @@ public class SedeController {
                 }).collect(Collectors.toList()));
     }
 
+    /**
+     * Actualiza una sede existente.
+     *
+     * @param sedeId  ID de la sede a actualizar.
+     * @param sedeDTO Nuevos datos de la sede.
+     * @return Respuesta HTTP con el estado de la operación.
+     * @throws LocationNotFoundException Si la sede no es encontrada.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{sedeId}")
     public ResponseEntity<HttpResponse> actualizarSede(@PathVariable Integer sedeId, @RequestBody SedeDTO sedeDTO)
@@ -66,6 +87,14 @@ public class SedeController {
 
     }
 
+    /**
+     * Elimina una sede existente.
+     *
+     * @param sedeId ID de la sede a eliminar.
+     * @return Respuesta HTTP con el estado de la operación.
+     * @throws LocationNotFoundException   Si la sede no es encontrada.
+     * @throws DeleteNotAllowedException   Si la eliminación no está permitida.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/eliminar/{sedeId}")
     public ResponseEntity<HttpResponse> eliminarSede(@PathVariable Integer sedeId) throws LocationNotFoundException, DeleteNotAllowedException {

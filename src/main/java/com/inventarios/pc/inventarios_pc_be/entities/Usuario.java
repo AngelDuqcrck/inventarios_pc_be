@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table (name = "usuarios")
+@Table(name = "usuarios")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,7 +50,7 @@ public class Usuario {
     private String segundoApellido;
 
     @ManyToOne
-    @JoinColumn (name = "tipo_documento_id")
+    @JoinColumn(name = "tipo_documento_id")
     private TipoDocumento tipoDocumento;
 
     @NotEmpty
@@ -71,21 +71,14 @@ public class Usuario {
      * Números (0-9)
      * Caracteres especiales (!, @, #, $, %, etc.)
      */
-    //@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$", message = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")
+    /*
+     *  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$", message = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")
     @NotEmpty
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres.")
+     */
     private String contraseña;
 
-    /*
-     * Se valida q el numero de telefono solo reciba numeros, que inicie por 3 y que contenga maximo 10 digitos
-     */
-    /*
-     * @Pattern(
-        regexp = "^3\\d{9}$",
-        message = "El teléfono debe comenzar con el número 3, contener solo números y tener exactamente 10 dígitos."
-    )
-     */
-    @Size(min = 10, max = 10)
+    
     private String telefono;
 
     private Date fechaNacimiento;
