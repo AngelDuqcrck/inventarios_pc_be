@@ -63,7 +63,7 @@ public class AreaController {
                 areaServiceImplementation.listarAreas().stream().map(area -> {
                     AreaDTO areaDTO = new AreaDTO();
                     BeanUtils.copyProperties(area, areaDTO);
-                    areaDTO.setSedeId(area.getSedeId().getId());
+                    areaDTO.setSede(area.getSede());
                     return areaDTO;
                 }).collect(Collectors.toList()));
     }

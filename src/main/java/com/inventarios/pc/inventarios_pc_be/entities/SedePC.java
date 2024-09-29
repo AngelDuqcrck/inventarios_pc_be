@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,5 +39,7 @@ public class SedePC {
     @Column(name = "descripcion", nullable = false)
     private String desc;
 
+    @NotNull
+    @Column(name = "delete_flag", nullable = false)
     private Boolean deleteFlag;
 }

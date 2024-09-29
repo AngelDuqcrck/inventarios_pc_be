@@ -64,7 +64,7 @@ public class UbicacionController {
             ubicacionServiceImplementation.listarUbicaciones().stream().map(ubicacion ->{
                 UbicacionDTO ubicacionDTO = new UbicacionDTO();
                 BeanUtils.copyProperties(ubicacion, ubicacionDTO);
-                ubicacionDTO.setAreaId(ubicacion.getAreaId().getId());
+                ubicacionDTO.setArea(ubicacion.getArea());
                 return ubicacionDTO;
             }).collect(Collectors.toList())
         );

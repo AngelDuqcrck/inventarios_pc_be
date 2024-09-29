@@ -30,6 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByCorreo(username).orElseThrow(
                 () -> new UsernameNotFoundException("El usuario con el correo " + username + " no fue encontrado"));
 
+
         // Nos traemos la lista de autoridades a traves de la lista de roles
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(usuario.getRolId().getNombre()));

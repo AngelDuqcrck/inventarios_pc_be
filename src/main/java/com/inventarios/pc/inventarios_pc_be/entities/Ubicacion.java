@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +39,9 @@ public class Ubicacion {
 
     @ManyToOne
     @JoinColumn(name = "area_id")
-    private AreaPC areaId;
+    private AreaPC area;
 
+    @NotNull
+    @Column(name = "delete_flag", nullable = false)
     private Boolean deleteFlag;
 }

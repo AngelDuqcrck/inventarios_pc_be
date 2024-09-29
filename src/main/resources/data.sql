@@ -27,15 +27,16 @@ CREATE TABLE IF NOT EXISTS sedes_PC
     direccion VARCHAR(255) NOT NULL,
     descripcion TEXT NOT NULL,
     nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
 );
 
 -- Insertamos las sedes si no existen en el sistema
-INSERT IGNORE INTO sedes_PC (id, direccion, descripcion, nombre) VALUES
-    (1, 'Av. 11E# 8-41COLSAG', 'Principalasddddddddddddddddddddd', 'Sede Principal'),
-    (2, 'Cl. 8 # 11E-62 COLSAG', 'COLSAAAAAAAAAAAAAAAAAAAAAAAAAAG', 'Sede Colsag'),
-    (3, 'COLSAG', 'ESPECIALIStassssssssssssssssss', 'Centro de Especialistas');
+INSERT IGNORE INTO sedes_PC (id, direccion, descripcion, nombre, delete_flag) VALUES
+    (1, 'Av. 11E# 8-41COLSAG', 'Principalasddddddddddddddddddddd', 'Sede Principal', 0),
+    (2, 'Cl. 8 # 11E-62 COLSAG', 'COLSAAAAAAAAAAAAAAAAAAAAAAAAAAG', 'Sede Colsag', 0),
+    (3, 'COLSAG', 'ESPECIALIStassssssssssssssssss', 'Centro de Especialistas', 0);
 
 -- Creamos la tabla areas_PC si no existe
 CREATE TABLE IF NOT EXISTS areas_PC
@@ -44,16 +45,17 @@ CREATE TABLE IF NOT EXISTS areas_PC
     sede_id INT,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre),
     CONSTRAINT fk_sede FOREIGN KEY (sede_id) REFERENCES sedes_PC(id) ON DELETE SET NULL
 );
 
 -- Insertamos las áreas si no existen en el sistema
-INSERT IGNORE INTO areas_PC (id, sede_id, nombre, descripcion) VALUES
-    (1, 1, 'Urgencias', 'Zona urgente'),
-    (2, 1, 'Talento Humano', 'Zona empleados'),
-    (3, 2, 'Gerencia', 'Zona Jefe');
+INSERT IGNORE INTO areas_PC (id, sede_id, nombre, descripcion, delete_flag) VALUES
+    (1, 1, 'Urgencias', 'Zona urgente', 0),
+    (2, 1, 'Talento Humano', 'Zona empleados', 0),
+    (3, 2, 'Gerencia', 'Zona Jefe', 0);
 
 -- Creamos la tabla ubicaciones si no existe
 CREATE TABLE IF NOT EXISTS ubicaciones
@@ -62,15 +64,16 @@ CREATE TABLE IF NOT EXISTS ubicaciones
     nombre VARCHAR(255) NOT NULL,
     area_id INT,
     descripcion TEXT NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_area FOREIGN KEY (area_id) REFERENCES areas_PC(id) ON DELETE SET NULL
 );
 
 -- Insertamos las ubicaciones si no existen en el sistema
-INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion) VALUES
-    (1,1, 'Consultorio 101', 'Consultorios el primero'),
-    (2,2, 'Tesoreria', 'Finanzas csa'),
-    (2,3, 'Seguridad y Salud en el Trabajo', 'SGST');
+INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion, delete_flag) VALUES
+    (1,1, 'Consultorio 101', 'Consultorios el primero', 0),
+    (2,2, 'Tesoreria', 'Finanzas csa', 0),
+    (2,3, 'Seguridad y Salud en el Trabajo', 'SGST', 0);
     
 
 -- Creamos la tabla tipo_documento si no existe

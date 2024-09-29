@@ -47,12 +47,12 @@ public class UbicacionServiceImplementation {
         Ubicacion ubicacion = new Ubicacion();
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
         //Con el id del area, llamamos al llamamos al repositorio para consultar y traernos la info, si no lo consigue manda nulo y manda la excepcion
-        AreaPC areaPC = areaRepository.findById(ubicacionDTO.getAreaId()).orElse(null);
+        AreaPC areaPC = areaRepository.findById(ubicacionDTO.getArea().getId()).orElse(null);
 
         if (areaPC == null){
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
         }
-        ubicacion.setAreaId(areaPC);
+        ubicacion.setArea(areaPC);
         ubicacion.setDeleteFlag(false);
         Ubicacion ubicacionCreada = ubicacionRepository.save(ubicacion);
         UbicacionDTO ubicacionCreadaDTO = new UbicacionDTO();
@@ -85,16 +85,16 @@ public class UbicacionServiceImplementation {
         }
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
 
-        if (ubicacionDTO.getAreaId()!= null) {
-            AreaPC areaPC = areaRepository.findById(ubicacionDTO.getAreaId()).orElse(null);
+        if (ubicacionDTO.getArea()!= null) {
+            AreaPC areaPC = areaRepository.findById(ubicacionDTO.getArea().getId()).orElse(null);
             if(areaPC == null){
                 throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());    }
-                ubicacion.setAreaId(areaPC);
+                ubicacion.setArea(areaPC);
         }
         Ubicacion ubicacionActualizada = ubicacionRepository.save(ubicacion);
         UbicacionDTO ubicacionActualizadaDTO = new UbicacionDTO();
         BeanUtils.copyProperties(ubicacionActualizada, ubicacionActualizadaDTO);
-        ubicacionActualizadaDTO.setAreaId(ubicacionActualizada.getAreaId().getId());
+        ubicacionActualizadaDTO.setArea(ubicacionActualizada.getArea());
         return ubicacionActualizadaDTO;
 
     }

@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 // Esta entidad crea las diversas areas que tiene una sede, para ello almacena
@@ -21,7 +22,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Table(name = "areas_PC")
-
 public class AreaPC {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +35,11 @@ public class AreaPC {
     @Column(name = "descripcion", nullable = false)
     private String desc;
 
+    @NotNull
+    @Column(name = "delete_flag", nullable = false)
     private Boolean deleteFlag;
 
     @ManyToOne
     @JoinColumn(name = "sede_id")
-    private SedePC sedeId;
+    private SedePC sede;
 }

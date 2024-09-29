@@ -17,4 +17,6 @@ public class SedeDTO {
     private String desc;
     
     private String direccion;
+
+    private Boolean deleteFlag;
 }

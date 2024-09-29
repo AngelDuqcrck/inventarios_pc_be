@@ -1,5 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.shared.DTOs;
 
+import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,11 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UbicacionDTO {
-    
+    private Integer id;
 
     private String nombre;
 
     private String desc;
 
-    private Integer areaId;
+    private AreaPC area;
+
+    private Boolean deleteFlag;
 }
