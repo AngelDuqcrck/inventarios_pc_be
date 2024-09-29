@@ -103,6 +103,7 @@ public class SedeController {
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Sede eliminada exitosamente"),
                 HttpStatus.OK);
+                
     }
 
 }

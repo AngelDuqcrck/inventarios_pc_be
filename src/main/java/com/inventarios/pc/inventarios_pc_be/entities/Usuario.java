@@ -63,7 +63,7 @@ public class Usuario {
 
     /*
      * Estas anotaciones son utilizadas para validar los siguientes requisitos de la
-     * contraseña
+     * password
      * Mínimo 8 carácteres.
      * Tener una mezcla entre:
      * Letras mayúsculas (A-Z)
@@ -72,13 +72,18 @@ public class Usuario {
      * Caracteres especiales (!, @, #, $, %, etc.)
      */
     /*
-     *  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$", message = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")
-    @NotEmpty
-    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres.")
+     * @Pattern(regexp =
+     * "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+     * message =
+     * "La password debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial."
+     * )
+     * 
+     * @NotEmpty
+     * 
+     * @Size(min = 8, message = "La password debe tener al menos 8 caracteres.")
      */
-    private String contraseña;
+    private String password;
 
-    
     private String telefono;
 
     private Date fechaNacimiento;

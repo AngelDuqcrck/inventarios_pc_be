@@ -8,5 +8,5 @@ import lombok.*;
 public class LoginDTO {
     private String correo;
 
-    private String contraseña;
+    private String password;
 }

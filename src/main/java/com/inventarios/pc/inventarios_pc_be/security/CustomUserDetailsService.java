@@ -20,26 +20,26 @@ import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-
-    //Metodo para traer todos los datos del usuario a traves de su correo
+    // Metodo para traer todos los datos del usuario a traves de su correo
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByCorreo(username).orElseThrow(() -> new UsernameNotFoundException("El usuario con el correo "+username+" no fue encontrado") );
+        Usuario usuario = usuarioRepository.findByCorreo(username).orElseThrow(
+                () -> new UsernameNotFoundException("El usuario con el correo " + username + " no fue encontrado"));
 
-        //Nos traemos la lista de autoridades a traves de la lista de roles
+        // Nos traemos la lista de autoridades a traves de la lista de roles
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(usuario.getRolId().getNombre()));
 
         return new org.springframework.security.core.userdetails.User(usuario.getCorreo(),
-                usuario.getContraseña(),true,
+                usuario.getPassword(), true,
                 true,
                 true,
                 true,
                 authorities);
     }
-    
+
 }

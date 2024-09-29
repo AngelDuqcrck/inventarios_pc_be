@@ -16,36 +16,27 @@ import lombok.NoArgsConstructor;
 public class UsuarioDTO {
     private Integer id;
 
-    
     private Integer rolId;
 
     private String primerNombre;
 
     private String segundoNombre;
 
-    
     private String primerApellido;
 
     private String segundoApellido;
 
-    
     private Integer tipoDocumento;
 
-    
     private String cedula;
 
-    
     private String correo;
 
-   
-    private String contraseña;
+    private String password;
 
-   
     private String telefono;
 
-    
     private Date fechaNacimiento;
 
-   
     private Integer ubicacionId;
 }

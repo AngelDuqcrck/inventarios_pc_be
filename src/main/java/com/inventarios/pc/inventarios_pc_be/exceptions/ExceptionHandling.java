@@ -55,6 +55,10 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ResponseEntity<HttpResponse> emailNotFoundException(EmailNotFoundException exception) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception) {
@@ -68,6 +72,17 @@ public class ExceptionHandling {
 
     @ExceptionHandler(DeleteNotAllowedException.class)
     public ResponseEntity<HttpResponse> deleteNotAllowedException(DeleteNotAllowedException exception){
+        return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+    }
+
+    @ExceptionHandler(PasswordNotEqualsException.class)
+    public ResponseEntity<HttpResponse> passwordNotEqualsException(PasswordNotEqualsException exception){
+        return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+
+    }
+
+    @ExceptionHandler(TokenNotValidException.class)
+    public ResponseEntity<HttpResponse> tokenNotValidException(TokenNotValidException exception){
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
 
