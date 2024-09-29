@@ -29,7 +29,11 @@ public class AreaPC {
 
     @NotEmpty
     @Column(nullable = false)
-    private String nombre;
+    private String nombre; 
+       
+    @NotEmpty
+    @Column(name = "descripcion", nullable = false)
+    private String desc;
 
     private Boolean deleteFlag;
 

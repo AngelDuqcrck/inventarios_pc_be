@@ -14,6 +14,8 @@ public class AreaDTO {
 
     private String nombre;
 
+    private String desc;
+
     private Integer sedeId;
 
 }

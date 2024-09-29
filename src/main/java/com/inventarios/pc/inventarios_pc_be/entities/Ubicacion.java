@@ -32,6 +32,10 @@ public class Ubicacion {
     @Column(nullable = false)
     private String nombre;
 
+    @NotEmpty
+    @Column(name = "descripcion", nullable = false)
+    private String desc;
+
     @ManyToOne
     @JoinColumn(name = "area_id")
     private AreaPC areaId;

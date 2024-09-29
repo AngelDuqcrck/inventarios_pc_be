@@ -12,5 +12,7 @@ public class UbicacionDTO {
 
     private String nombre;
 
+    private String desc;
+
     private Integer areaId;
 }
