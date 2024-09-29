@@ -9,36 +9,53 @@ import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
+import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.repositories.RolRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDocumentoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
+import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 
 @Service
 public class UsuarioServiceImplementation implements IUsuarioService {
 
-    @Autowired
-    UsuarioRepository usuarioRepository;
+    public static final String IS_ALREADY_USE = "The %s is already use";
+    public static final String IS_NOT_FOUND = "The %s is not found";
+    public static final String IS_NOT_ALLOWED = "The %s is not allowed";
+    public static final String IS_NOT_VALID = "The %s is not valid";
+    public static final String ARE_NOT_EQUALS = "The %s are not equals";
 
     @Autowired
-    RolRepository rolRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
-    TipoDocumentoRepository tipoDocumentoRepository;
+    private RolRepository rolRepository;
 
     @Autowired
-    UbicacionRepository ubicacionRepository;
+    private TipoDocumentoRepository tipoDocumentoRepository;
+
+    @Autowired
+    private UbicacionRepository ubicacionRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtGenerador jwtGenerador;
 
     /**
      * Registra un nuevo usuario en el sistema, asignándole su rol, tipo de
      * documento y ubicación.
      * Valida que existan el rol, tipo de documento y ubicación especificados, y
-     * encripta la contraseña
+     * encripta la password
      * antes de almacenar el usuario en la base de datos.
      *
      * @param usuarioDTO Un objeto {@link UsuarioDTO} que contiene la información
@@ -52,8 +69,8 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      */
     @Override
     public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) {
-        if(usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())){
-            throw new IllegalArgumentException("El correo "+ usuarioDTO.getCorreo()+" ya se encuentra registrado");
+        if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
+            throw new IllegalArgumentException("El correo " + usuarioDTO.getCorreo() + " ya se encuentra registrado");
         }
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(usuarioDTO, usuario);
@@ -62,7 +79,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         Rol rol = rolRepository.findById(usuarioDTO.getRolId()).orElse(null);
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
         Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacionId()).orElse(null);
-       
+
         if (rol == null)
             throw new IllegalArgumentException("Rol no encontrado");
 
@@ -71,12 +88,12 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         if (ubicacion == null)
             throw new IllegalArgumentException("Ubicacion no encontrada");
-         //----------------------------------------------------------------
+        // ----------------------------------------------------------------
         usuario.setRolId(rol);
         usuario.setTipoDocumento(tipoDocumento);
         usuario.setUbicacionId(ubicacion);
 
-        usuario.setContraseña(passwordEncoder.encode(usuarioDTO.getContraseña()));
+        usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
 
         Usuario usuarioCreado = usuarioRepository.save(usuario);
 
@@ -86,4 +103,44 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         return usuarioCreadoDTO;
     }
 
+    // Método para generar un token de recuperación y enviar el correo
+    public void enviarTokenRecuperacion(String correo) throws EmailNotFoundException {
+        Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
+        if (usuario == null) {
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EMAIL").toUpperCase());
+        }
+
+        String tokenRecuperacion = jwtGenerador.generarTokenRecuperacion(correo);
+        String urlRecuperacion = "localhost:8080/restablecer-password?token=" + tokenRecuperacion; // Definir
+                                                                                                               // la
+                                                                                                               // password
+
+        emailService.sendEmail(correo, "Solicitud de Cambio de Contraseña",
+                "Ingrese al siguiente enlace para restablecer su contraseña", urlRecuperacion);
+    }
+
+    // Método para actualizar la password usando el token
+    public void restablecerpassword(String token, String nuevapassword, String nuevapassword2)
+            throws TokenNotValidException, EmailNotFoundException, PasswordNotEqualsException {
+        String email = jwtGenerador.obtenerCorreoDeJWT(token);
+
+        if (email == null) {
+            throw new TokenNotValidException(String.format(IS_NOT_VALID, "TOKEN").toUpperCase());
+        }
+
+        Usuario usuario = usuarioRepository.findByCorreo(email).orElse(null);
+        if (usuario == null) {
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EMAIL").toUpperCase());
+        }
+
+        /*
+         * if (nuevapassword != nuevapassword2) {
+            throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "PASSWORD").toUpperCase());
+        }
+         */
+        
+
+        usuario.setPassword(passwordEncoder.encode(nuevapassword));
+        usuarioRepository.save(usuario);
+    }
 }
