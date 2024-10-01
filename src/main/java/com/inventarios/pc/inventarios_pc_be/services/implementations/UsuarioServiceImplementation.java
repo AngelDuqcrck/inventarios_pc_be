@@ -1,5 +1,8 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +26,7 @@ import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 
 @Service
 public class UsuarioServiceImplementation implements IUsuarioService {
@@ -103,6 +107,25 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         BeanUtils.copyProperties(usuarioCreado, usuarioCreadoDTO);
 
         return usuarioCreadoDTO;
+    }
+
+    @Override
+    public List<UsuariosResponse> listarUsuarios(){
+        List<Usuario> usuarios = usuarioRepository.findAll();
+
+        List<UsuariosResponse> usuariosResponses = new ArrayList<>();
+
+        for(Usuario usuario: usuarios){
+            UsuariosResponse usuarioResponse = new UsuariosResponse();
+            usuarioResponse.setNombreCompleto(usuario.getPrimerNombre()+" "+usuario.getSegundoNombre()+" "+usuario.getPrimerApellido()+" "+usuario.getSegundoApellido());
+            usuarioResponse.setRol(usuario.getRolId().getNombre());
+            usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
+            usuarioResponse.setCorreo(usuario.getCorreo());
+
+            usuariosResponses.add(usuarioResponse);
+        }
+
+        return usuariosResponses;
     }
 
     /**

@@ -1,9 +1,12 @@
 package com.inventarios.pc.inventarios_pc_be.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,7 @@ import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServ
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 //Controlador donde se encuentran todos los endpoints relacionados con los usuarios
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -46,5 +50,14 @@ public class UserController {
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         " Contraseña cambiada exitosamente"),
                 HttpStatus.OK);
+    }
+
+   
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping
+    public ResponseEntity<List<UsuariosResponse>> listarUsuarios(){
+        List<UsuariosResponse> usuariosResponses = usuarioServiceImplementation.listarUsuarios();
+        return new ResponseEntity<>(usuariosResponses, HttpStatus.OK);
     }
 }

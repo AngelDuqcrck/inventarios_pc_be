@@ -1,5 +1,8 @@
 package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 
+import java.util.List;
+
+import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
@@ -8,6 +11,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 
 public interface IUsuarioService {
     
@@ -20,6 +24,6 @@ public interface IUsuarioService {
 
     public void enviarTokenRecuperacion(String correo) throws EmailNotFoundException;
 
-    
+    public List<UsuariosResponse> listarUsuarios();
 
 }
