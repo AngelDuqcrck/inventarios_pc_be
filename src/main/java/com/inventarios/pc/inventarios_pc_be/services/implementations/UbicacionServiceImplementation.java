@@ -13,13 +13,14 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException
 import com.inventarios.pc.inventarios_pc_be.repositories.AreaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SedeRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
+import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUbicacionService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 
 /**
  * Servicio que implementa las operaciones CRUD para la gestión de ubicaciones en el sistema.
  */
 @Service
-public class UbicacionServiceImplementation {
+public class UbicacionServiceImplementation implements IUbicacionService {
     
      public static final String IS_ALREADY_USE = "The %s is already use";
     public static final String IS_NOT_FOUND = "The %s is not found";
@@ -43,6 +44,7 @@ public class UbicacionServiceImplementation {
      * @return Un objeto {@link UbicacionDTO} con los datos de la ubicación recién creada.
      * @throws LocationNotFoundException Si no se encuentra el área asociada a la ubicación.
      */
+    @Override
      public UbicacionDTO crearUbicacion(UbicacionDTO ubicacionDTO) throws LocationNotFoundException{
         Ubicacion ubicacion = new Ubicacion();
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
@@ -65,6 +67,7 @@ public class UbicacionServiceImplementation {
      * 
      * @return Una lista de objetos {@link Ubicacion} que representan todas las ubicaciones.
      */
+    @Override
     public List<Ubicacion> listarUbicaciones(){
         return (List<Ubicacion>) ubicacionRepository.findAll();
     }
@@ -77,6 +80,7 @@ public class UbicacionServiceImplementation {
      * @return Un objeto {@link UbicacionDTO} con los datos de la ubicación actualizada.
      * @throws LocationNotFoundException Si no se encuentra la ubicación o el área asociada.
      */
+    @Override
     public UbicacionDTO actualizarUbicacion(Integer id, UbicacionDTO ubicacionDTO) throws LocationNotFoundException{
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
         if(ubicacion == null){
@@ -106,6 +110,7 @@ public class UbicacionServiceImplementation {
      * @throws LocationNotFoundException Si no se encuentra la ubicación.
      * @throws DeleteNotAllowedException Si la ubicación ya está marcada como eliminada.
      */
+    @Override
     public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException{
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 

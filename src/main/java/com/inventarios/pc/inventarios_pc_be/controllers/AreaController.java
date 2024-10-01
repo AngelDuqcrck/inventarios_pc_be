@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.AreaServiceImplementation;
+import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
@@ -31,7 +32,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 public class AreaController {
     
     @Autowired
-    AreaServiceImplementation areaServiceImplementation;
+    IAreaService areaServiceImplementation;
 
     /**
      * Crea una nueva área.
@@ -58,7 +59,7 @@ public class AreaController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<AreaDTO>> listarAreas() {
+    public ResponseEntity<List<AreaDTO>> listarAreas() throws LocationNotFoundException{
         return ResponseEntity.ok(
                 areaServiceImplementation.listarAreas().stream().map(area -> {
                     AreaDTO areaDTO = new AreaDTO();

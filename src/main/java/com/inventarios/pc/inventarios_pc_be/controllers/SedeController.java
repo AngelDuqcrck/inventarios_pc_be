@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.SedeServiceImplementation;
+import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISedeService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 /**
@@ -31,7 +32,7 @@ public class SedeController {
 
 
     @Autowired
-    private SedeServiceImplementation sedeServiceImplementation;
+    private ISedeService sedeServiceImplementation;
 
      /**
      * Crea una nueva sede.

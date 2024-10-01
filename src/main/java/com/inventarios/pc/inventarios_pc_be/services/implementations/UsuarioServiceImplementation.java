@@ -12,12 +12,14 @@ import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.repositories.RolRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDocumentoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
@@ -25,6 +27,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 
@@ -76,7 +79,8 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      *                                  especificados en el {@link UsuarioDTO}.
      */
     @Override
-    public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException {
+    public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO)
+            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException {
         if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
             throw new IllegalArgumentException("El correo " + usuarioDTO.getCorreo() + " ya se encuentra registrado");
         }
@@ -109,15 +113,23 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         return usuarioCreadoDTO;
     }
 
+    /**
+     * Método que obtiene todos los usuarios desde la base de datos y los convierte
+     * a una lista de objetos UsuariosResponse.
+     * 
+     * @return Lista de objetos UsuariosResponse que contiene la información de los
+     *         usuarios.
+     */
     @Override
-    public List<UsuariosResponse> listarUsuarios(){
+    public List<UsuariosResponse> listarUsuarios() {
         List<Usuario> usuarios = usuarioRepository.findAll();
 
         List<UsuariosResponse> usuariosResponses = new ArrayList<>();
 
-        for(Usuario usuario: usuarios){
+        for (Usuario usuario : usuarios) {
             UsuariosResponse usuarioResponse = new UsuariosResponse();
-            usuarioResponse.setNombreCompleto(usuario.getPrimerNombre()+" "+usuario.getSegundoNombre()+" "+usuario.getPrimerApellido()+" "+usuario.getSegundoApellido());
+            usuarioResponse.setNombreCompleto(usuario.getPrimerNombre() + " " + usuario.getSegundoNombre() + " "
+                    + usuario.getPrimerApellido() + " " + usuario.getSegundoApellido());
             usuarioResponse.setRol(usuario.getRolId().getNombre());
             usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
             usuarioResponse.setCorreo(usuario.getCorreo());
@@ -224,6 +236,82 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
 
         usuario.setPassword(passwordEncoder.encode(cambiarPasswordRequest.getNuevaPassword()));
+        usuarioRepository.save(usuario);
+    }
+
+    /**
+     * Método que actualiza la información de un usuario existente.
+     * 
+     * @param id         El ID del usuario que se va a actualizar.
+     * @param usuarioDTO Objeto ActualizarUsuarioRequest que contiene la nueva
+     *                   información del usuario.
+     * @return UsuarioDTO con la información del usuario actualizado.
+     * @throws UserNotFoundException     Si el usuario no se encuentra en la base de
+     *                                   datos.
+     * @throws RolNotFoundException      Si el rol especificado no se encuentra en
+     *                                   la base de datos.
+     * @throws LocationNotFoundException Si la ubicación especificada no se
+     *                                   encuentra en la base de datos.
+     * @throws DocumentNotFoundException Si el tipo de documento especificado no se
+     *                                   encuentra en la base de datos.
+     */
+    @Override
+    public UsuarioDTO actualizarUsuario(Integer id, ActualizarUsuarioRequest usuarioDTO)
+            throws UserNotFoundException, RolNotFoundException, LocationNotFoundException, DocumentNotFoundException {
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        if (usuario == null) {
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+        }
+
+        Rol rol = rolRepository.findById(usuarioDTO.getRolId()).orElse(null);
+        if (rol == null) {
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+        }
+        Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacionId()).orElse(null);
+        if (ubicacion == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LOCATION").toUpperCase());
+        }
+
+        TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
+
+        if (tipoDocumento == null) {
+            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "TYPE DOCUMENT").toUpperCase());
+        }
+
+        usuario.setRolId(rol);
+        usuario.setUbicacionId(ubicacion);
+        usuario.setTipoDocumento(tipoDocumento);
+        BeanUtils.copyProperties(usuarioDTO, usuario);
+
+        Usuario usuarioActualizado = usuarioRepository.save(usuario);
+        UsuarioDTO usuarioActualizadoDTO = new UsuarioDTO();
+        BeanUtils.copyProperties(usuarioActualizado, usuarioActualizadoDTO);
+        return usuarioActualizadoDTO;
+
+    }
+
+    /**
+     * Método que marca un usuario como eliminado en la base de datos.
+     * 
+     * @param id El ID del usuario a eliminar.
+     * @throws UserNotFoundException     Si el usuario no se encuentra en la base de
+     *                                   datos.
+     * @throws DeleteNotAllowedException Si el usuario ya ha sido eliminado
+     *                                   previamente.
+     */
+    @Override
+    public void eliminarUsuario(Integer id) throws UserNotFoundException, DeleteNotAllowedException {
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+
+        if (usuario == null) {
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+        }
+
+        if (usuario.getDeleteFlag() == true) {
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE USER").toUpperCase());
+        }
+
+        usuario.setDeleteFlag(true);
         usuarioRepository.save(usuario);
     }
 }

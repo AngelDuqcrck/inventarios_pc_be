@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UbicacionServiceImplementation;
+import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUbicacionService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 
@@ -32,7 +33,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 public class UbicacionController {
     
     @Autowired
-    private UbicacionServiceImplementation ubicacionServiceImplementation;
+    private IUbicacionService ubicacionServiceImplementation;
 
      /**
      * Crea una nueva ubicación.

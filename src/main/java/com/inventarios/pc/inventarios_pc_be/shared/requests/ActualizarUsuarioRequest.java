@@ -1,20 +1,16 @@
-package com.inventarios.pc.inventarios_pc_be.shared.DTOs;
-
-import org.hibernate.validator.constraints.UniqueElements;
+package com.inventarios.pc.inventarios_pc_be.shared.requests;
 import java.util.*;
-import com.inventarios.pc.inventarios_pc_be.entities.Rol;
-import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
-import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioDTO {
-
+public class ActualizarUsuarioRequest {
+    
     private Integer rolId;
 
     private String primerNombre;
@@ -31,13 +27,10 @@ public class UsuarioDTO {
 
     private String correo;
 
-    private String password;
-
     private String telefono;
 
     private Date fechaNacimiento;
 
     private Integer ubicacionId;
 
-    private Boolean delete_flag;
 }

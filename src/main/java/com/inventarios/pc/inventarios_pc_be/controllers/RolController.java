@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.inventarios.pc.inventarios_pc_be.services.implementations.RolServiceImplementation;
+import com.inventarios.pc.inventarios_pc_be.services.interfaces.IRolService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
 
 @RestController
@@ -18,7 +19,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
 public class RolController {
     
     @Autowired
-    private RolServiceImplementation rolServiceImplementation;
+    private IRolService rolServiceImplementation;
 
     
     @PreAuthorize("hasAuthority('ADMIN')")

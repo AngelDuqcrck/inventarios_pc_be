@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -91,4 +92,9 @@ public class Usuario {
     @ManyToOne
     @JoinColumn(name = "ubicacion_id")
     private Ubicacion ubicacionId;
+
+    @NotNull
+    @Column(name = "delete_flag", nullable = false)
+    private Boolean deleteFlag;
+
 }
