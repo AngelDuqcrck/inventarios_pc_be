@@ -16,21 +16,35 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
-
+//Controlador donde se encuentran todos los endpoints relacionados con los usuarios
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    
+
     @Autowired
     private UsuarioServiceImplementation usuarioServiceImplementation;
 
+    /**
+     * Cambia la contraseña de un usuario autenticado.
+     * 
+     * @param cambiarPasswordRequest Objeto que contiene la contraseña actual y la
+     *                               nueva contraseña.
+     * @return Respuesta HTTP con un mensaje indicando el éxito o error de la
+     *         operación.
+     * @throws EmailNotFoundException     Si no se encuentra un usuario asociado al
+     *                                    correo.
+     * @throws TokenNotValidException     Si el token de autenticación no es válido.
+     * @throws PasswordNotEqualsException Si la contraseña actual no coincide o las
+     *                                    nuevas contraseñas no son iguales.
+     */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/cambiar-password")
-    public ResponseEntity<HttpResponse> cambiarPassword( @RequestBody CambiarPasswordRequest cambiarPasswordRequest) throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException{
+    public ResponseEntity<HttpResponse> cambiarPassword(@RequestBody CambiarPasswordRequest cambiarPasswordRequest)
+            throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException {
         usuarioServiceImplementation.cambiarContraseña(cambiarPasswordRequest);
         return new ResponseEntity<>(
-            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                    " Contraseña cambiada exitosamente"),
-            HttpStatus.OK);
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        " Contraseña cambiada exitosamente"),
+                HttpStatus.OK);
     }
 }

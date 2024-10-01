@@ -9,9 +9,11 @@ import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.repositories.RolRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDocumentoRepository;
@@ -70,27 +72,25 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      *                                  especificados en el {@link UsuarioDTO}.
      */
     @Override
-    public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) {
+    public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException {
         if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
             throw new IllegalArgumentException("El correo " + usuarioDTO.getCorreo() + " ya se encuentra registrado");
         }
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(usuarioDTO, usuario);
 
-        // Lineas por mejorar
         Rol rol = rolRepository.findById(usuarioDTO.getRolId()).orElse(null);
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
         Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacionId()).orElse(null);
 
         if (rol == null)
-            throw new IllegalArgumentException("Rol no encontrado");
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
 
         if (tipoDocumento == null)
-            throw new IllegalArgumentException("Tipo de documento no encontrado");
+            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
 
         if (ubicacion == null)
-            throw new IllegalArgumentException("Ubicacion no encontrada");
-        // ----------------------------------------------------------------
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
         usuario.setRolId(rol);
         usuario.setTipoDocumento(tipoDocumento);
         usuario.setUbicacionId(ubicacion);
@@ -105,7 +105,15 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         return usuarioCreadoDTO;
     }
 
-    // Método para generar un token de recuperación y enviar el correo
+    /**
+     * Genera un token de recuperación de contraseña y envía un correo al usuario
+     * con un enlace
+     * para restablecer la contraseña.
+     *
+     * @param correo El correo electrónico del usuario que solicita la recuperación.
+     * @throws EmailNotFoundException Si no se encuentra un usuario asociado al
+     *                                correo proporcionado.
+     */
     @Override
     public void enviarTokenRecuperacion(String correo) throws EmailNotFoundException {
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
@@ -123,7 +131,18 @@ public class UsuarioServiceImplementation implements IUsuarioService {
                 urlRecuperacion);
     }
 
-    // Método para actualizar la password usando el token
+    /**
+     * Restablece la contraseña de un usuario utilizando un token de recuperación.
+     * 
+     * @param token          El token de recuperación generado para el usuario.
+     * @param nuevaPassword  La nueva contraseña que el usuario desea establecer.
+     * @param nuevaPassword2 La confirmación de la nueva contraseña.
+     * @throws TokenNotValidException     Si el token proporcionado no es válido.
+     * @throws EmailNotFoundException     Si no se encuentra un usuario asociado al
+     *                                    correo en el token.
+     * @throws PasswordNotEqualsException Si las contraseñas proporcionadas no
+     *                                    coinciden.
+     */
     @Override
     public void restablecerpassword(String token, String nuevaPassword, String nuevaPassword2)
             throws TokenNotValidException, EmailNotFoundException, PasswordNotEqualsException {
@@ -146,6 +165,18 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         usuarioRepository.save(usuario);
     }
 
+    /**
+     * Cambia la contraseña actual de un usuario autenticado.
+     * 
+     * @param cambiarPasswordRequest Objeto que contiene la contraseña actual, la
+     *                               nueva contraseña y la confirmación de la nueva
+     *                               contraseña.
+     * @throws TokenNotValidException     Si el token de autenticación no es válido.
+     * @throws EmailNotFoundException     Si no se encuentra un usuario asociado al
+     *                                    token.
+     * @throws PasswordNotEqualsException Si la contraseña actual es incorrecta o
+     *                                    las nuevas contraseñas no coinciden.
+     */
     @Override
     public void cambiarContraseña(CambiarPasswordRequest cambiarPasswordRequest)
             throws TokenNotValidException, EmailNotFoundException, PasswordNotEqualsException {
@@ -164,7 +195,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             throw new PasswordNotEqualsException(String.format(IS_NOT_CORRECT, "CURRENT PASSWORD").toUpperCase());
         }
 
-        if(!cambiarPasswordRequest.getNuevaPassword().equals(cambiarPasswordRequest.getNuevaPassword2())){
+        if (!cambiarPasswordRequest.getNuevaPassword().equals(cambiarPasswordRequest.getNuevaPassword2())) {
             throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "NEW PASSWORDS").toUpperCase());
 
         }

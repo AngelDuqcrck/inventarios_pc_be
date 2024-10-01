@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailExistException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
@@ -29,6 +32,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.Response;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+//Controlador donde se encuentran los endpoints de autenticacion tales como el login, el cambiar contraseña cuando fue olvidada y el envio de correo para recuperar contraseña
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -39,16 +43,32 @@ public class AuthController {
     @Autowired
     private UsuarioServiceImplementation usuarioService;
 
+    /**
+     * Registra un nuevo usuario en el sistema.
+     * 
+     * @param usuarioDTO Objeto que contiene los datos del usuario a registrar.
+     * @return Respuesta indicando si el usuario fue creado exitosamente o si
+     *         ocurrió un error.
+     */
     @PostMapping("/register")
-    public Response registrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
-        UsuarioDTO usuarioCreado = usuarioService.registrarUsuario(usuarioDTO);
-        if (usuarioCreado == null) {
-            return new Response("Error al crear el usuaio");
-        } else {
-            return new Response("Usuario creado exitosamente");
-        }
+    public ResponseEntity<HttpResponse> registrarUsuario(@RequestBody UsuarioDTO usuarioDTO)
+            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException {
+        usuarioService.registrarUsuario(usuarioDTO);
+
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        " Usuario Registrado con exito"),
+                HttpStatus.OK);
     }
 
+    /**
+     * Autentica a un usuario y genera un token de acceso y un refresh token.
+     * 
+     * @param loginDTO Objeto que contiene el correo electrónico y la contraseña del
+     *                 usuario.
+     * @return Respuesta HTTP con el token de acceso y el refresh token si la
+     *         autenticación es exitosa.
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginDTO loginDTO) {
 
@@ -63,6 +83,14 @@ public class AuthController {
         return new ResponseEntity<>(new AuthResponse(accessToken, refreshToken), HttpStatus.OK);
     }
 
+    /**
+     * Genera un nuevo access token y refresh token utilizando el refresh token
+     * proporcionado.
+     * 
+     * @param request Objeto que contiene el refresh token.
+     * @return Respuesta HTTP con los nuevos tokens si el refresh token es válido,
+     *         de lo contrario una respuesta de error.
+     */
     @PostMapping("/refresh-token")
     public ResponseEntity<TokenRefreshResponse> refreshToken(@RequestBody TokenRefreshRequest request) {
         String refreshToken = request.getRefreshToken();
@@ -79,9 +107,18 @@ public class AuthController {
         return ResponseEntity.status(401).body(null);
     }
 
+    /**
+     * Envía un correo de recuperación de contraseña al usuario con un enlace para
+     * restablecerla.
+     * 
+     * @param correo El correo electrónico del usuario que solicita la recuperación.
+     * @return Respuesta HTTP con un mensaje indicando que el correo fue enviado.
+     * @throws EmailNotFoundException Si no se encuentra un usuario asociado al
+     *                                correo proporcionado.
+     */
     @PostMapping("/recuperar-password")
-    public ResponseEntity<HttpResponse> recuperarPassword(@RequestParam String correo)throws EmailNotFoundException{
-        
+    public ResponseEntity<HttpResponse> recuperarPassword(@RequestParam String correo) throws EmailNotFoundException {
+
         usuarioService.enviarTokenRecuperacion(correo);
 
         return new ResponseEntity<>(
@@ -90,16 +127,29 @@ public class AuthController {
                 HttpStatus.OK);
     }
 
-    
+    /**
+     * Restablece la contraseña de un usuario utilizando un token de recuperación.
+     * 
+     * @param token            El token de recuperación generado para el usuario.
+     * @param nuevaContraseña  La nueva contraseña que el usuario desea establecer.
+     * @param nuevaContraseña2 La confirmación de la nueva contraseña.
+     * @return Respuesta HTTP con un mensaje indicando que la contraseña fue
+     *         actualizada exitosamente.
+     * @throws EmailNotFoundException     Si no se encuentra un usuario asociado al
+     *                                    token.
+     * @throws TokenNotValidException     Si el token proporcionado no es válido.
+     * @throws PasswordNotEqualsException Si las nuevas contraseñas no coinciden.
+     */
     @PostMapping("/cambiar-password")
-    public ResponseEntity<HttpResponse> resetPassword(@RequestParam String token, @RequestParam String nuevaContraseña, @RequestParam String nuevaContraseña2)throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException{
+    public ResponseEntity<HttpResponse> resetPassword(@RequestParam String token, @RequestParam String nuevaContraseña,
+            @RequestParam String nuevaContraseña2)
+            throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException {
         usuarioService.restablecerpassword(token, nuevaContraseña, nuevaContraseña2);
 
         return new ResponseEntity<>(
-            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                    " Contraseña actualizada exitosamente"),
-            HttpStatus.OK);
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        " Contraseña actualizada exitosamente"),
+                HttpStatus.OK);
     }
 
-    
 }
