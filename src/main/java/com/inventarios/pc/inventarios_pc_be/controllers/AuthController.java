@@ -89,6 +89,7 @@ public class AuthController {
                 HttpStatus.OK);
     }
 
+    
     @PostMapping("/cambiar-password")
     public ResponseEntity<HttpResponse> resetPassword(@RequestParam String token, @RequestParam String nuevaContraseña, @RequestParam String nuevaContraseña2)throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException{
         usuarioService.restablecerpassword(token, nuevaContraseña, nuevaContraseña2);

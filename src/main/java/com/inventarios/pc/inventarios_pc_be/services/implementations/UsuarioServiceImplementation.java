@@ -111,16 +111,17 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
 
         String tokenRecuperacion = jwtGenerador.generarTokenRecuperacion(correo);
-        String urlRecuperacion = "localhost:8080/restablecer-password?token=" + tokenRecuperacion; // Definir
-                                                                                                               // la
-                                                                                                               // password
+        String urlRecuperacion = "https://inventarios-pc/restablecer-password?token=" + tokenRecuperacion; // Definir
+                                                                                                           // la
+                                                                                                           // password
 
         emailService.sendEmail(correo, "Solicitud de Cambio de Contraseña",
-                "Ingrese al siguiente enlace para restablecer su contraseña", urlRecuperacion);
+                "Presione el siguiente botón que lo redigirá a la página web para restablecer su contraseña",
+                urlRecuperacion);
     }
 
     // Método para actualizar la password usando el token
-    public void restablecerpassword(String token, String nuevapassword, String nuevapassword2)
+    public void restablecerpassword(String token, String nuevaPassword, String nuevaPassword2)
             throws TokenNotValidException, EmailNotFoundException, PasswordNotEqualsException {
         String email = jwtGenerador.obtenerCorreoDeJWT(token);
 
@@ -133,14 +134,11 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EMAIL").toUpperCase());
         }
 
-        /*
-         * if (nuevapassword != nuevapassword2) {
-            throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "PASSWORD").toUpperCase());
+        if (!nuevaPassword.equals(nuevaPassword2)) {
+            throw new PasswordNotEqualsException("Las contraseñas no coinciden");
         }
-         */
-        
-
-        usuario.setPassword(passwordEncoder.encode(nuevapassword));
+    
+        usuario.setPassword(passwordEncoder.encode(nuevaPassword));
         usuarioRepository.save(usuario);
     }
 }

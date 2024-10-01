@@ -8,17 +8,18 @@ CREATE TABLE IF NOT EXISTS roles
     AUTO_INCREMENT,
     nombre
     VARCHAR (100) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
     );
 
 -- Insertamos los roles si estos no existen en el sistema 
 INSERT
-IGNORE INTO roles (id,nombre) VALUES
-    (1,"ADMIN"),
-    (2,"EMPLEADO_ASISTENCIAL"),
-    (3,"EMPLEADO_ADMINISTRATIVO"),
-    (4,"TECNICO_SISTEMAS");
+IGNORE INTO roles (delete_flag,id,nombre) VALUES
+    (0,1,"ADMIN"),
+    (0,2,"EMPLEADO_ASISTENCIAL"),
+    (0,3,"EMPLEADO_ADMINISTRATIVO"),
+    (0,4,"TECNICO_SISTEMAS");
 
 -- Creamos la tabla sedes_PC si no existe
 CREATE TABLE IF NOT EXISTS sedes_PC
