@@ -67,6 +67,14 @@ public class SedeController {
                 }).collect(Collectors.toList()));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<SedeDTO> listarSedeById(@PathVariable Integer id) throws LocationNotFoundException{
+        SedeDTO sedeDTO = sedeServiceImplementation.listarSedePorId(id);
+
+        return new ResponseEntity<>(sedeDTO, HttpStatus.OK);
+
+    }
     /**
      * Actualiza una sede existente.
      *

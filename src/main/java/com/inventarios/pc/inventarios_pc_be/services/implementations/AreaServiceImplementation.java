@@ -14,6 +14,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.AreaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SedeRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
 
 /**
  * Implementación del servicio para gestionar las áreas del sistema.
@@ -67,7 +68,20 @@ public class AreaServiceImplementation implements IAreaService {
     public List<AreaPC> listarAreas(){
         return(List<AreaPC>) areaRepository.findAll();
     }
+    
+    //Metodo que lista toda la informacion especifica de acuerdo a su id
+    @Override
+    public AreaResponse listarAreaById(Integer id)throws LocationNotFoundException{
+        AreaPC areaPC = areaRepository.findById(id).orElse(null);
 
+        if(areaPC == null){
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());        
+        }
+        AreaResponse areaResponse = new AreaResponse();
+        BeanUtils.copyProperties(areaPC, areaResponse);
+        areaResponse.setSede(areaPC.getSede().getNombre());
+        return areaResponse;
+    }
     /**
      * Actualiza los datos de un área existente.
      *

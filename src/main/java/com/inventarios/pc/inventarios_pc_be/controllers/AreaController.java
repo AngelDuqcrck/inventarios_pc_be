@@ -23,6 +23,7 @@ import com.inventarios.pc.inventarios_pc_be.services.implementations.AreaService
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 /**
  * Controlador para manejar operaciones CRUD relacionadas con Áreas.
@@ -106,5 +107,14 @@ public class AreaController {
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Área eliminada exitosamente"),
                 HttpStatus.OK);
+    }
+
+   
+     
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<AreaResponse> listarAreaById(@PathVariable Integer id) throws LocationNotFoundException{
+        AreaResponse areaResponse = areaServiceImplementation.listarAreaById(id);
+        return new ResponseEntity<>(areaResponse, HttpStatus.OK);
     }
 }

@@ -24,6 +24,7 @@ import com.inventarios.pc.inventarios_pc_be.services.implementations.UbicacionSe
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUbicacionService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 
 /**
  * Controlador para manejar operaciones CRUD relacionadas con Ubicaciones.
@@ -108,4 +109,12 @@ public class UbicacionController {
                         "Ubicación eliminada exitosamente"),
                 HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<UbicacionResponse> getUbicacionById(@PathVariable Integer id)throws LocationNotFoundException{
+        UbicacionResponse ubicacionResponse = ubicacionServiceImplementation.listarUbicacionById(id);
+        return new ResponseEntity<>(ubicacionResponse, HttpStatus.OK);
+    }
+    
 }

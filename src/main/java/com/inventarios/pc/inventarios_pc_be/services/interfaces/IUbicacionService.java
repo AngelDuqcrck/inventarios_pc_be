@@ -6,6 +6,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 /**
  * Interfaz que define los métodos para gestionar las ubicaciones en el sistema.
  */
@@ -47,5 +48,7 @@ public interface IUbicacionService {
      */
     public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException;
 
+    //Lista la informacion de una ubicacion por su id
+    public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException;
 } 
 

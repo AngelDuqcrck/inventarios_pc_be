@@ -10,6 +10,7 @@ public interface ISedeService {
 
     public SedeDTO crearSede(SedeDTO sedeDTO);
     public List<SedePC> listarSedes();
+    public SedeDTO listarSedePorId(Integer id)throws LocationNotFoundException;
     public SedeDTO actualizarSede(Integer id, SedeDTO sedeDTO) throws LocationNotFoundException;
     public void eliminarSede(Integer id) throws LocationNotFoundException, DeleteNotAllowedException;
 

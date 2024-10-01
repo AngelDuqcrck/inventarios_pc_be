@@ -29,6 +29,7 @@ import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuarioResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 
 @Service
@@ -313,5 +314,19 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         usuario.setDeleteFlag(true);
         usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public UsuarioResponse listarUsuarioById(Integer id)throws UserNotFoundException{
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        if(usuario == null){
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+        }
+        UsuarioResponse usuarioResponse = new UsuarioResponse();
+        BeanUtils.copyProperties(usuario, usuarioResponse);
+        usuarioResponse.setRol(usuario.getRolId().getNombre());
+        usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
+        usuarioResponse.setUbicacionId(usuario.getUbicacionId().getNombre());
+        return usuarioResponse;
     }
 }

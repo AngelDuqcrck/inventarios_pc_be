@@ -6,6 +6,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
 
 /**
  * Interfaz que define los métodos para gestionar los roles en el sistema.
@@ -21,6 +22,14 @@ public interface IAreaService {
      */
     public AreaDTO crearArea(AreaDTO areaDTO) throws LocationNotFoundException;
 
+    /*
+     * Lista un area especifica por su id.
+     * 
+     * @return la informacion de un area que representa toda la in
+     * @throws LocationNotFoundException Si no se encuentran áreas en el sistema.
+     */
+    public AreaResponse listarAreaById(Integer id)throws LocationNotFoundException;
+    
     /**
      * Lista todas las áreas registradas en el sistema.
      *

@@ -30,6 +30,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuarioResponse;
 //Controlador donde se encuentran todos los endpoints relacionados con los usuarios
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 
@@ -125,4 +126,19 @@ public class UserController {
                 HttpStatus.OK);
     }
 
+    /*
+     * @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<UbicacionResponse> getUbicacionById(@PathVariable Integer id)throws LocationNotFoundException{
+        UbicacionResponse ubicacionResponse = ubicacionServiceImplementation.listarUbicacionById(id);
+        return new ResponseEntity<>(ubicacionResponse, HttpStatus.OK);
+    }
+     */
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> getUsuarioById(@PathVariable Integer id) throws UserNotFoundException{
+        UsuarioResponse usuarioResponse = usuarioServiceImplementation.listarUsuarioById(id);
+        return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
+    }
 }

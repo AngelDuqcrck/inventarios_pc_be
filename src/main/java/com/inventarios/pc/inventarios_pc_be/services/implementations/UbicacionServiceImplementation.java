@@ -15,6 +15,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.SedeRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUbicacionService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 
 /**
  * Servicio que implementa las operaciones CRUD para la gestión de ubicaciones en el sistema.
@@ -124,5 +125,17 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         }
         ubicacion.setDeleteFlag(true);
         ubicacionRepository.save(ubicacion);
+    }
+
+    //Lista la informacion de una ubicacion especifica de acuerdo a su id
+    public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException{
+        Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
+        if(ubicacion == null){
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());        
+        }
+        UbicacionResponse ubicacionResponse = new UbicacionResponse();
+        BeanUtils.copyProperties(ubicacion, ubicacionResponse);
+        ubicacionResponse.setArea(ubicacion.getArea().getNombre());
+        return ubicacionResponse;
     }
 }
