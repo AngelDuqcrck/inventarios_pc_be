@@ -21,6 +21,7 @@ import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.LoginDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AuthResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.Response;
@@ -99,4 +100,6 @@ public class AuthController {
                     " Contraseña actualizada exitosamente"),
             HttpStatus.OK);
     }
+
+    
 }

@@ -20,6 +20,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 
 @Service
 public class UsuarioServiceImplementation implements IUsuarioService {
@@ -29,6 +30,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     public static final String IS_NOT_ALLOWED = "The %s is not allowed";
     public static final String IS_NOT_VALID = "The %s is not valid";
     public static final String ARE_NOT_EQUALS = "The %s are not equals";
+    public static final String IS_NOT_CORRECT = "The %s is not correct";
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -104,6 +106,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     }
 
     // Método para generar un token de recuperación y enviar el correo
+    @Override
     public void enviarTokenRecuperacion(String correo) throws EmailNotFoundException {
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
         if (usuario == null) {
@@ -121,6 +124,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     }
 
     // Método para actualizar la password usando el token
+    @Override
     public void restablecerpassword(String token, String nuevaPassword, String nuevaPassword2)
             throws TokenNotValidException, EmailNotFoundException, PasswordNotEqualsException {
         String email = jwtGenerador.obtenerCorreoDeJWT(token);
@@ -135,10 +139,37 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
 
         if (!nuevaPassword.equals(nuevaPassword2)) {
-            throw new PasswordNotEqualsException("Las contraseñas no coinciden");
+            throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "NEW PASSWORDS").toUpperCase());
         }
-    
+
         usuario.setPassword(passwordEncoder.encode(nuevaPassword));
+        usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public void cambiarContraseña(CambiarPasswordRequest cambiarPasswordRequest)
+            throws TokenNotValidException, EmailNotFoundException, PasswordNotEqualsException {
+        String email = jwtGenerador.obtenerCorreoDeJWT(cambiarPasswordRequest.getToken());
+
+        if (email == null) {
+            throw new TokenNotValidException(String.format(IS_NOT_VALID, "TOKEN").toUpperCase());
+        }
+
+        Usuario usuario = usuarioRepository.findByCorreo(email).orElse(null);
+        if (usuario == null) {
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EMAIL").toUpperCase());
+        }
+
+        if (!passwordEncoder.matches(cambiarPasswordRequest.getActualPassword(), usuario.getPassword())) {
+            throw new PasswordNotEqualsException(String.format(IS_NOT_CORRECT, "CURRENT PASSWORD").toUpperCase());
+        }
+
+        if(!cambiarPasswordRequest.getNuevaPassword().equals(cambiarPasswordRequest.getNuevaPassword2())){
+            throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "NEW PASSWORDS").toUpperCase());
+
+        }
+
+        usuario.setPassword(passwordEncoder.encode(cambiarPasswordRequest.getNuevaPassword()));
         usuarioRepository.save(usuario);
     }
 }

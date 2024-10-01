@@ -86,7 +86,7 @@ public class EmailService {
                 "            <div class=\"titulo\">\n" +
                 "                <h2>" + mensaje + "</h2>\n" +
                 "            <a href="+ mensaje2 + " target=\"_blank\">\n" +
-                "                <button>Retablecer Contraseña</button>\n" +
+                "                <button>Restablecer Contraseña</button>\n" +
                 "            </a>\n" +
                 "            </div>\n" +
                 "        </div>\n" +
