@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 
@@ -26,6 +27,9 @@ public class Rol {
     @Column(nullable = false, length = 100)
     private String nombre;
 
+    @NotNull
+    @Column(name = "delete_flag", nullable = false)
     private Boolean deleteFlag;
+
     
 }

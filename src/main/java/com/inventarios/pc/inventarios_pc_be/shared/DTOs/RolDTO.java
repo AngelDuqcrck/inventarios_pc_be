@@ -11,4 +11,6 @@ public class RolDTO {
 
     private String nombre;
 
+    private Boolean deleteFlag;
+
 }

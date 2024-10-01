@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Rol;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.repositories.RolRepository;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
 
@@ -75,8 +77,32 @@ public class RolServiceImplementation implements IRolService {
      * @param rolId El ID del rol que se desea deshabilitar.
      */
     @Override
-    public void deshabilitarRol (Integer rolId){
+    public void deshabilitarRol (Integer rolId)throws RolNotFoundException, DeleteNotAllowedException{
+        Rol rol = rolRepository.findById(rolId).orElse(null);
+        if (rol == null) {
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
 
+        }
+
+        if(rol.getDeleteFlag() == true){
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE ROL").toUpperCase());        
+
+        }
+
+        rol.setDeleteFlag(true);
+        rolRepository.save(rol);
+    }
+
+    @Override
+    public RolDTO listarRolById(Integer rolId)throws RolNotFoundException{
+        Rol rol = rolRepository.findById(rolId).orElse(null);
+        if (rol == null) {
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+        }
+        RolDTO rolDTO = new RolDTO();
+        BeanUtils.copyProperties(rol, rolDTO);
+
+        return rolDTO;
     }
 
 }
