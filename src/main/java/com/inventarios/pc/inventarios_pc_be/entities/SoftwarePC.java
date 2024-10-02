@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 //Esta entidad crea la tabla software pc en la base de datos donse se almacenan los diferentes software que pueden estar instalados en un equipo
 
@@ -22,7 +23,10 @@ public class SoftwarePC {
 
     private String version;
 
+    private String empresa;
 
+     @NotNull
+    @Column(name = "delete_flag", nullable = false)
     private Boolean deleteFlag;
     
     @ManyToOne

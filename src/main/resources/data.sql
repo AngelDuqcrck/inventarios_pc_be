@@ -92,3 +92,19 @@ INSERT IGNORE INTO tipo_documento (id, nombre) VALUES
     (2, "Tarjeta de Identidad"),
     (3, "Cedula de Extranjeria"),
     (4, "Pasaporte");
+
+-- Creamos la tabla tipo_software si no existe
+CREATE TABLE IF NOT EXISTS tipo_software
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos los tipos de software si no existen en el sistema
+INSERT IGNORE INTO tipo_software (id, nombre, delete_flag) VALUES
+    (1, "Software Libre", 0),
+    (2, "Software Propietario", 0),
+    (3, "Software Comercial", 0);

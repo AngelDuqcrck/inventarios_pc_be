@@ -65,6 +65,17 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    @ExceptionHandler(SoftwareNotFoundException.class)
+    public ResponseEntity<HttpResponse> softwareNotFoundException(SoftwareNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler (TypeSoftwareNotFoundException.class)
+    public ResponseEntity<HttpResponse> typeSoftwareNotFoundException(TypeSoftwareNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+
     @ExceptionHandler(DocumentNotFoundException.class)
     public ResponseEntity<HttpResponse> documentNotFoundException(DocumentNotFoundException exception){
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
