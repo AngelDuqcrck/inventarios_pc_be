@@ -1,7 +1,9 @@
 package com.inventarios.pc.inventarios_pc_be.controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
@@ -40,6 +43,7 @@ public class UserController {
 
     @Autowired
     private IUsuarioService usuarioServiceImplementation;
+
 
     /**
      * Cambia la contraseña de un usuario autenticado.

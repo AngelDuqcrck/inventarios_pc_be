@@ -103,6 +103,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         usuario.setRolId(rol);
         usuario.setTipoDocumento(tipoDocumento);
         usuario.setUbicacionId(ubicacion);
+        usuario.setDeleteFlag(false);
 
         usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
 
