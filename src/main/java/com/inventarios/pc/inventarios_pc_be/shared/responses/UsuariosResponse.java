@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UsuariosResponse {
 
+    private int id;
+
     private String nombreCompleto;
 
     private String correo;

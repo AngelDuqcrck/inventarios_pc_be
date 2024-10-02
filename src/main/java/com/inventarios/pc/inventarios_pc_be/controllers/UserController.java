@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,10 +30,13 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
+import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuarioResponse;
 //Controlador donde se encuentran todos los endpoints relacionados con los usuarios
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
@@ -78,9 +82,27 @@ public class UserController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<UsuariosResponse>> listarUsuarios() {
-        List<UsuariosResponse> usuariosResponses = usuarioServiceImplementation.listarUsuarios();
-        return new ResponseEntity<>(usuariosResponses, HttpStatus.OK);
+//     public ResponseEntity<List<UsuariosResponse>> listarUsuarios() {
+//         List<UsuariosResponse> usuariosResponses = usuarioServiceImplementation.listarUsuarios();
+//         return new ResponseEntity<>(usuariosResponses, HttpStatus.OK);
+//     }
+        public ResponseEntity<List<UsuarioResponse>> listarUsuarios(){
+        return ResponseEntity.ok(
+            usuarioServiceImplementation.listarUsuarios().stream().map(usuario ->{
+                UsuarioResponse usuarioResponse = new UsuarioResponse();
+                BeanUtils.copyProperties(usuario, usuarioResponse);
+                UbicacionResponse ubicacionResponse =  new UbicacionResponse();
+                ubicacionResponse.setArea(usuario.getUbicacionId().getArea().getNombre());
+                ubicacionResponse.setId(usuario.getUbicacionId().getId());
+                ubicacionResponse.setDesc(usuario.getUbicacionId().getDesc());
+                ubicacionResponse.setNombre(usuario.getUbicacionId().getNombre());
+                ubicacionResponse.setDeleteFlag(usuario.getUbicacionId().getDeleteFlag());
+                usuarioResponse.setUbicacionId(ubicacionResponse);
+                usuarioResponse.setRol(usuario.getRolId());
+                usuarioResponse.setDelete_flag(usuario.getDeleteFlag());
+                return usuarioResponse;
+            }).collect(Collectors.toList())
+        );
     }
 
     /**

@@ -29,6 +29,7 @@ import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuarioResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 
@@ -123,23 +124,24 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      *         usuarios.
      */
     @Override
-    public List<UsuariosResponse> listarUsuarios() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
+    public List<Usuario> listarUsuarios() {
+        // List<Usuario> usuarios = usuarioRepository.findAll();
 
-        List<UsuariosResponse> usuariosResponses = new ArrayList<>();
+        // List<UsuariosResponse> usuariosResponses = new ArrayList<>();
 
-        for (Usuario usuario : usuarios) {
-            UsuariosResponse usuarioResponse = new UsuariosResponse();
-            usuarioResponse.setNombreCompleto(usuario.getPrimerNombre() + " " + usuario.getSegundoNombre() + " "
-                    + usuario.getPrimerApellido() + " " + usuario.getSegundoApellido());
-            usuarioResponse.setRol(usuario.getRolId().getNombre());
-            usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
-            usuarioResponse.setCorreo(usuario.getCorreo());
+        // for (Usuario usuario : usuarios) {
+        //     UsuariosResponse usuarioResponse = new UsuariosResponse();
+        //     usuarioResponse.setId(usuario.getId());
+        //     usuarioResponse.setNombreCompleto(usuario.getPrimerNombre() + " " + usuario.getSegundoNombre() + " "
+        //             + usuario.getPrimerApellido() + " " + usuario.getSegundoApellido());
+        //     usuarioResponse.setRol(usuario.getRolId().getNombre());
+        //     usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
+        //     usuarioResponse.setCorreo(usuario.getCorreo());
 
-            usuariosResponses.add(usuarioResponse);
-        }
+        //     usuariosResponses.add(usuarioResponse);
+        // }
 
-        return usuariosResponses;
+        return (List<Usuario>) usuarioRepository.findAll();
     }
 
     /**
@@ -325,9 +327,15 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
         UsuarioResponse usuarioResponse = new UsuarioResponse();
         BeanUtils.copyProperties(usuario, usuarioResponse);
-        usuarioResponse.setRol(usuario.getRolId().getNombre());
-        usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
-        usuarioResponse.setUbicacionId(usuario.getUbicacionId().getNombre());
+        usuarioResponse.setRol(usuario.getRolId());
+        usuarioResponse.setTipoDocumento(usuario.getTipoDocumento());
+        UbicacionResponse ubicacionResponse =  new UbicacionResponse();
+        ubicacionResponse.setArea(usuario.getUbicacionId().getArea().getNombre());
+        ubicacionResponse.setId(usuario.getUbicacionId().getId());
+        ubicacionResponse.setDesc(usuario.getUbicacionId().getDesc());
+        ubicacionResponse.setNombre(usuario.getUbicacionId().getNombre());
+        ubicacionResponse.setDeleteFlag(usuario.getUbicacionId().getDeleteFlag());
+        usuarioResponse.setUbicacionId(ubicacionResponse);
         return usuarioResponse;
     }
 }

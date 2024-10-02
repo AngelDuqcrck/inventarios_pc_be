@@ -71,7 +71,7 @@ public interface IUsuarioService {
          * 
          * @return Lista de objetos UsuariosResponse con la información de todos los usuarios.
          */
-        public List<UsuariosResponse> listarUsuarios();
+        public List<Usuario> listarUsuarios();
     
         /**
          * Actualiza la información de un usuario existente.
