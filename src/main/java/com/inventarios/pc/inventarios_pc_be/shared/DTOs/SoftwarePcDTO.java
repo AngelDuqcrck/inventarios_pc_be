@@ -10,6 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SoftwarePcDTO {
+
+    private int id;
     
     private String nombre;
 
@@ -21,5 +23,5 @@ public class SoftwarePcDTO {
     private Boolean deleteFlag;
     
 
-    private Integer tipoSoftware;
+    private TipoSoftware tipoSoftware;
 }

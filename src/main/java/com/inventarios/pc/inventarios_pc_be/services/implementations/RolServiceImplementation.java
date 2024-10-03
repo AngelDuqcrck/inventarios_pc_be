@@ -35,6 +35,7 @@ public class RolServiceImplementation implements IRolService {
     public RolDTO crearRol (RolDTO rolDTO){
         Rol rol = new Rol();
         BeanUtils.copyProperties(rolDTO, rol);
+        rol.setDeleteFlag(false);
         Rol rolCreado = rolRepository.save(rol);
         RolDTO rolCreadoDTO  = new RolDTO();
         BeanUtils.copyProperties(rolCreado, rolCreadoDTO);

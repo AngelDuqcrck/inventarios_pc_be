@@ -43,7 +43,7 @@ public class SoftwarePcController {
             softwarePcService.listarSoftwares().stream().map(software ->{
                 SoftwarePcDTO softwarePcDTO = new SoftwarePcDTO();
                 BeanUtils.copyProperties(software, softwarePcDTO);
-                softwarePcDTO.setTipoSoftware(software.getTipoSoftware().getId());
+                softwarePcDTO.setTipoSoftware(software.getTipoSoftware());
                 return softwarePcDTO;
             }).collect(Collectors.toList()));
         
