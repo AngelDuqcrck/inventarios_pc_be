@@ -161,7 +161,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
 
         String tokenRecuperacion = jwtGenerador.generarTokenRecuperacion(correo);
-        String urlRecuperacion = "https://inventarios-pc/restablecer-password?token=" + tokenRecuperacion; // Definir
+        String urlRecuperacion = "http://localhost:4200/cambiar-contrasena?token=" + tokenRecuperacion; // Definir
                                                                                                            // la
                                                                                                            // password
 
