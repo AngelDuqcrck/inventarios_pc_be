@@ -5,6 +5,7 @@ import java.util.List;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.EmailExistException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
@@ -32,7 +33,7 @@ public interface IUsuarioService {
          * @throws DocumentNotFoundException Si el tipo de documento del usuario no se encuentra.
          */
         public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) 
-            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException;
+            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException;
     
         /**
          * Restablece la contraseña de un usuario utilizando un token de recuperación.

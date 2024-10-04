@@ -2,6 +2,9 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenRefreshRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenRefreshResponse;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServ
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.LoginDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.NuevaPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AuthResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.Response;
@@ -51,8 +55,8 @@ public class AuthController {
      *         ocurrió un error.
      */
     @PostMapping("/register")
-    public ResponseEntity<HttpResponse> registrarUsuario(@RequestBody UsuarioDTO usuarioDTO)
-            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException {
+    public ResponseEntity<HttpResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO)
+            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException {
         usuarioService.registrarUsuario(usuarioDTO);
 
         return new ResponseEntity<>(
@@ -141,10 +145,9 @@ public class AuthController {
      * @throws PasswordNotEqualsException Si las nuevas contraseñas no coinciden.
      */
     @PostMapping("/cambiar-password")
-    public ResponseEntity<HttpResponse> resetPassword(@RequestParam String token, @RequestParam String nuevaContraseña,
-            @RequestParam String nuevaContraseña2)
+    public ResponseEntity<HttpResponse> resetPassword(@Valid @RequestBody NuevaPasswordRequest nuevaPasswordRequest)
             throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException {
-        usuarioService.restablecerpassword(token, nuevaContraseña, nuevaContraseña2);
+        usuarioService.restablecerpassword(nuevaPasswordRequest.getToken(), nuevaPasswordRequest.getNuevaPassword(), nuevaPasswordRequest.getNuevaPassword2());
 
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),

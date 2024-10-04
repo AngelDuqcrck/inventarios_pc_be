@@ -14,6 +14,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.EmailExistException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
@@ -82,13 +83,12 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      */
     @Override
     public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO)
-            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException {
+            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException {
         if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
-            throw new IllegalArgumentException("El correo " + usuarioDTO.getCorreo() + " ya se encuentra registrado");
+            throw new EmailExistException(String.format(IS_ALREADY_USE, "EMAIL").toUpperCase());
         }
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(usuarioDTO, usuario);
-
         Rol rol = rolRepository.findById(usuarioDTO.getRolId()).orElse(null);
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
         Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacionId()).orElse(null);
@@ -97,7 +97,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
 
         if (tipoDocumento == null)
-            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "DOCUMENT TYPE").toUpperCase());
 
         if (ubicacion == null)
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
@@ -105,7 +105,6 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         usuario.setTipoDocumento(tipoDocumento);
         usuario.setUbicacionId(ubicacion);
         usuario.setDeleteFlag(false);
-
         usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
 
         Usuario usuarioCreado = usuarioRepository.save(usuario);
@@ -199,7 +198,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         if (!nuevaPassword.equals(nuevaPassword2)) {
             throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "NEW PASSWORDS").toUpperCase());
         }
-
+        
         usuario.setPassword(passwordEncoder.encode(nuevaPassword));
         usuarioRepository.save(usuario);
     }

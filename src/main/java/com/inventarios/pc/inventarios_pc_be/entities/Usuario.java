@@ -5,6 +5,8 @@ import java.util.Date;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import com.inventarios.pc.inventarios_pc_be.shared.validators.MayorDeEdad;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -54,11 +57,13 @@ public class Usuario {
     @JoinColumn(name = "tipo_documento_id")
     private TipoDocumento tipoDocumento;
 
-    @NotEmpty
+    @NotEmpty(message = "La cédula no puede estar vacía")
+    @Size(min = 6, max = 10, message = "La cédula debe tener entre 6 y 10 dígitos")
     @Column(nullable = false, unique = true)
     private String cedula;
 
-    @NotEmpty
+    @NotEmpty(message = "El correo no puede estar vacío")
+    @Email(message = "Debe proporcionar un correo electrónico válido")
     @Column(nullable = false, unique = true)
     private String correo;
 
@@ -72,21 +77,18 @@ public class Usuario {
      * Números (0-9)
      * Caracteres especiales (!, @, #, $, %, etc.)
      */
-    /*
-     * @Pattern(regexp =
-     * "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
-     * message =
-     * "La password debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial."
-     * )
-     * 
-     * @NotEmpty
-     * 
-     * @Size(min = 8, message = "La password debe tener al menos 8 caracteres.")
-     */
+
+    @NotEmpty
+    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres.")
+     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).+$",
+             message = "La contraseña debe contener al menos una letra mayuscula, una letra minuscula, un numero y un caracter especial.")
+    @Column(nullable = false)
     private String password;
 
+    @Pattern(regexp = "3\\d{9}", message = "El número de teléfono debe tener 10 dígitos y comenzar con el número 3")
     private String telefono;
 
+    @MayorDeEdad(message = "El usuario debe ser mayor de 18 años")
     private Date fechaNacimiento;
 
     @ManyToOne

@@ -41,6 +41,8 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuarioResponse;
 //Controlador donde se encuentran todos los endpoints relacionados con los usuarios
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -64,7 +66,7 @@ public class UserController {
      */
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/cambiar-password")
-    public ResponseEntity<HttpResponse> cambiarPassword(@RequestBody CambiarPasswordRequest cambiarPasswordRequest)
+    public ResponseEntity<HttpResponse> cambiarPassword(@Valid @RequestBody CambiarPasswordRequest cambiarPasswordRequest)
             throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException {
         usuarioServiceImplementation.cambiarContraseña(cambiarPasswordRequest);
         return new ResponseEntity<>(
