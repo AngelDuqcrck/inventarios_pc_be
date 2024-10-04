@@ -143,3 +143,39 @@ INSERT IGNORE INTO tipo_componentes (id, nombre, delete_flag) VALUES
     (1, "Procesador", 0),
     (2, "Memoria RAM", 0),
     (3, "Disco Duro", 0);
+
+    -- Creamos la tabla estado_dispositivos si no existe
+CREATE TABLE IF NOT EXISTS estado_dispositivos
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos los estados de dispositivo si no existen en el sistema
+INSERT IGNORE INTO estado_dispositivos (id, nombre, delete_flag) VALUES
+    (1, "En uso", 0),
+    (2, "En reparación", 0),
+    (3, "Dañado", 0),
+    (4, "Disponible", 0),
+    (5, "Baja", 0);
+
+-- Creamos la tabla tipo_dispositivos si no existe
+CREATE TABLE IF NOT EXISTS tipo_dispositivos
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos los tipos de dispositivos si no existen en el sistema
+INSERT IGNORE INTO tipo_dispositivos (id, nombre, delete_flag) VALUES
+    (1, "Teclado", 0),
+    (2, "Ratón", 0),
+    (3, "Monitor", 0),
+    (4, "Impresora", 0),
+    (5, "Escáner", 0);

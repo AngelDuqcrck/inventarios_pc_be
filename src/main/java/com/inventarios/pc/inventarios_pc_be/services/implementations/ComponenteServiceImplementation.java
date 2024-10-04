@@ -65,7 +65,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
         return componenteResponse;
     }
 
-    public ComponenteDTO listarComponentePorTipoComponente(Integer tipoComponenteId){
+    public List<ComponenteDTO> listarComponentePorTipoComponente(Integer tipoComponenteId){
         return null;
     }
 

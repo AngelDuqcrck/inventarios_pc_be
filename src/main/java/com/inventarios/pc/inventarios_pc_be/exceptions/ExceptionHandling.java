@@ -75,6 +75,10 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    @ExceptionHandler(MarcaNotFoundException.class)
+    public ResponseEntity<HttpResponse> marcaNotFoundException(MarcaNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
 
     @ExceptionHandler(DocumentNotFoundException.class)
     public ResponseEntity<HttpResponse> documentNotFoundException(DocumentNotFoundException exception){
