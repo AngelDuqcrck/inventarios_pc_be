@@ -1,4 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.shared.DTOs;
+import com.inventarios.pc.inventarios_pc_be.entities.TipoComponente;
+
 import lombok.*;
 
 @Data
@@ -7,10 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 public class ComponenteDTO {
     
-     private String nombre;
+    private int id;
+
+    private String nombre;
 
     private Boolean deleteFlag;
 
-    
-    private Integer tipoComponente;
+    private TipoComponente tipoComponente;
 }

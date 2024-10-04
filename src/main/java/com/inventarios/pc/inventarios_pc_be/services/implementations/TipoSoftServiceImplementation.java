@@ -12,7 +12,6 @@ import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoSoftwareSer
 @Service
 public class TipoSoftServiceImplementation implements ITipoSoftwareService{
 
-
     @Autowired
     TipoSoftwareRepository tipoSoftwareRepository;
 

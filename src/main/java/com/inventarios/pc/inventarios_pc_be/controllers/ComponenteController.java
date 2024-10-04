@@ -50,7 +50,7 @@ public class ComponenteController {
             componenteService.listarComponentes().stream().map(componente -> {
                 ComponenteDTO componenteDTO = new ComponenteDTO();
                 BeanUtils.copyProperties(componente, componenteDTO);
-                componenteDTO.setTipoComponente(componente.getTipoComponente().getId());
+                componenteDTO.setTipoComponente(componente.getTipoComponente());
                 return componenteDTO;
             }).collect(Collectors.toList())
         );

@@ -34,7 +34,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
 
         BeanUtils.copyProperties(componenteDTO, componente);
 
-        TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente()).orElse(null);
+        TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente().getId()).orElse(null);
 
         if(tipoComponente == null){
             throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "TYPE COMPONENT").toUpperCase());
@@ -44,7 +44,6 @@ public class ComponenteServiceImplementation implements IComponenteService {
         componente.setDeleteFlag(false);
         Componente componenteCreado = componenteRepository.save(componente);
         ComponenteDTO componenteCreadoDTO = new ComponenteDTO();
-        componenteCreadoDTO.setTipoComponente(componenteCreado.getTipoComponente().getId());
         BeanUtils.copyProperties(componenteCreado, componenteCreadoDTO);
         return componenteCreadoDTO;
     }
@@ -82,7 +81,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
     
 
         if(componenteDTO.getDeleteFlag()!= null){
-            TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente()).orElse(null);
+            TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente().getId()).orElse(null);
             if(tipoComponente == null){
                 throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "TYPE COMPONENT").toUpperCase());
 
@@ -94,7 +93,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
 
         Componente componenteActualizado = componenteRepository.save(componente);
         ComponenteDTO componenteActualizadoDTO = new ComponenteDTO();
-        componenteActualizadoDTO.setTipoComponente(componenteActualizado.getTipoComponente().getId());
+        componenteActualizadoDTO.setTipoComponente(componenteActualizado.getTipoComponente());
         BeanUtils.copyProperties(componenteActualizado, componenteActualizadoDTO);
         return componenteActualizadoDTO;
     }
