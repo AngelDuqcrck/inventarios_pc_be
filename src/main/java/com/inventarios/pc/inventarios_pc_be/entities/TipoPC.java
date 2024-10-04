@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 //Esta es la entidad que crea en la base de datos la tabla tipo de pc donde se guarda los tipos de computador que hay (torre, portatil, all in one, etc)
@@ -20,6 +21,8 @@ public class TipoPC {
     @NotEmpty
     private String nombre;
 
+    @NotNull
+    @Column(name = "delete_flag", nullable = false)
     private Boolean deleteFlag;
 
     

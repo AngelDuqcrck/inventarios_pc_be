@@ -17,7 +17,9 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.TypeSoftwareNotFoundExcep
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISoftwarePcService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SoftwarePcDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
-
+/**
+ * Controlador que maneja las operaciones relacionadas con la gestión de software en el sistema.
+ */
 @RestController
 @RequestMapping("/software")
 public class SoftwarePcController {
@@ -25,6 +27,13 @@ public class SoftwarePcController {
     @Autowired
     private ISoftwarePcService softwarePcService;
 
+     /**
+     * Crea un nuevo software en el sistema.
+     * 
+     * @param softareDTO Objeto DTO que contiene los detalles del software a crear.
+     * @return Respuesta HTTP indicando el éxito de la operación.
+     * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no existe.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
     public ResponseEntity<HttpResponse> crearSoftware (@RequestBody SoftwarePcDTO softareDTO)throws TypeSoftwareNotFoundException{
@@ -36,6 +45,11 @@ public class SoftwarePcController {
                 HttpStatus.OK);
     }
 
+    /**
+     * Lista todos los software registrados en el sistema.
+     * 
+     * @return Lista de DTOs de software.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<List<SoftwarePcDTO>> listarSoftware(){
@@ -49,6 +63,15 @@ public class SoftwarePcController {
         
     }
 
+    /**
+     * Actualiza un software existente en el sistema.
+     * 
+     * @param softwareId ID del software a actualizar.
+     * @param softwarePcDTO DTO con los nuevos datos del software.
+     * @return Respuesta HTTP indicando el éxito de la operación.
+     * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
+     * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no existe.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{softwareId}")
     public ResponseEntity<HttpResponse> actualizarSoftware(@PathVariable Integer softwareId, @RequestBody SoftwarePcDTO softwarePcDTO)throws SoftwareNotFoundException, TypeSoftwareNotFoundException {
@@ -60,6 +83,14 @@ public class SoftwarePcController {
 
     }
 
+     /**
+     * Elimina un software del sistema.
+     * 
+     * @param softwareId ID del software a eliminar.
+     * @return Respuesta HTTP indicando el éxito de la operación.
+     * @throws DeleteNotAllowedException Si la eliminación del software no está permitida.
+     * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/eliminar/{softwareId}")
     public ResponseEntity<HttpResponse> eliminarSoftware(@PathVariable Integer softwareId)throws DeleteNotAllowedException, SoftwareNotFoundException {
@@ -71,6 +102,13 @@ public class SoftwarePcController {
                 HttpStatus.OK);
     }
 
+     /**
+     * Obtiene los detalles de un software por su ID.
+     * 
+     * @param id ID del software a buscar.
+     * @return Objeto SoftwareResponse con los detalles del software.
+     * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
+     */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<SoftwareResponse> listarSoftwareById(@PathVariable Integer id)throws SoftwareNotFoundException{

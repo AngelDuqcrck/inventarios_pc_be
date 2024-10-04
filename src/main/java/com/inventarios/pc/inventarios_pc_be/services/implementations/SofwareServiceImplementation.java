@@ -34,6 +34,13 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
     private TipoSoftwareRepository tipoSoftwareRepository;
 
 
+     /**
+     * Crea un nuevo software en el sistema.
+     * 
+     * @param softwarePcDTO Objeto DTO que contiene los detalles del software a crear.
+     * @return El DTO del software creado.
+     * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no existe.
+     */
     @Override
     public SoftwarePcDTO crearSoftware(SoftwarePcDTO  softwarePcDTO)throws TypeSoftwareNotFoundException{
         SoftwarePC softwarePC = new SoftwarePC();
@@ -54,11 +61,23 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
         return softwareCreadoDto;
     }
 
+    /**
+     * Retorna una lista de todos los software registrados en el sistema.
+     * 
+     * @return Lista de entidades SoftwarePC.
+     */
     @Override
     public List<SoftwarePC> listarSoftwares() {
         return (List<SoftwarePC>) softwarePcRepository.findAll();
     }
 
+    /**
+     * Obtiene los detalles de un software por su ID.
+     * 
+     * @param id ID del software a buscar.
+     * @return Objeto SoftwareResponse con los detalles del software.
+     * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
+     */
     @Override
     public SoftwareResponse listarSoftwareById(Integer id) throws SoftwareNotFoundException{
         SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);
@@ -72,6 +91,15 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
         return  softwareResponse;
     }
 
+     /**
+     * Actualiza los detalles de un software existente.
+     * 
+     * @param id ID del software a actualizar.
+     * @param softwarePcDTO DTO con los nuevos detalles del software.
+     * @return DTO del software actualizado.
+     * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no existe.
+     * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
+     */
     @Override
     public SoftwarePcDTO actualizarSoftware(Integer id, SoftwarePcDTO softwarePcDTO) throws TypeSoftwareNotFoundException, SoftwareNotFoundException{
         SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);
@@ -99,6 +127,13 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
         return softwareActualizadoDTO;
     }
 
+     /**
+     * Elimina (o marca como eliminado) un software por su ID.
+     * 
+     * @param id ID del software a eliminar.
+     * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
+     * @throws DeleteNotAllowedException Si el software no se puede eliminar.
+     */
     @Override
     public void eliminarSoftware(Integer id) throws SoftwareNotFoundException, DeleteNotAllowedException{
         SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);

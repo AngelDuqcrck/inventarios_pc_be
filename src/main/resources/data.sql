@@ -108,3 +108,38 @@ INSERT IGNORE INTO tipo_software (id, nombre, delete_flag) VALUES
     (1, "Software Libre", 0),
     (2, "Software Propietario", 0),
     (3, "Software Comercial", 0);
+
+
+-- Creamos la tabla tipo_pc si no existe
+CREATE TABLE IF NOT EXISTS tipo_pc
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos los tipos de computador si no existen en el sistema
+INSERT IGNORE INTO tipo_pc (id, nombre, delete_flag) VALUES
+    (1, "Torre", 0),
+    (2, "Portatil", 0),
+    (3, "All-in-One", 0),
+    (4, "Mini PC", 0),
+    (5, "Servidor", 0);
+
+-- Creamos la tabla tipo_componentes si no existe
+CREATE TABLE IF NOT EXISTS tipo_componentes
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos los tipos de componentes si no existen en el sistema
+INSERT IGNORE INTO tipo_componentes (id, nombre, delete_flag) VALUES
+    (1, "Procesador", 0),
+    (2, "Memoria RAM", 0),
+    (3, "Disco Duro", 0);
