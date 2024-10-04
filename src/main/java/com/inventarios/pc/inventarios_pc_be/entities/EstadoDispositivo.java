@@ -1,11 +1,13 @@
 package com.inventarios.pc.inventarios_pc_be.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +29,8 @@ public class EstadoDispositivo {
     @NotEmpty
     private String nombre;
 
+    @NotNull
+    @Column(name = "delete_flag", nullable = false)
     private Boolean deleteFlag;
     
 }
