@@ -7,6 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 public class MarcaDTO {
 
+    private int id;
+
     private String nombre;
 
     private Boolean deleteFlag;
