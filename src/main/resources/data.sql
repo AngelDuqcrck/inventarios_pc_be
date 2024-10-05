@@ -178,4 +178,26 @@ INSERT IGNORE INTO tipo_dispositivos (id, nombre, delete_flag) VALUES
     (2, "Ratón", 0),
     (3, "Monitor", 0),
     (4, "Impresora", 0),
-    (5, "Escáner", 0);
+    (5, "Escáner", 0),
+    (6, "Audifonos", 0),
+    (7, "Unidad de fuente de alimentacion (PSU)", 0),
+    (8, "Parlantes", 0);
+
+-- Creamos la tabla tipo_almacenamiento_ram si no existe
+CREATE TABLE IF NOT EXISTS tipo_almacenamiento_ram
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos los tipos de almacenamiento y RAM si no existen en el sistema
+INSERT IGNORE INTO tipo_almacenamiento_ram (id, nombre, delete_flag) VALUES
+    (1, "HDD", 0),
+    (2, "SSD", 0),
+    (3, "NVMe", 0),
+    (4, "RAM DDR3", 0),
+    (5, "RAM DDR4", 0),
+    (6, "RAM DDR5", 0);
