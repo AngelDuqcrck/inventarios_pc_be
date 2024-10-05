@@ -89,6 +89,17 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    @ExceptionHandler (TypeDeviceNotFoundException.class)
+    public ResponseEntity<HttpResponse> typeDeviceNotFoundException(TypeDeviceNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler (TypePcNotFoundException.class)
+    public ResponseEntity<HttpResponse> typePcNotFoundException(TypePcNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+
+    }
+    
     @ExceptionHandler(LocationNotFoundException.class)
     public ResponseEntity<HttpResponse> locationNotFoundException(LocationNotFoundException exception){
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
