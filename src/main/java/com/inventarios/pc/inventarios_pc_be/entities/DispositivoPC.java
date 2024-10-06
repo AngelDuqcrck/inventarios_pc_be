@@ -36,9 +36,6 @@ public class DispositivoPC {
     private EstadoDispositivo estadoDispositivo;
 
     
-    private Boolean enUso;
-
-    
     private String placa;
 
     @ManyToOne
@@ -49,7 +46,7 @@ public class DispositivoPC {
     private String serial;
 
     @NotEmpty
-    @UniqueElements
-    @Column(nullable = false, unique = true)
+    //@UniqueElements(message = "el nombre del dispositivo  debe ser unico y este nombre ya existe")
+    @Column(nullable = false)
     private String nombre;
 }

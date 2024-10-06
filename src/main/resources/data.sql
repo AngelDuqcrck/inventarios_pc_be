@@ -157,8 +157,8 @@ CREATE TABLE IF NOT EXISTS estado_dispositivos
 -- Insertamos los estados de dispositivo si no existen en el sistema
 INSERT IGNORE INTO estado_dispositivos (id, nombre, delete_flag) VALUES
     (1, "En uso", 0),
-    (2, "En reparación", 0),
-    (3, "Dañado", 0),
+    (2, "En reparacion", 0),
+    (3, "Averiado", 0),
     (4, "Disponible", 0),
     (5, "Baja", 0);
 
@@ -175,13 +175,12 @@ CREATE TABLE IF NOT EXISTS tipo_dispositivos
 -- Insertamos los tipos de dispositivos si no existen en el sistema
 INSERT IGNORE INTO tipo_dispositivos (id, nombre, delete_flag) VALUES
     (1, "Teclado", 0),
-    (2, "Ratón", 0),
+    (2, "Raton", 0),
     (3, "Monitor", 0),
     (4, "Impresora", 0),
-    (5, "Escáner", 0),
-    (6, "Audifonos", 0),
-    (7, "Unidad de fuente de alimentacion (PSU)", 0),
-    (8, "Parlantes", 0);
+    (5, "Audifonos", 0),
+    (6, "Unidad de fuente de alimentacion (PSU)", 0),
+    (7, "Parlantes", 0);
 
 -- Creamos la tabla tipo_almacenamiento_ram si no existe
 CREATE TABLE IF NOT EXISTS tipo_almacenamiento_ram

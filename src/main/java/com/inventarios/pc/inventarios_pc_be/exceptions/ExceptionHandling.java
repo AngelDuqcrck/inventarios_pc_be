@@ -84,11 +84,20 @@ public class ExceptionHandling {
     public ResponseEntity<HttpResponse> documentNotFoundException(DocumentNotFoundException exception){
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
+
+    @ExceptionHandler(DeviceNotFoundException.class)
+    public ResponseEntity<HttpResponse> deviceNotFoundException(DeviceNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    @ExceptionHandler (StateNotFoundException.class)
+    public ResponseEntity<HttpResponse> stateNotFoundException(StateNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
     @ExceptionHandler (TypeDeviceNotFoundException.class)
     public ResponseEntity<HttpResponse> typeDeviceNotFoundException(TypeDeviceNotFoundException exception){
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
