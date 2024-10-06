@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inventarios.pc.inventarios_pc_be.services.interfaces.IEstadosDispositivoService;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoComponenteService;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoDocumentoService;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoSoftwareService;
+import com.inventarios.pc.inventarios_pc_be.shared.DTOs.EstadosDispositivoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoComponenteDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoDocDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoSoftwDTO;
@@ -30,6 +32,9 @@ public class TiposController {
 
     @Autowired
     private ITipoComponenteService tipoComponenteServiceImplementation;
+
+    @Autowired
+    private IEstadosDispositivoService estadosDispositivoService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/tc")
@@ -61,6 +66,17 @@ public class TiposController {
                     TipoSoftwDTO tsDTO = new TipoSoftwDTO();
                     BeanUtils.copyProperties(TS, tsDTO);
                     return tsDTO;
+                }).collect(Collectors.toList()));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/ed")
+    public ResponseEntity<List<EstadosDispositivoDTO>> getEstadosDisp(){
+        return ResponseEntity.ok(
+            estadosDispositivoService.listarEstadosDisp().stream().map(ED ->{
+                    EstadosDispositivoDTO edDTO = new EstadosDispositivoDTO();
+                    BeanUtils.copyProperties(ED, edDTO);
+                    return edDTO;
                 }).collect(Collectors.toList()));
     }
 
