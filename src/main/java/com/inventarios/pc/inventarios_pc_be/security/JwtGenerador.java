@@ -74,6 +74,21 @@ public class JwtGenerador {
         }
     }
 
+    public Boolean validarTokenRecuperacion(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(ConstantesSeguridad.JWT_FIRMA)
+                    .parseClaimsJws(token)
+                    .getBody();
+    
+            // Verificamos si el token ha expirado
+            return !claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false; // Token inválido o expirado
+        }
+    }
+    
+
     // Método para generar un token único de recuperación de password
     public String generarTokenRecuperacion(String email) {
         Date tiempoActual = new Date();

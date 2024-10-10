@@ -33,8 +33,10 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.AuthResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.Response;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 //Controlador donde se encuentran los endpoints de autenticacion tales como el login, el cambiar contraseña cuando fue olvidada y el envio de correo para recuperar contraseña
 @RestController
@@ -109,9 +111,7 @@ public class AuthController {
                 ResponseEntity<HttpResponse> response = new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                                                 "Se le ha enviado un correo con instrucciones para restablecer su contraseña"),
-                                HttpStatus.OK);
-
-                
+                                HttpStatus.OK);            
                 usuarioService.enviarTokenRecuperacion(correo);
 
                 return response;
@@ -161,4 +161,16 @@ public class AuthController {
                                                 " Usuario Registrado con exito"),
                                 HttpStatus.OK);
         }
+
+        /**
+     * Endpoint para validar si un token de recuperación de contraseña es válido y no ha expirado.
+     *
+     * @param token El token de recuperación de contraseña a validar.
+     * @return Un ResponseEntity con true si el token es válido, o false si es inválido o ha expirado.
+     */
+    @GetMapping("/validar-recuperacion")
+    public ResponseEntity<Boolean> validarTokenRecuperacion(@RequestParam("token") String token) {
+        boolean isValid = jwtGenerador.validarTokenRecuperacion(token);
+        return ResponseEntity.ok(isValid);
+    }
 }
