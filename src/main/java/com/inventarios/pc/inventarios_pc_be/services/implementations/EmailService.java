@@ -47,56 +47,56 @@ public class EmailService {
     //Plantilla de Correo Electronico
     private String buildHtmlContent(String mensaje, String mensaje2 ) {
         return "<!DOCTYPE html>\n" +
-                "<html lang=\"es\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
-                "    <title>Email</title>\n" +
-                "    <style>\n" +
-                "        *{ font-family: Tahoma; margin: 0; padding: 0; }\n" +
-                "        .container { padding: 20px; background-color: #f4f4f4; }\n" +
-                "        .imagen { text-align: center; margin-bottom: 20px; }\n" +
-                "        .imagen img { display: block; margin: 0 auto; max-width: 300px; height: auto; }\n" +
-                "        .titulo { text-align: center; margin-bottom: 15px; color: #005ba8; }\n" +
-                "        .header { background-color: #005ba8; color: white; padding: 10px 0; text-align: center; }\n" +
-                "        .content { margin: 20px 0; text-align: center; color: #005ba8; }\n" +
-                "        .content p { margin-left: 20px; }\n" +
-                "        .footer { background-color: #005ba8; color: white; text-align: center; padding: 10px 0; }\n" +
-                "        button { margin-top: 20px; margin-bottom: 10px;  padding-left: 20px; padding-right: 20px; color: #005ba8; width: auto; height: auto; padding-top: 10px; padding-bottom: 10px; border: 3px solid #005ba8; border-radius: 30px; transition: all 0.2s; cursor: pointer; background: white; font-size: 1.2em; font-weight: 550; }\n" +
-                "        button:hover { background: #005ba8; color: white; font-size: 1.3em;  }\n" +
-                "        @media (max-width: 768px) { \n" +
-                "            button { font-size: 1.1em; padding: 8px 18px; }\n" +
-                "        }\n" +
-                "        @media (max-width: 480px) {\n" +
-                "            button { font-size: 1em; padding: 6px 16px; }\n" +
-                "        }\n" +
-                "    </style>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "    <div class=\"container\">\n" +
-                "        <div class=\"header\">\n" +
-                "            <div class=\"imagen\" style=\"text-align: center;\">\n" +
-                "                <img src=\"https://www.clinicasantaanasa.com/images/perfil/2073864225_logoCSAFondoBlanco.png\" \n" +
-                "                     alt=\"Logo Clinica Santa Ana\" style=\"display: block; margin: 0 auto;\">\n" +
-                "            </div>\n" +
-                "            <h1>INVENTARIOS PC</h1>\n" +
-                "            <h1>Sistema de Gestión de Inventarios de Equipos de Computo de la Clínica Santa Ana</h1>\n" +
-                "        </div>\n" +
-                "        <div class=\"content\">\n" +
-                "            <div class=\"titulo\">\n" +
-                "                <h2>" + mensaje + "</h2>\n" +
-                "            <a href="+ mensaje2 + " target=\"_blank\">\n" +
-                "                <button>Restablecer Contraseña</button>\n" +
-                "            </a>\n" +
-                "            </div>\n" +
-                "        </div>\n" +
-                "        <div class=\"footer\">\n" +
-                "            <h2>Este es un mensaje automático, por favor no responder.</h2>\n" +
-                "            <h3>&copy; 2024 Todos los derechos reservados.</h3>\n" +
-                "        </div>\n" +
-                "    </div>\n" +
-                "</body>\n" +
-                "</html>\n";
+        "<html lang=\"es\">\n" +
+        "<head>\n" +
+        "    <meta charset=\"UTF-8\">\n" +
+        "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+        "    <title>Email</title>\n" +
+        "    <style>\n" +
+        "        * { font-family: Tahoma; margin: 0; padding: 0;}\n" +
+        "        .container { padding: 20px; background-color: #f4f4f4; }\n" +
+        "        .imagen { text-align: center; margin-bottom: 7px; }\n" +
+        "        .imagen img { display: block; margin: 0 auto; max-width: 300px; height: auto; }\n" +
+        "        .titulo { text-align: center; margin-bottom: 15px; color: #005ba8; }\n" +
+        "        .header { border-bottom: 2px solid #005ba8; color: #000000; padding: 10px 0; text-align: center; padding-bottom: 20px; }\n" +
+        "        .content { margin: 20px 0; text-align: center; color: #005ba8; }\n" +
+        "        .content p { margin-left: 20px; }\n" +
+        "        .footer { border-top: 2px solid #005ba8; color: #000000; text-align: center; padding: 10px 0; }\n" +
+        "        button { margin-top: 20px; padding-left: 20px; padding-right: 20px; color: white; width: auto; height: auto; padding-top: 10px; padding-bottom: 10px; border: 3px solid #005ba8; border-radius: 30px; transition: all 0.2s; cursor: pointer; background: #005ba8; font-size: 1.3em; font-weight: 550; }\n" +
+        "        button:hover { background: #005ba8; color: white; font-size: 1.4em; }\n" +
+        "        @media (max-width: 768px) { \n" +
+        "            button { font-size: 1.3em; padding: 8px 18px; }\n" +
+        "        }\n" +
+        "        @media (max-width: 480px) {\n" +
+        "            button { font-size: 1.15em; padding: 6px 16px; }\n" +
+        "        }\n" +
+        "    </style>\n" +
+        "</head>\n" +
+        "<body>\n" +
+        "    <div class=\"container\">\n" +
+        "        <div class=\"header\">\n" +
+        "            <div class=\"imagen\" style=\"text-align: center;\">\n" +
+        "                <img src=\"https://www.clinicasantaanasa.com/images/sliders/1486298957_1106801310_LogoCSA.jpg\" \n" +
+        "                     alt=\"Logo Clinica Santa Ana\" style=\"display: block; margin: 0 auto;\">\n" +
+        "            </div>\n" +
+        "            <h2>INVENTARIO PC</h2>\n" +
+        "            <h2 style=\"font-weight: lighter;\">Sistema de Gestión de Inventarios de Equipos de Computo de la Clínica Santa Ana</h2>\n" +
+        "        </div>\n" +
+        "        <div class=\"content\">\n" +
+        "            <div class=\"titulo\">\n" +
+        "                <h2 style=\"font-weight: lighter;\">" + mensaje + "</h2>\n" +
+        "                <a href=\"" + mensaje2 + "\" target=\"_blank\">\n" +
+        "                    <button>Restablecer Contraseña</button>\n" +
+        "                </a>\n" +
+        "            </div>\n" +
+        "        </div>\n" +
+        "        <div class=\"footer\">\n" +
+        "            <p>Este es un mensaje automático, <strong>por favor NO responder.</strong></p>\n" +
+        "            <p>&copy; 2024 Todos los derechos reservados.</p>\n" +
+        "        </div>\n" +
+        "    </div>\n" +
+        "</body>\n" +
+        "</html>\n";
     }
     
     

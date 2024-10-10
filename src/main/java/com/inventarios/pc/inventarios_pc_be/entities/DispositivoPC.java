@@ -28,7 +28,7 @@ public class DispositivoPC {
     @JoinColumn(name = "tipo_dispositivo_id")
     private TipoDispositivo tipoDispositivo;
 
-    @NotEmpty
+    
     private String modelo;
 
     @ManyToOne
