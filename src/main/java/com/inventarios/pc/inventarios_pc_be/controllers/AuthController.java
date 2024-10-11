@@ -33,126 +33,144 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.AuthResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.Response;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 //Controlador donde se encuentran los endpoints de autenticacion tales como el login, el cambiar contraseña cuando fue olvidada y el envio de correo para recuperar contraseña
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtGenerador jwtGenerador;
-    @Autowired
-    private UsuarioServiceImplementation usuarioService;
+        @Autowired
+        private AuthenticationManager authenticationManager;
+        @Autowired
+        private JwtGenerador jwtGenerador;
+        @Autowired
+        private UsuarioServiceImplementation usuarioService;
 
-    /**
-     * Registra un nuevo usuario en el sistema.
-     * 
-     * @param usuarioDTO Objeto que contiene los datos del usuario a registrar.
-     * @return Respuesta indicando si el usuario fue creado exitosamente o si
-     *         ocurrió un error.
-     */
-    @PostMapping("/register")
-    public ResponseEntity<HttpResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO)
-            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException {
-        usuarioService.registrarUsuario(usuarioDTO);
+        /**
+         * Autentica a un usuario y genera un token de acceso y un refresh token.
+         * 
+         * @param loginDTO Objeto que contiene el correo electrónico y la contraseña del
+         *                 usuario.
+         * @return Respuesta HTTP con el token de acceso y el refresh token si la
+         *         autenticación es exitosa.
+         */
+        @PostMapping("/login")
+        public ResponseEntity<AuthResponse> login(@RequestBody LoginDTO loginDTO) {
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        " Usuario Registrado con exito"),
-                HttpStatus.OK);
-    }
+                Authentication authentication = authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(), loginDTO.getPassword()));
 
-    /**
-     * Autentica a un usuario y genera un token de acceso y un refresh token.
-     * 
-     * @param loginDTO Objeto que contiene el correo electrónico y la contraseña del
-     *                 usuario.
-     * @return Respuesta HTTP con el token de acceso y el refresh token si la
-     *         autenticación es exitosa.
-     */
-    @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginDTO loginDTO) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(), loginDTO.getPassword()));
+                String accessToken = jwtGenerador.generarToken(authentication);
+                String refreshToken = jwtGenerador.generarRefreshToken(authentication);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String accessToken = jwtGenerador.generarToken(authentication);
-        String refreshToken = jwtGenerador.generarRefreshToken(authentication);
-
-        return new ResponseEntity<>(new AuthResponse(accessToken, refreshToken), HttpStatus.OK);
-    }
-
-    /**
-     * Genera un nuevo access token y refresh token utilizando el refresh token
-     * proporcionado.
-     * 
-     * @param request Objeto que contiene el refresh token.
-     * @return Respuesta HTTP con los nuevos tokens si el refresh token es válido,
-     *         de lo contrario una respuesta de error.
-     */
-    @PostMapping("/refresh-token")
-    public ResponseEntity<TokenRefreshResponse> refreshToken(@RequestBody TokenRefreshRequest request) {
-        String refreshToken = request.getRefreshToken();
-        if (jwtGenerador.validarRefreshToken(refreshToken)) {
-            String correo = jwtGenerador.obtenerCorreoDeJWT(refreshToken);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            // Generar nuevo Access Token y Refresh Token
-            String newAccessToken = jwtGenerador.generarToken(authentication);
-            String newRefreshToken = jwtGenerador.generarRefreshToken(authentication);
-
-            return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, newRefreshToken));
+                return new ResponseEntity<>(new AuthResponse(accessToken, refreshToken), HttpStatus.OK);
         }
-        return ResponseEntity.status(401).body(null);
-    }
 
-    /**
-     * Envía un correo de recuperación de contraseña al usuario con un enlace para
-     * restablecerla.
-     * 
-     * @param correo El correo electrónico del usuario que solicita la recuperación.
-     * @return Respuesta HTTP con un mensaje indicando que el correo fue enviado.
-     * @throws EmailNotFoundException Si no se encuentra un usuario asociado al
-     *                                correo proporcionado.
+        /**
+         * Genera un nuevo access token y refresh token utilizando el refresh token
+         * proporcionado.
+         * 
+         * @param request Objeto que contiene el refresh token.
+         * @return Respuesta HTTP con los nuevos tokens si el refresh token es válido,
+         *         de lo contrario una respuesta de error.
+         */
+        @PostMapping("/refresh-token")
+        public ResponseEntity<TokenRefreshResponse> refreshToken(@RequestBody TokenRefreshRequest request) {
+                String refreshToken = request.getRefreshToken();
+                if (jwtGenerador.validarRefreshToken(refreshToken)) {
+                        String correo = jwtGenerador.obtenerCorreoDeJWT(refreshToken);
+                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+                        // Generar nuevo Access Token y Refresh Token
+                        String newAccessToken = jwtGenerador.generarToken(authentication);
+                        String newRefreshToken = jwtGenerador.generarRefreshToken(authentication);
+
+                        return ResponseEntity.ok(new TokenRefreshResponse(newAccessToken, newRefreshToken));
+                }
+                return ResponseEntity.status(401).body(null);
+        }
+
+        /**
+         * Envía un correo de recuperación de contraseña al usuario con un enlace para
+         * restablecerla.
+         * 
+         * @param correo El correo electrónico del usuario que solicita la recuperación.
+         * @return Respuesta HTTP con un mensaje indicando que el correo fue enviado.
+         * @throws EmailNotFoundException Si no se encuentra un usuario asociado al
+         *                                correo proporcionado.
+         */
+        @PostMapping("/recuperar-password")
+        public ResponseEntity<HttpResponse> recuperarPassword(@RequestParam String correo)
+                        throws EmailNotFoundException {
+
+                ResponseEntity<HttpResponse> response = new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Se le ha enviado un correo con instrucciones para restablecer su contraseña"),
+                                HttpStatus.OK);            
+                usuarioService.enviarTokenRecuperacion(correo);
+
+                return response;
+
+        }
+
+        /**
+         * Restablece la contraseña de un usuario utilizando un token de recuperación.
+         * 
+         * @param nuevaPasswordRequest una request que contiene el token enviado a
+         *                             traves de correo la nueva contraseña y confirmar
+         *                             contraseña
+         * @return Respuesta HTTP con un mensaje indicando que la contraseña fue
+         *         actualizada exitosamente.
+         * @throws EmailNotFoundException     Si no se encuentra un usuario asociado al
+         *                                    token.
+         * @throws TokenNotValidException     Si el token proporcionado no es válido.
+         * @throws PasswordNotEqualsException Si las nuevas contraseñas no coinciden.
+         */
+        @PostMapping("/cambiar-password")
+        public ResponseEntity<HttpResponse> resetPassword(@Valid @RequestBody NuevaPasswordRequest nuevaPasswordRequest)
+                        throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException {
+                usuarioService.restablecerpassword(nuevaPasswordRequest.getToken(),
+                                nuevaPasswordRequest.getNuevaPassword(), nuevaPasswordRequest.getNuevaPassword2());
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                " Contraseña actualizada exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        /**
+         * Registra un nuevo usuario en el sistema.
+         *
+         * @param usuarioDTO Objeto que contiene los datos del usuario a registrar.
+         * @return Respuesta indicando si el usuario fue creado exitosamente o si
+         *         ocurrió un error.
+         */
+        @PostMapping("/register")
+        public ResponseEntity<HttpResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO)
+                        throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException,
+                        EmailExistException {
+                usuarioService.registrarUsuario(usuarioDTO);
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                " Usuario Registrado con exito"),
+                                HttpStatus.OK);
+        }
+
+        /**
+     * Endpoint para validar si un token de recuperación de contraseña es válido y no ha expirado.
+     *
+     * @param token El token de recuperación de contraseña a validar.
+     * @return Un ResponseEntity con true si el token es válido, o false si es inválido o ha expirado.
      */
-    @PostMapping("/recuperar-password")
-    public ResponseEntity<HttpResponse> recuperarPassword(@RequestParam String correo) throws EmailNotFoundException {
-
-        usuarioService.enviarTokenRecuperacion(correo);
-
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        " Se le ha enviado un correo con instrucciones para restablecer su contraseña"),
-                HttpStatus.OK);
+    @GetMapping("/validar-recuperacion")
+    public ResponseEntity<Boolean> validarTokenRecuperacion(@RequestParam("token") String token) {
+        boolean isValid = jwtGenerador.validarTokenRecuperacion(token);
+        return ResponseEntity.ok(isValid);
     }
-
-    /**
-     * Restablece la contraseña de un usuario utilizando un token de recuperación.
-     * 
-     * @param token            El token de recuperación generado para el usuario.
-     * @param nuevaContraseña  La nueva contraseña que el usuario desea establecer.
-     * @param nuevaContraseña2 La confirmación de la nueva contraseña.
-     * @return Respuesta HTTP con un mensaje indicando que la contraseña fue
-     *         actualizada exitosamente.
-     * @throws EmailNotFoundException     Si no se encuentra un usuario asociado al
-     *                                    token.
-     * @throws TokenNotValidException     Si el token proporcionado no es válido.
-     * @throws PasswordNotEqualsException Si las nuevas contraseñas no coinciden.
-     */
-    @PostMapping("/cambiar-password")
-    public ResponseEntity<HttpResponse> resetPassword(@Valid @RequestBody NuevaPasswordRequest nuevaPasswordRequest)
-            throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException {
-        usuarioService.restablecerpassword(nuevaPasswordRequest.getToken(), nuevaPasswordRequest.getNuevaPassword(), nuevaPasswordRequest.getNuevaPassword2());
-
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        " Contraseña actualizada exitosamente"),
-                HttpStatus.OK);
-    }
-
 }

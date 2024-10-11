@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -151,6 +152,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      * @throws EmailNotFoundException Si no se encuentra un usuario asociado al
      *                                correo proporcionado.
      */
+    @Async
     @Override
     public void enviarTokenRecuperacion(String correo) throws EmailNotFoundException {
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
@@ -164,7 +166,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
                                                                                                            // password
 
         emailService.sendEmail(correo, "Solicitud de Cambio de Contraseña",
-                "Presione el siguiente botón que lo redigirá a la página web para restablecer su contraseña",
+                "Para restablecer su contraseña, presione el siguiente botón",
                 urlRecuperacion);
     }
 

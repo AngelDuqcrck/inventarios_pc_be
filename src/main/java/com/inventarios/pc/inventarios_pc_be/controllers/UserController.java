@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,8 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsExceptio
 import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
+import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
@@ -44,6 +47,8 @@ public class UserController {
     @Autowired
     private IUsuarioService usuarioServiceImplementation;
 
+    @Autowired
+    private JwtGenerador jwtGenerador;
 
     /**
      * Cambia la contraseña de un usuario autenticado.
@@ -157,5 +162,17 @@ public class UserController {
     public ResponseEntity<UsuarioResponse> getUsuarioById(@PathVariable Integer id) throws UserNotFoundException{
         UsuarioResponse usuarioResponse = usuarioServiceImplementation.listarUsuarioById(id);
         return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/validar")
+    public ResponseEntity<Boolean> validarToken(@RequestHeader("Authorization") String token) {
+        // Elimina el prefijo "Bearer " del token si está presente
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        boolean isValid = jwtGenerador.validarToken(token);
+        return ResponseEntity.ok(isValid);
     }
 }
