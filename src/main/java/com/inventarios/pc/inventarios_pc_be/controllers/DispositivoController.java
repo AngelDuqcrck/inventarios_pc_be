@@ -49,12 +49,15 @@ public class DispositivoController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<DispositivoDTO>> listarDispositivo(){
+    public ResponseEntity<List<DispositivoResponse>> listarDispositivos(){
         return ResponseEntity.ok(
             dispositivoService.listarDispositivos().stream().map(dispositivo ->{
-                DispositivoDTO dispositivoDTO = new DispositivoDTO();
-                BeanUtils.copyProperties(dispositivo, dispositivoDTO);
-                return dispositivoDTO;
+                DispositivoResponse dispositivoR = new DispositivoResponse();
+                BeanUtils.copyProperties(dispositivo, dispositivoR);
+                dispositivoR.setTipoDispositivo(dispositivo.getTipoDispositivo().getNombre());
+                dispositivoR.setMarca(dispositivo.getMarca().getNombre());
+                dispositivoR.setEstadoDispositivo(dispositivo.getEstadoDispositivo().getNombre());
+                return dispositivoR;
             }).collect(Collectors.toList())
         );
     }

@@ -1,6 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.shared.responses;
 
-import com.inventarios.pc.inventarios_pc_be.entities.SedePC;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

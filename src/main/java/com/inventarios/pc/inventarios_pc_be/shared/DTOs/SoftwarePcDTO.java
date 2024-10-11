@@ -23,5 +23,5 @@ public class SoftwarePcDTO {
     private Boolean deleteFlag;
     
 
-    private TipoSoftware tipoSoftware;
+    private Integer tipoSoftware;
 }

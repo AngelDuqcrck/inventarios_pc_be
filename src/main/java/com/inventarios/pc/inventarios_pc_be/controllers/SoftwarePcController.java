@@ -52,13 +52,13 @@ public class SoftwarePcController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<SoftwarePcDTO>> listarSoftware(){
+    public ResponseEntity<List<SoftwareResponse>> listarSoftware(){
         return ResponseEntity.ok(
             softwarePcService.listarSoftwares().stream().map(software ->{
-                SoftwarePcDTO softwarePcDTO = new SoftwarePcDTO();
-                BeanUtils.copyProperties(software, softwarePcDTO);
-                softwarePcDTO.setTipoSoftware(software.getTipoSoftware());
-                return softwarePcDTO;
+                SoftwareResponse softwarePcR = new SoftwareResponse();
+                BeanUtils.copyProperties(software, softwarePcR);
+                softwarePcR.setTipoSoftware(software.getTipoSoftware().getNombre());
+                return softwarePcR;
             }).collect(Collectors.toList()));
         
     }

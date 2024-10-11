@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UsuarioDTO {
 
-    private Integer rolId;
+    private Integer rol;
 
     private String primerNombre;
 

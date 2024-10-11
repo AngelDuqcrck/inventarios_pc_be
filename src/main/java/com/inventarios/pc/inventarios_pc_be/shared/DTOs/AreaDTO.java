@@ -1,6 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.shared.DTOs;
 
-import com.inventarios.pc.inventarios_pc_be.entities.SedePC;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +18,7 @@ public class AreaDTO {
 
     private String desc;
 
-    private SedePC sede;
+    private Integer sede;
 
     private Boolean deleteFlag;
 

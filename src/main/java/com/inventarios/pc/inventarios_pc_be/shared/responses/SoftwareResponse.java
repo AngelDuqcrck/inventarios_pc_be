@@ -7,6 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SoftwareResponse {
+    private Integer id;
+
     private String nombre;
 
     private String version;

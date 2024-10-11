@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ActualizarUsuarioRequest {
     
-    private Integer rolId;
+    private Integer rol;
 
     private String primerNombre;
 

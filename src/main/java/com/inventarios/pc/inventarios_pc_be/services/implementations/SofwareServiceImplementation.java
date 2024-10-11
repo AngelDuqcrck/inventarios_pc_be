@@ -45,7 +45,7 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
     public SoftwarePcDTO crearSoftware(SoftwarePcDTO  softwarePcDTO)throws TypeSoftwareNotFoundException{
         SoftwarePC softwarePC = new SoftwarePC();
 
-        TipoSoftware tipoSoftware = tipoSoftwareRepository.findById(softwarePcDTO.getTipoSoftware().getId()).orElse(null);
+        TipoSoftware tipoSoftware = tipoSoftwareRepository.findById(softwarePcDTO.getTipoSoftware()).orElse(null);
 
         if(tipoSoftware == null){
             throw new TypeSoftwareNotFoundException(String.format(IS_NOT_FOUND, "TYPE SOFTWARE").toUpperCase());        
@@ -111,7 +111,7 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
         BeanUtils.copyProperties(softwarePcDTO, softwarePC);
         softwarePC.setDeleteFlag(false);
         if(softwarePcDTO.getTipoSoftware()!= null){
-            TipoSoftware tipoSoftware = tipoSoftwareRepository.findById(softwarePcDTO.getTipoSoftware().getId()).orElse(null);
+            TipoSoftware tipoSoftware = tipoSoftwareRepository.findById(softwarePcDTO.getTipoSoftware()).orElse(null);
 
             if(tipoSoftware == null){
                 throw new TypeSoftwareNotFoundException(String.format(IS_NOT_FOUND, "TYPE SOFTWARE").toUpperCase());        

@@ -6,6 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DispositivoResponse {
+    
     private Integer id;
 
     // private TipoDispositivo tipoDispositivo;

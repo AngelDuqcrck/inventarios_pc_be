@@ -19,10 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.services.implementations.AreaServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
-import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 /**
@@ -60,13 +58,13 @@ public class AreaController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<AreaDTO>> listarAreas() throws LocationNotFoundException{
+    public ResponseEntity<List<AreaResponse>> listarAreas() throws LocationNotFoundException{
         return ResponseEntity.ok(
                 areaServiceImplementation.listarAreas().stream().map(area -> {
-                    AreaDTO areaDTO = new AreaDTO();
-                    BeanUtils.copyProperties(area, areaDTO);
-                    areaDTO.setSede(area.getSede());
-                    return areaDTO;
+                    AreaResponse areaR = new AreaResponse();
+                    BeanUtils.copyProperties(area, areaR);
+                    areaR.setSede(area.getSede().getNombre());
+                    return areaR;
                 }).collect(Collectors.toList()));
     }
 

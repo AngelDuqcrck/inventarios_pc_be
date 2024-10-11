@@ -30,7 +30,6 @@ import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuarioResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 
@@ -89,7 +88,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(usuarioDTO, usuario);
-        Rol rol = rolRepository.findById(usuarioDTO.getRolId()).orElse(null);
+        Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
         Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacionId()).orElse(null);
 
@@ -266,7 +265,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
         }
 
-        Rol rol = rolRepository.findById(usuarioDTO.getRolId()).orElse(null);
+        Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
         if (rol == null) {
             throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
         }
@@ -326,15 +325,9 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
         UsuarioResponse usuarioResponse = new UsuarioResponse();
         BeanUtils.copyProperties(usuario, usuarioResponse);
-        usuarioResponse.setRol(usuario.getRolId());
-        usuarioResponse.setTipoDocumento(usuario.getTipoDocumento());
-        UbicacionResponse ubicacionResponse =  new UbicacionResponse();
-        ubicacionResponse.setArea(usuario.getUbicacionId().getArea().getNombre());
-        ubicacionResponse.setId(usuario.getUbicacionId().getId());
-        ubicacionResponse.setDesc(usuario.getUbicacionId().getDesc());
-        ubicacionResponse.setNombre(usuario.getUbicacionId().getNombre());
-        ubicacionResponse.setDeleteFlag(usuario.getUbicacionId().getDeleteFlag());
-        usuarioResponse.setUbicacionId(ubicacionResponse);
+        usuarioResponse.setRol(usuario.getRolId().getNombre());
+        usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
+        usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
         return usuarioResponse;
     }
 }

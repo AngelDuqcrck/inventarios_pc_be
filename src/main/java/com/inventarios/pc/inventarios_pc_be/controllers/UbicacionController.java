@@ -61,13 +61,13 @@ public class UbicacionController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<UbicacionDTO>> listarUbicaciones(){
+    public ResponseEntity<List<UbicacionResponse>> listarUbicaciones(){
         return ResponseEntity.ok(
             ubicacionServiceImplementation.listarUbicaciones().stream().map(ubicacion ->{
-                UbicacionDTO ubicacionDTO = new UbicacionDTO();
-                BeanUtils.copyProperties(ubicacion, ubicacionDTO);
-                ubicacionDTO.setArea(ubicacion.getArea());
-                return ubicacionDTO;
+                UbicacionResponse ubicacionR = new UbicacionResponse();
+                BeanUtils.copyProperties(ubicacion, ubicacionR);
+                ubicacionR.setArea(ubicacion.getArea().getNombre());
+                return ubicacionR;
             }).collect(Collectors.toList())
         );
     }

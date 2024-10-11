@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
@@ -28,15 +27,10 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsExceptio
 import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
-import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
-import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
-import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuarioResponse;
 //Controlador donde se encuentran todos los endpoints relacionados con los usuarios
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
@@ -93,14 +87,9 @@ public class UserController {
             usuarioServiceImplementation.listarUsuarios().stream().map(usuario ->{
                 UsuarioResponse usuarioResponse = new UsuarioResponse();
                 BeanUtils.copyProperties(usuario, usuarioResponse);
-                UbicacionResponse ubicacionResponse =  new UbicacionResponse();
-                ubicacionResponse.setArea(usuario.getUbicacionId().getArea().getNombre());
-                ubicacionResponse.setId(usuario.getUbicacionId().getId());
-                ubicacionResponse.setDesc(usuario.getUbicacionId().getDesc());
-                ubicacionResponse.setNombre(usuario.getUbicacionId().getNombre());
-                ubicacionResponse.setDeleteFlag(usuario.getUbicacionId().getDeleteFlag());
-                usuarioResponse.setUbicacionId(ubicacionResponse);
-                usuarioResponse.setRol(usuario.getRolId());
+                usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
+                usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
+                usuarioResponse.setRol(usuario.getRolId().getNombre());
                 usuarioResponse.setDelete_flag(usuario.getDeleteFlag());
                 return usuarioResponse;
             }).collect(Collectors.toList())

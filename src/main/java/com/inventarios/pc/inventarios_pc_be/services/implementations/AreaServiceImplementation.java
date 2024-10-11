@@ -45,7 +45,7 @@ public class AreaServiceImplementation implements IAreaService {
         AreaPC areaPC = new AreaPC();
         BeanUtils.copyProperties(areaDTO, areaPC);
         //Con el id de la sede llamamos al repositorio para consultar y traernos la info, si no lo consigue manda nulo y manda la excepcion
-        SedePC sedePC = sedeRepository.findById(areaDTO.getSede().getId()).orElse(null);
+        SedePC sedePC = sedeRepository.findById(areaDTO.getSede()).orElse(null);
         
         if(sedePC == null){
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
@@ -99,7 +99,7 @@ public class AreaServiceImplementation implements IAreaService {
         BeanUtils.copyProperties(areaDTO, areaPC);
 
         if(areaDTO.getSede()!= null){
-            SedePC sedePC = sedeRepository.findById(areaDTO.getSede().getId()).orElse(null);
+            SedePC sedePC = sedeRepository.findById(areaDTO.getSede()).orElse(null);
                 if(sedePC == null){
                     throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
                 }
@@ -108,7 +108,7 @@ public class AreaServiceImplementation implements IAreaService {
         AreaPC areaActualizada = areaRepository.save(areaPC);
         AreaDTO areaActualizadaDTO = new AreaDTO();
         BeanUtils.copyProperties(areaActualizada, areaActualizadaDTO);
-        areaActualizadaDTO.setSede(areaActualizada.getSede());
+        areaActualizadaDTO.setSede(areaActualizada.getSede().getId());
         return areaActualizadaDTO;
     }
 

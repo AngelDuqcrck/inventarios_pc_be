@@ -3,12 +3,6 @@ package com.inventarios.pc.inventarios_pc_be.shared.responses;
 import lombok.*;
 import java.util.*;
 
-import com.inventarios.pc.inventarios_pc_be.entities.Rol;
-import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
-import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
-import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
-import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoDocDTO;
-import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +10,7 @@ public class UsuarioResponse {
 
     private int id;
 
-    private Rol rol;
+    private String rol;
 
     private String primerNombre;
 
@@ -26,7 +20,7 @@ public class UsuarioResponse {
 
     private String segundoApellido;
 
-    private TipoDocumento tipoDocumento;
+    private String tipoDocumento;
 
     private String cedula;
 
@@ -36,7 +30,7 @@ public class UsuarioResponse {
 
     private Date fechaNacimiento;
 
-    private UbicacionResponse ubicacionId;
+    private String ubicacion;
 
     private Boolean delete_flag;
 }
