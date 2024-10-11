@@ -54,7 +54,7 @@ public class UsuarioDTO {
     @MayorDeEdad(message = "El usuario debe ser mayor de 18 años")
     private Date fechaNacimiento;
 
-    private Integer ubicacionId;
+    private Integer ubicacion;
 
     private Boolean delete_flag;
 }

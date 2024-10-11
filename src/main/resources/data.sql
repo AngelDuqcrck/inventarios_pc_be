@@ -89,9 +89,8 @@ CREATE TABLE IF NOT EXISTS tipo_documento
 -- Insertamos los tipos de documento si no existen en el sistema
 INSERT IGNORE INTO tipo_documento (id, nombre) VALUES
     (1, "Cedula de Ciudadania"),
-    (2, "Tarjeta de Identidad"),
-    (3, "Cedula de Extranjeria"),
-    (4, "Pasaporte");
+    (2, "Cedula de Extranjeria"),
+    (3, "Pasaporte");
 
 -- Creamos la tabla tipo_software si no existe
 CREATE TABLE IF NOT EXISTS tipo_software

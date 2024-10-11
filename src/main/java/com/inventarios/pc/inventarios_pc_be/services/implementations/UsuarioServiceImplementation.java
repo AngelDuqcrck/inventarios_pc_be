@@ -91,7 +91,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         BeanUtils.copyProperties(usuarioDTO, usuario);
         Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
-        Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacionId()).orElse(null);
+        Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacion()).orElse(null);
 
         if (rol == null)
             throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
