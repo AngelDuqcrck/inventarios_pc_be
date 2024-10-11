@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.List;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,4 +150,18 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
         softwarePcRepository.save(softwarePC);
     }
 
+    @Override
+    public void activarSoftware(Integer id) throws SoftwareNotFoundException, ActivateNotAllowedException {
+        SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);
+
+        if(softwarePC == null){
+            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+        }
+
+        if(softwarePC.getDeleteFlag() == false){
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE SOFTWARE").toUpperCase());
+        }
+        softwarePC.setDeleteFlag(false);
+        softwarePcRepository.save(softwarePC);
+    }
 }

@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.List;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -137,5 +138,21 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         BeanUtils.copyProperties(ubicacion, ubicacionResponse);
         ubicacionResponse.setArea(ubicacion.getArea().getNombre());
         return ubicacionResponse;
+    }
+
+    @Override
+    public void actualizarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException {
+        Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
+
+        if (ubicacion == null){
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+
+        }
+        if(ubicacion.getDeleteFlag() ==false){
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE LOCATION").toUpperCase());
+
+        }
+        ubicacion.setDeleteFlag(false);
+        ubicacionRepository.save(ubicacion);
     }
 }

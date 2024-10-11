@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.Response;
 import org.springframework.beans.BeanUtils;
@@ -28,13 +29,13 @@ public class RolController {
     
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-    public Response crearRol (@RequestBody RolDTO rolDTO){
-        RolDTO rol = rolServiceImplementation.crearRol(rolDTO);
+    public ResponseEntity<HttpResponse> crearRol (@RequestBody RolDTO rolDTO){
+        rolServiceImplementation.crearRol(rolDTO);
 
-        if(rol == null)
-            return new Response("Error al crear el rol");
-
-        else return  new  Response("Rol Creado exitosamente");
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Rol creado exitosamente"),
+                HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -58,13 +59,13 @@ public class RolController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping
-    public Response actualizarRol (@RequestBody RolDTO rolDTO){
-        RolDTO rol = rolServiceImplementation.crearRol(rolDTO);
+    public ResponseEntity<HttpResponse> actualizarRol (@RequestBody RolDTO rolDTO){
+        rolServiceImplementation.crearRol(rolDTO);
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Rol actualizado exitosamente"),
+                HttpStatus.OK);
 
-        if(rol == null)
-            return new Response("Error al actualizar el rol");
-
-        else return  new  Response("Rol actualizado exitosamente");
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -74,6 +75,16 @@ public class RolController {
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Rol eliminado exitosamente"),
+                HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{id}")
+    public ResponseEntity<HttpResponse> activarRol(@PathVariable Integer id)throws RolNotFoundException, ActivateNotAllowedException {
+        rolServiceImplementation.activarRol(id);
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Rol activado exitosamente"),
                 HttpStatus.OK);
     }
     

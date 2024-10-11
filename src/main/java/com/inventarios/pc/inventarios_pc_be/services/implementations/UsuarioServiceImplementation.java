@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.implementations;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -13,15 +14,6 @@ import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.EmailExistException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.repositories.RolRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDocumentoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
@@ -319,6 +311,21 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         usuarioRepository.save(usuario);
     }
 
+    @Override
+    public void activarUsuario(Integer id) throws UserNotFoundException, ActivateNotAllowedException {
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+
+        if (usuario == null) {
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+        }
+
+        if (usuario.getDeleteFlag() == false) {
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE USER").toUpperCase());
+        }
+
+        usuario.setDeleteFlag(false);
+        usuarioRepository.save(usuario);
+    }
     @Override
     public UsuarioResponse listarUsuarioById(Integer id)throws UserNotFoundException{
         Usuario usuario = usuarioRepository.findById(id).orElse(null);

@@ -2,6 +2,8 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,6 +74,16 @@ public class TipoPcController {
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Tipo de pc eliminado exitosamente"),
+                HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{id}")
+    public ResponseEntity<HttpResponse> activarTipoPc (@PathVariable Integer id) throws TypePcNotFoundException, ActivateNotAllowedException {
+        tipoPcService.activarTipoPc(id);
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Tipo de pc activado exitosamente"),
                 HttpStatus.OK);
     }
 }

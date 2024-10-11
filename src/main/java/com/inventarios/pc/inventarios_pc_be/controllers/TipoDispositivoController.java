@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,6 +71,16 @@ public class TipoDispositivoController {
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Tipo dispositivo eliminada exitosamente"),
+                HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{id}")
+    public ResponseEntity<HttpResponse> activarTipoDispositivo (@PathVariable Integer id) throws TypeDeviceNotFoundException, ActivateNotAllowedException {
+        tipoDispositivoService.activarTipoDispositivo(id);
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Tipo dispositivo activado exitosamente"),
                 HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.List;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IRolService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,23 @@ public class RolServiceImplementation implements IRolService {
         }
 
         rol.setDeleteFlag(true);
+        rolRepository.save(rol);
+    }
+
+    @Override
+    public void activarRol (Integer rolId)throws RolNotFoundException, ActivateNotAllowedException {
+        Rol rol = rolRepository.findById(rolId).orElse(null);
+        if (rol == null) {
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+
+        }
+
+        if(rol.getDeleteFlag() == false){
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE ROL").toUpperCase());
+
+        }
+
+        rol.setDeleteFlag(false);
         rolRepository.save(rol);
     }
 

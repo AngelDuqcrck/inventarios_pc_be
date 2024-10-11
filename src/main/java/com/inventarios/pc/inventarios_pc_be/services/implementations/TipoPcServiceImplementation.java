@@ -1,5 +1,7 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 import java.util.*;
+
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,6 +64,20 @@ public class TipoPcServiceImplementation implements ITipoPcService {
         }
 
         tipoPC.setDeleteFlag(true);
+        tipoPcRepository.save(tipoPC);
+    }
+
+    @Override
+    public void activarTipoPc (Integer id) throws TypePcNotFoundException, ActivateNotAllowedException {
+        TipoPC tipoPC = tipoPcRepository.findById(id).orElse(null);
+        if(tipoPC == null){
+            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TYPE PC").toUpperCase());
+        }
+        if(tipoPC.getDeleteFlag() == false){
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE TYPE PC").toUpperCase());
+        }
+
+        tipoPC.setDeleteFlag(false);
         tipoPcRepository.save(tipoPC);
     }
 }

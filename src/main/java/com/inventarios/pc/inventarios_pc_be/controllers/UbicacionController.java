@@ -4,6 +4,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,11 +33,11 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 @RestController
 @RequestMapping("/ubicacion")
 public class UbicacionController {
-    
+
     @Autowired
     private IUbicacionService ubicacionServiceImplementation;
 
-     /**
+    /**
      * Crea una nueva ubicación.
      *
      * @param ubicacionDTO Datos de la ubicación a crear.
@@ -45,7 +46,7 @@ public class UbicacionController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearUbicacion (@RequestBody UbicacionDTO ubicacionDTO) throws LocationNotFoundException{
+    public ResponseEntity<HttpResponse> crearUbicacion(@RequestBody UbicacionDTO ubicacionDTO) throws LocationNotFoundException {
         ubicacionServiceImplementation.crearUbicacion(ubicacionDTO);
 
         return new ResponseEntity<>(
@@ -61,28 +62,28 @@ public class UbicacionController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<UbicacionResponse>> listarUbicaciones(){
+    public ResponseEntity<List<UbicacionResponse>> listarUbicaciones() {
         return ResponseEntity.ok(
-            ubicacionServiceImplementation.listarUbicaciones().stream().map(ubicacion ->{
-                UbicacionResponse ubicacionR = new UbicacionResponse();
-                BeanUtils.copyProperties(ubicacion, ubicacionR);
-                ubicacionR.setArea(ubicacion.getArea().getNombre());
-                return ubicacionR;
-            }).collect(Collectors.toList())
+                ubicacionServiceImplementation.listarUbicaciones().stream().map(ubicacion -> {
+                    UbicacionResponse ubicacionR = new UbicacionResponse();
+                    BeanUtils.copyProperties(ubicacion, ubicacionR);
+                    ubicacionR.setArea(ubicacion.getArea().getNombre());
+                    return ubicacionR;
+                }).collect(Collectors.toList())
         );
     }
 
     /**
      * Actualiza una ubicación existente.
      *
-     * @param ubicacionId ID de la ubicación a actualizar.
+     * @param ubicacionId  ID de la ubicación a actualizar.
      * @param ubicacionDTO Nuevos datos de la ubicación.
      * @return Respuesta HTTP con el estado de la operación.
      * @throws LocationNotFoundException Si la ubicación o el área asociada no son encontradas.
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{ubicacionId}")
-    public ResponseEntity<HttpResponse> actualizarUbicacion(@PathVariable Integer ubicacionId, @RequestBody UbicacionDTO ubicacionDTO) throws LocationNotFoundException{
+    public ResponseEntity<HttpResponse> actualizarUbicacion(@PathVariable Integer ubicacionId, @RequestBody UbicacionDTO ubicacionDTO) throws LocationNotFoundException {
         ubicacionServiceImplementation.actualizarUbicacion(ubicacionId, ubicacionDTO);
 
         return new ResponseEntity<>(
@@ -91,7 +92,15 @@ public class UbicacionController {
                 HttpStatus.OK);
     }
 
-     /**
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/{id}")
+    public ResponseEntity<UbicacionResponse> getUbicacionById(@PathVariable Integer id) throws LocationNotFoundException {
+        UbicacionResponse ubicacionResponse = ubicacionServiceImplementation.listarUbicacionById(id);
+        return new ResponseEntity<>(ubicacionResponse, HttpStatus.OK);
+    }
+
+    /**
      * Elimina una ubicación existente.
      *
      * @param ubicacionId ID de la ubicación a eliminar.
@@ -111,10 +120,13 @@ public class UbicacionController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/{id}")
-    public ResponseEntity<UbicacionResponse> getUbicacionById(@PathVariable Integer id)throws LocationNotFoundException{
-        UbicacionResponse ubicacionResponse = ubicacionServiceImplementation.listarUbicacionById(id);
-        return new ResponseEntity<>(ubicacionResponse, HttpStatus.OK);
+    @PostMapping ("/activar/{ubicacionId}")
+    public ResponseEntity<HttpResponse> activarUbicacion(@PathVariable Integer ubicacionId) throws LocationNotFoundException, ActivateNotAllowedException {
+        ubicacionServiceImplementation.actualizarUbicacion(ubicacionId);
+
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Ubicación activada exitosamente"),
+                HttpStatus.OK);
     }
-    
 }

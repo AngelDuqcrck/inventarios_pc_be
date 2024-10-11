@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareResponse;
@@ -23,22 +24,22 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 @RestController
 @RequestMapping("/software")
 public class SoftwarePcController {
-    
+
     @Autowired
     private ISoftwarePcService softwarePcService;
 
-     /**
+    /**
      * Crea un nuevo software en el sistema.
-     * 
+     *
      * @param softareDTO Objeto DTO que contiene los detalles del software a crear.
      * @return Respuesta HTTP indicando el éxito de la operación.
      * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no existe.
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearSoftware (@RequestBody SoftwarePcDTO softareDTO)throws TypeSoftwareNotFoundException{
+    public ResponseEntity<HttpResponse> crearSoftware(@RequestBody SoftwarePcDTO softareDTO) throws TypeSoftwareNotFoundException {
         softwarePcService.crearSoftware(softareDTO);
-        
+
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Software creado exitosamente"),
@@ -47,34 +48,34 @@ public class SoftwarePcController {
 
     /**
      * Lista todos los software registrados en el sistema.
-     * 
+     *
      * @return Lista de DTOs de software.
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<SoftwareResponse>> listarSoftware(){
+    public ResponseEntity<List<SoftwareResponse>> listarSoftware() {
         return ResponseEntity.ok(
-            softwarePcService.listarSoftwares().stream().map(software ->{
-                SoftwareResponse softwarePcR = new SoftwareResponse();
-                BeanUtils.copyProperties(software, softwarePcR);
-                softwarePcR.setTipoSoftware(software.getTipoSoftware().getNombre());
-                return softwarePcR;
-            }).collect(Collectors.toList()));
-        
+                softwarePcService.listarSoftwares().stream().map(software -> {
+                    SoftwareResponse softwarePcR = new SoftwareResponse();
+                    BeanUtils.copyProperties(software, softwarePcR);
+                    softwarePcR.setTipoSoftware(software.getTipoSoftware().getNombre());
+                    return softwarePcR;
+                }).collect(Collectors.toList()));
+
     }
 
     /**
      * Actualiza un software existente en el sistema.
-     * 
-     * @param softwareId ID del software a actualizar.
+     *
+     * @param softwareId    ID del software a actualizar.
      * @param softwarePcDTO DTO con los nuevos datos del software.
      * @return Respuesta HTTP indicando el éxito de la operación.
-     * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
+     * @throws SoftwareNotFoundException     Si el software con el ID especificado no existe.
      * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no existe.
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{softwareId}")
-    public ResponseEntity<HttpResponse> actualizarSoftware(@PathVariable Integer softwareId, @RequestBody SoftwarePcDTO softwarePcDTO)throws SoftwareNotFoundException, TypeSoftwareNotFoundException {
+    public ResponseEntity<HttpResponse> actualizarSoftware(@PathVariable Integer softwareId, @RequestBody SoftwarePcDTO softwarePcDTO) throws SoftwareNotFoundException, TypeSoftwareNotFoundException {
         softwarePcService.actualizarSoftware(softwareId, softwarePcDTO);
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
@@ -83,9 +84,9 @@ public class SoftwarePcController {
 
     }
 
-     /**
+    /**
      * Elimina un software del sistema.
-     * 
+     *
      * @param softwareId ID del software a eliminar.
      * @return Respuesta HTTP indicando el éxito de la operación.
      * @throws DeleteNotAllowedException Si la eliminación del software no está permitida.
@@ -93,7 +94,7 @@ public class SoftwarePcController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/eliminar/{softwareId}")
-    public ResponseEntity<HttpResponse> eliminarSoftware(@PathVariable Integer softwareId)throws DeleteNotAllowedException, SoftwareNotFoundException {
+    public ResponseEntity<HttpResponse> eliminarSoftware(@PathVariable Integer softwareId) throws DeleteNotAllowedException, SoftwareNotFoundException {
         softwarePcService.eliminarSoftware(softwareId);
 
         return new ResponseEntity<>(
@@ -102,19 +103,29 @@ public class SoftwarePcController {
                 HttpStatus.OK);
     }
 
-     /**
+    /**
      * Obtiene los detalles de un software por su ID.
-     * 
+     *
      * @param id ID del software a buscar.
      * @return Objeto SoftwareResponse con los detalles del software.
      * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<SoftwareResponse> listarSoftwareById(@PathVariable Integer id)throws SoftwareNotFoundException{
+    public ResponseEntity<SoftwareResponse> listarSoftwareById(@PathVariable Integer id) throws SoftwareNotFoundException {
         SoftwareResponse softwareResponse = softwarePcService.listarSoftwareById(id);
-        return  new ResponseEntity<>(softwareResponse, HttpStatus.OK);
+        return new ResponseEntity<>(softwareResponse, HttpStatus.OK);
     }
 
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{softwareId}")
+    public ResponseEntity<HttpResponse> activarSoftware(@PathVariable Integer softwareId)throws ActivateNotAllowedException, SoftwareNotFoundException {
+        softwarePcService.activarSoftware(softwareId);
+
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Software activado exitosamente"),
+                HttpStatus.OK);
+    }
 }

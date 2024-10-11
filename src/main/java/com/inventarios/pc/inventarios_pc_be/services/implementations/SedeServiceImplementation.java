@@ -1,6 +1,8 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.*;
+
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -114,6 +116,21 @@ public class SedeServiceImplementation implements ISedeService {
             throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE SEDE").toUpperCase());
         }
         sedePC.setDeleteFlag(true);
+        sedeRepository.save(sedePC);
+    }
+
+    @Override
+    public void activarSede(Integer id) throws LocationNotFoundException, ActivateNotAllowedException {
+        SedePC sedePC = sedeRepository.findById(id).orElse(null);
+
+        if (sedePC == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+        }
+
+        if (sedePC.getDeleteFlag() == false) {
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE SEDE").toUpperCase());
+        }
+        sedePC.setDeleteFlag(false);
         sedeRepository.save(sedePC);
     }
 }

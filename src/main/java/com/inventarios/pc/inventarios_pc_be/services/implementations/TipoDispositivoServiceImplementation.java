@@ -1,5 +1,7 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 import java.util.*;
+
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,6 +66,20 @@ public class TipoDispositivoServiceImplementation implements ITipoDispositivoSer
             throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE TYPE DEVICE").toUpperCase());        
         }
         tipoDispositivo.setDeleteFlag(true);
+        tipoDispositivoRepository.save(tipoDispositivo);
+    }
+
+    @Override
+    public void activarTipoDispositivo(Integer id) throws TypeDeviceNotFoundException, ActivateNotAllowedException {
+        TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(id).orElse(null);
+        if(tipoDispositivo == null){
+            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TYPE DEVICE").toUpperCase());
+        }
+
+        if(tipoDispositivo.getDeleteFlag()== false){
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE TYPE DEVICE").toUpperCase());
+        }
+        tipoDispositivo.setDeleteFlag(false);
         tipoDispositivoRepository.save(tipoDispositivo);
     }
 }

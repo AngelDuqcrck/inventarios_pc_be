@@ -2,6 +2,8 @@ package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.List;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,6 +111,20 @@ public class ComponenteServiceImplementation implements IComponenteService {
             throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE COMPONENT").toUpperCase());
         }
         componente.setDeleteFlag(true);
+        componenteRepository.save(componente);
+    }
+
+    @Override
+    public void activarComponente (Integer id) throws ComponentNotFoundException, ActivateNotAllowedException {
+        Componente componente = componenteRepository.findById(id).orElse(null);
+        if(componente == null){
+            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "COMPONENT").toUpperCase());
+        }
+
+        if(componente.getDeleteFlag() == false){
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE COMPONENT").toUpperCase());
+        }
+        componente.setDeleteFlag(false);
         componenteRepository.save(componente);
     }
 }

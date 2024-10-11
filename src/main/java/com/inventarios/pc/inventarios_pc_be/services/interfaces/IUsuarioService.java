@@ -3,15 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 import java.util.List;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.EmailExistException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
@@ -106,5 +98,7 @@ public interface IUsuarioService {
          * @throws UserNotFoundException Si el usuario no se encuentra en la base de datos.
          */
         public UsuarioResponse listarUsuarioById(Integer id) throws UserNotFoundException;
+
+        public void activarUsuario(Integer id) throws UserNotFoundException, ActivateNotAllowedException;
     }
     

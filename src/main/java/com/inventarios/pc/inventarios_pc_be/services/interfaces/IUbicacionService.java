@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 import java.util.List;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
@@ -50,5 +51,7 @@ public interface IUbicacionService {
 
     //Lista la informacion de una ubicacion por su id
     public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException;
+
+    public void actualizarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException;
 } 
 
