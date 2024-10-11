@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 import java.util.List;
 
 import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
@@ -56,4 +57,6 @@ public interface IAreaService {
      * @throws DeleteNotAllowedException Si la eliminación del área no está permitida.
      */
     public void eliminarArea(Integer id) throws LocationNotFoundException, DeleteNotAllowedException;
+
+    public void activarArea(Integer id)throws LocationNotFoundException, ActivateNotAllowedException;
 }

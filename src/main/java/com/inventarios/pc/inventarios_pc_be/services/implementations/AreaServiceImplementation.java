@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import com.inventarios.pc.inventarios_pc_be.entities.SedePC;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.repositories.AreaRepository;
@@ -130,6 +131,20 @@ public class AreaServiceImplementation implements IAreaService {
             throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE AREA").toUpperCase());
         }
         areaPC.setDeleteFlag(true);
+        areaRepository.save(areaPC);
+    }
+
+    @Override
+    public void activarArea(Integer id)throws LocationNotFoundException, ActivateNotAllowedException{
+        AreaPC areaPC = areaRepository.findById(id).orElse(null);
+        if(areaPC == null){
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());        
+        }
+
+        if(areaPC.getDeleteFlag()== false){
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE AREA").toUpperCase());
+        }
+        areaPC.setDeleteFlag(false);
         areaRepository.save(areaPC);
     }
 }

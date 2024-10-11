@@ -15,6 +15,7 @@ import com.inventarios.pc.inventarios_pc_be.services.interfaces.IEstadosDisposit
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoComponenteService;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoDocumentoService;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoSoftwareService;
+import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITiposService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.EstadosDispositivoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoComponenteDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoDocDTO;
@@ -25,22 +26,13 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoSoftwDTO;
 public class TiposController {
 
     @Autowired
-    private ITipoDocumentoService tipoDocumentoServiceImplementation;
-
-    @Autowired
-    private ITipoSoftwareService tipoSoftwareServiceImplementation;
-
-    @Autowired
-    private ITipoComponenteService tipoComponenteServiceImplementation;
-
-    @Autowired
-    private IEstadosDispositivoService estadosDispositivoService;
+    private ITiposService tiposService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/tc")
     public ResponseEntity<List<TipoComponenteDTO>> getTipoComponente(){
         return ResponseEntity.ok(
-            tipoComponenteServiceImplementation.listarTipoComponente().stream().map(TC ->{
+            tiposService.listarTipoComponente().stream().map(TC ->{
                     TipoComponenteDTO tcDTO = new TipoComponenteDTO();
                     BeanUtils.copyProperties(TC, tcDTO);
                     return tcDTO;
@@ -51,7 +43,7 @@ public class TiposController {
     @GetMapping("/td")
     public ResponseEntity<List<TipoDocDTO>> getTipoDocumentos(){
         return ResponseEntity.ok(
-                tipoDocumentoServiceImplementation.listarTipoDocumentos().stream().map(TD ->{
+                tiposService.listarTipoDocumentos().stream().map(TD ->{
                     TipoDocDTO tdDTO = new TipoDocDTO();
                     BeanUtils.copyProperties(TD, tdDTO);
                     return tdDTO;
@@ -62,7 +54,7 @@ public class TiposController {
     @GetMapping("/ts")
     public ResponseEntity<List<TipoSoftwDTO>> getTipoSoftware(){
         return ResponseEntity.ok(
-            tipoSoftwareServiceImplementation.listarTipoSoftware().stream().map(TS ->{
+            tiposService.listarTipoSoftware().stream().map(TS ->{
                     TipoSoftwDTO tsDTO = new TipoSoftwDTO();
                     BeanUtils.copyProperties(TS, tsDTO);
                     return tsDTO;
@@ -73,7 +65,7 @@ public class TiposController {
     @GetMapping("/ed")
     public ResponseEntity<List<EstadosDispositivoDTO>> getEstadosDisp(){
         return ResponseEntity.ok(
-            estadosDispositivoService.listarEstadosDisp().stream().map(ED ->{
+            tiposService.listarEstadosDisp().stream().map(ED ->{
                     EstadosDispositivoDTO edDTO = new EstadosDispositivoDTO();
                     BeanUtils.copyProperties(ED, edDTO);
                     return edDTO;

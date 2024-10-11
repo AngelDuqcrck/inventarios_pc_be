@@ -10,6 +10,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Marca;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
@@ -159,6 +160,63 @@ public class DispositivoServiceImplementation implements IDispositivoService{
 
         EstadoDispositivo estadoDispositivo = estadoDispositivoRepository.findByNombre("Baja").get();
         dispositivoPC.setEstadoDispositivo(estadoDispositivo);
+        dispositivoRepository.save(dispositivoPC);
+    }
+
+
+    @Override
+    public void cambiarEstadoDispositivo(Integer dispositivoId, Integer nuevoEstadoDispositivoId)throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException{
+        DispositivoPC dispositivoPC = dispositivoRepository.findById(dispositivoId).orElse(null);
+
+        if(dispositivoPC == null){
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DEVICE").toUpperCase());
+        }
+
+        EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findById(nuevoEstadoDispositivoId).orElse(null);
+        if(nuevoEstadoDispositivo == null){
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "STATE DEVICE").toUpperCase());
+        }
+
+    String estadoActual = dispositivoPC.getEstadoDispositivo().getNombre();
+
+    // Lógica de validación basada en las reglas de cambio de estado
+    switch (nuevoEstadoDispositivoId) {
+        case 1: // En uso
+            if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion")) {
+                throw new ChangeNotAllowedException(String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+            }
+            break;
+
+        case 2: // Averiado
+            if (!estadoActual.equals("En uso")) {
+                throw new ChangeNotAllowedException(String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+            }
+            break;
+
+        case 3: // En reparacion
+            if (!estadoActual.equals("Ninguno") && !estadoActual.equals("En reparacion")) {
+                throw new ChangeNotAllowedException(String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+            }
+            break;
+
+        case 4: // Disponible
+            if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion")) {
+                throw new ChangeNotAllowedException(String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+            }
+            break;
+
+        case 5: // Baja
+            if (!estadoActual.equals("Averiado") && !estadoActual.equals("Disponible")) {
+                throw new ChangeNotAllowedException(String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+            }
+            break;
+            
+            default:
+                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "STATE DEVICE").toUpperCase());
+                
+        }
+
+        dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
         dispositivoRepository.save(dispositivoPC);
     }
 }

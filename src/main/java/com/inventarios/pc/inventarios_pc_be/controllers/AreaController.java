@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
@@ -99,11 +100,21 @@ public class AreaController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/eliminar/{areaId}")
-    public ResponseEntity<HttpResponse> eliminarSede(@PathVariable Integer areaId) throws LocationNotFoundException, DeleteNotAllowedException {
+    public ResponseEntity<HttpResponse> eliminarArea(@PathVariable Integer areaId) throws LocationNotFoundException, DeleteNotAllowedException {
         areaServiceImplementation.eliminarArea(areaId);
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Área eliminada exitosamente"),
+                HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{areaId}")
+    public ResponseEntity<HttpResponse> activarArea(@PathVariable Integer areaId) throws LocationNotFoundException, ActivateNotAllowedException {
+        areaServiceImplementation.activarArea(areaId);
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Área activada exitosamente"),
                 HttpStatus.OK);
     }
 

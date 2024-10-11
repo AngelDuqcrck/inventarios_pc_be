@@ -25,4 +25,5 @@ public class TipoComponenteServiceImplementation implements ITipoComponenteServi
     public List<TipoComponente> listarTipoComponente(){
         return (List<TipoComponente>) tipoComponenteRepository.findAll();
     }
+    
 }

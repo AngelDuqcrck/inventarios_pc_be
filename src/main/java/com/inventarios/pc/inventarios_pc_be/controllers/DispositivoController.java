@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
@@ -90,4 +92,14 @@ public class DispositivoController {
             HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/cambiar-estado")
+    public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestParam Integer dispositivoId, @RequestParam Integer nuevoEstadoDispositivoId) throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException {
+        dispositivoService.cambiarEstadoDispositivo(dispositivoId, nuevoEstadoDispositivoId);
+        return new ResponseEntity<>(
+            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                    "Estado cambiado exitosamente"),
+            HttpStatus.OK);
+    }
+    
 }

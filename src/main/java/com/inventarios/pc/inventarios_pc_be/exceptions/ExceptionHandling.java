@@ -124,6 +124,15 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
 
+    @ExceptionHandler(ChangeNotAllowedException.class)
+    public ResponseEntity<HttpResponse> changeNotAllowedException(ChangeNotAllowedException exception){
+        return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+    }
+
+    @ExceptionHandler(ActivateNotAllowedException.class)
+    public ResponseEntity<HttpResponse> activateNotAllowedException(ActivateNotAllowedException exception){
+        return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+    }
     @ExceptionHandler(PasswordNotEqualsException.class)
     public ResponseEntity<HttpResponse> passwordNotEqualsException(PasswordNotEqualsException exception){
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
