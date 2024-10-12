@@ -187,14 +187,14 @@ public class DispositivoServiceImplementation implements IDispositivoService{
             }
             break;
 
-        case 2: // Averiado
+        case 3: // Averiado
             if (!estadoActual.equals("En uso")) {
                 throw new ChangeNotAllowedException(String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
             }
             break;
 
-        case 3: // En reparacion
-            if (!estadoActual.equals("Ninguno") && !estadoActual.equals("En reparacion")) {
+        case 2: // En reparacion
+            if (!estadoActual.equals("Ninguno") && !estadoActual.equals("Averiado")) {
                 throw new ChangeNotAllowedException(String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
             }
             break;

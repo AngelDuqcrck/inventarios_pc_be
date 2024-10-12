@@ -31,6 +31,6 @@ public class ActualizarUsuarioRequest {
 
     private Date fechaNacimiento;
 
-    private Integer ubicacionId;
+    private Integer ubicacion;
 
 }

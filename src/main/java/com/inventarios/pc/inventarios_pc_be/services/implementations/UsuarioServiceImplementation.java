@@ -271,7 +271,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         if (rol == null) {
             throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
         }
-        Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacionId()).orElse(null);
+        Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacion()).orElse(null);
         if (ubicacion == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LOCATION").toUpperCase());
         }
