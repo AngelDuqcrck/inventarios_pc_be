@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 
 import java.util.*;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeSoftwareNotFoundException;
@@ -58,4 +59,6 @@ public interface ISoftwarePcService {
      */
     public void eliminarSoftware(Integer id) throws SoftwareNotFoundException, DeleteNotAllowedException;
 
+
+    public void activarSoftware(Integer id) throws SoftwareNotFoundException, ActivateNotAllowedException;
 }

@@ -25,8 +25,7 @@ public class TipoDocumento {
     @NotEmpty
     private String nombre;
 
-    private Boolean deleteFlag;
-
+    
     
 
 }

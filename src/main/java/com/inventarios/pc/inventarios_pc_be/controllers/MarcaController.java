@@ -2,6 +2,8 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,6 +79,16 @@ public class MarcaController {
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Marca eliminada exitosamente"),
+                HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{marcaId}")
+    public ResponseEntity<HttpResponse> activarMarca(@PathVariable Integer marcaId)throws ActivateNotAllowedException, MarcaNotFoundException{
+        marcaService.activarMarca(marcaId);
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Marca activada exitosamente"),
                 HttpStatus.OK);
     }
 }

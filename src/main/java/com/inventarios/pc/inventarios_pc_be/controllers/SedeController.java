@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -113,6 +114,17 @@ public class SedeController {
                         "Sede eliminada exitosamente"),
                 HttpStatus.OK);
                 
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{sedeId}")
+    public ResponseEntity<HttpResponse> activarSede(@PathVariable Integer sedeId) throws LocationNotFoundException, ActivateNotAllowedException {
+        sedeServiceImplementation.activarSede(sedeId);
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Sede activada exitosamente"),
+                HttpStatus.OK);
+
     }
 
 }

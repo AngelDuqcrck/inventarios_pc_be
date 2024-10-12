@@ -3,6 +3,8 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,12 +71,23 @@ public class ComponenteController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/eliminar/{componenteId}")
-    public ResponseEntity<HttpResponse> actualizarComponente (@PathVariable Integer componenteId)throws DeleteNotAllowedException, ComponentNotFoundException{
+    public ResponseEntity<HttpResponse> eliminarComponente (@PathVariable Integer componenteId)throws DeleteNotAllowedException, ComponentNotFoundException{
         componenteService.eliminarComponente(componenteId);
 
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Componente eliminado exitosamente"),
+                HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{componenteId}")
+    public ResponseEntity<HttpResponse> activarComponente (@PathVariable Integer componenteId)throws ActivateNotAllowedException, ComponentNotFoundException{
+        componenteService.activarComponente(componenteId);
+
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Componente activado exitosamente"),
                 HttpStatus.OK);
     }
 

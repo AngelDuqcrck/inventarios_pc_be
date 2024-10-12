@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.List;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,18 @@ public class MarcaServiceImplementation implements IMarcaService {
             throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE MARCA").toUpperCase());        
         }
         marca.setDeleteFlag(true);
+        marcaRepository.save(marca);
+    }
+
+    public void activarMarca(Integer id)throws MarcaNotFoundException, ActivateNotAllowedException {
+        Marca marca = marcaRepository.findById(id).orElse(null);
+        if(marca == null){
+            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
+        }
+        if(marca.getDeleteFlag() == false){
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE MARCA").toUpperCase());
+        }
+        marca.setDeleteFlag(false);
         marcaRepository.save(marca);
     }
 

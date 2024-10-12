@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,14 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
@@ -148,14 +141,16 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-    /*
-     * @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/{id}")
-    public ResponseEntity<UbicacionResponse> getUbicacionById(@PathVariable Integer id)throws LocationNotFoundException{
-        UbicacionResponse ubicacionResponse = ubicacionServiceImplementation.listarUbicacionById(id);
-        return new ResponseEntity<>(ubicacionResponse, HttpStatus.OK);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/activar/{usuarioId}")
+    public ResponseEntity<HttpResponse> activarUsuario(@PathVariable Integer usuarioId)
+            throws UserNotFoundException, ActivateNotAllowedException {
+        usuarioServiceImplementation.activarUsuario(usuarioId);
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        " Usuario activado con exito"),
+                HttpStatus.OK);
     }
-     */
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")

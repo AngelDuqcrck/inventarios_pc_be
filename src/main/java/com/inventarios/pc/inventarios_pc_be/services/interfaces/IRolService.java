@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 import java.util.List;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Rol;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
@@ -43,4 +44,6 @@ public interface IRolService {
     public void deshabilitarRol (Integer rolId)throws RolNotFoundException, DeleteNotAllowedException;
 
     public RolDTO listarRolById(Integer rolId)throws RolNotFoundException;
+
+    public void activarRol (Integer rolId)throws RolNotFoundException, ActivateNotAllowedException;
 }
