@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IComponenteService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComponenteDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComponenteResponse;
@@ -29,13 +31,14 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 @RestController
 @RequestMapping("/componente")
 public class ComponenteController {
-    
+
     @Autowired
     private IComponenteService componenteService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearComponente (@RequestBody ComponenteDTO componenteDTO)throws ComponentNotFoundException {
+    public ResponseEntity<HttpResponse> crearComponente(@RequestBody ComponenteDTO componenteDTO)
+            throws ComponentNotFoundException, SelectNotAllowedException {
         componenteService.crearComponente(componenteDTO);
 
         return new ResponseEntity<>(
@@ -44,24 +47,22 @@ public class ComponenteController {
                 HttpStatus.OK);
     }
 
-
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<ComponenteDTO>> listarCompoenetes(){
+    public ResponseEntity<List<ComponenteDTO>> listarCompoenetes() {
         return ResponseEntity.ok(
-            componenteService.listarComponentes().stream().map(componente -> {
-                ComponenteDTO componenteDTO = new ComponenteDTO();
-                BeanUtils.copyProperties(componente, componenteDTO);
-                componenteDTO.setTipoComponente(componente.getTipoComponente());
-                return componenteDTO;
-            }).collect(Collectors.toList())
-        );
+                componenteService.listarComponentes().stream().map(componente -> {
+                    ComponenteDTO componenteDTO = new ComponenteDTO();
+                    BeanUtils.copyProperties(componente, componenteDTO);
+                    componenteDTO.setTipoComponente(componente.getTipoComponente());
+                    return componenteDTO;
+                }).collect(Collectors.toList()));
     }
-
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{componenteId}")
-    public ResponseEntity<HttpResponse> actualizarComponente (@PathVariable Integer componenteId, @RequestBody ComponenteDTO componenteDTO) throws ComponentNotFoundException{
+    public ResponseEntity<HttpResponse> actualizarComponente(@PathVariable Integer componenteId,
+            @RequestBody ComponenteDTO componenteDTO) throws ComponentNotFoundException, SelectNotAllowedException, UpdateNotAllowedException {
         componenteService.actualizarComponente(componenteId, componenteDTO);
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
@@ -71,7 +72,8 @@ public class ComponenteController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/eliminar/{componenteId}")
-    public ResponseEntity<HttpResponse> eliminarComponente (@PathVariable Integer componenteId)throws DeleteNotAllowedException, ComponentNotFoundException{
+    public ResponseEntity<HttpResponse> eliminarComponente(@PathVariable Integer componenteId)
+            throws DeleteNotAllowedException, ComponentNotFoundException {
         componenteService.eliminarComponente(componenteId);
 
         return new ResponseEntity<>(
@@ -82,7 +84,8 @@ public class ComponenteController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/activar/{componenteId}")
-    public ResponseEntity<HttpResponse> activarComponente (@PathVariable Integer componenteId)throws ActivateNotAllowedException, ComponentNotFoundException{
+    public ResponseEntity<HttpResponse> activarComponente(@PathVariable Integer componenteId)
+            throws ActivateNotAllowedException, ComponentNotFoundException {
         componenteService.activarComponente(componenteId);
 
         return new ResponseEntity<>(
@@ -93,9 +96,10 @@ public class ComponenteController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
-    public ResponseEntity<ComponenteResponse> listarComponenteById(@PathVariable Integer id) throws ComponentNotFoundException{
+    public ResponseEntity<ComponenteResponse> listarComponenteById(@PathVariable Integer id)
+            throws ComponentNotFoundException {
         ComponenteResponse componenteResponse = componenteService.listarComponenteById(id);
         return new ResponseEntity<>(componenteResponse, HttpStatus.OK);
     }
-    
+
 }

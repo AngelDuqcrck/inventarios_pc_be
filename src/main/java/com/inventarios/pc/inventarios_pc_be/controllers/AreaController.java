@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
@@ -43,7 +45,7 @@ public class AreaController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearArea(@RequestBody AreaDTO areaDTO) throws LocationNotFoundException {
+    public ResponseEntity<HttpResponse> crearArea(@RequestBody AreaDTO areaDTO) throws SelectNotAllowedException, LocationNotFoundException {
         areaServiceImplementation.crearArea(areaDTO);
 
         return new ResponseEntity<>(
@@ -80,7 +82,7 @@ public class AreaController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{areaId}")
     public ResponseEntity<HttpResponse> actualizarArea(@PathVariable Integer areaId, @RequestBody AreaDTO areaDTO)
-            throws LocationNotFoundException {
+            throws LocationNotFoundException, UpdateNotAllowedException, SelectNotAllowedException {
         areaServiceImplementation.actualizarArea(areaId, areaDTO);
 
         return new ResponseEntity<>(

@@ -11,10 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.services.interfaces.IEstadosDispositivoService;
-import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoComponenteService;
-import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoDocumentoService;
-import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoSoftwareService;
+
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITiposService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.EstadosDispositivoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoComponenteDTO;

@@ -5,8 +5,10 @@ import java.util.*;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeSoftwareNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SoftwarePcDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareResponse;
 /**
@@ -21,7 +23,7 @@ public interface ISoftwarePcService {
      * @return Objeto DTO del software creado.
      * @throws TypeSoftwareNotFoundException Si el tipo de software no se encuentra en la base de datos.
      */
-    public SoftwarePcDTO crearSoftware(SoftwarePcDTO  softwarePcDTO)throws TypeSoftwareNotFoundException;
+    public SoftwarePcDTO crearSoftware(SoftwarePcDTO  softwarePcDTO)throws TypeSoftwareNotFoundException, SelectNotAllowedException;
 
       /**
      * Lista todos los registros de software almacenados en el sistema.
@@ -48,7 +50,7 @@ public interface ISoftwarePcService {
      * @throws TypeSoftwareNotFoundException Si el tipo de software no se encuentra en la base de datos.
      * @throws SoftwareNotFoundException Si el software con el ID especificado no se encuentra.
      */
-    public SoftwarePcDTO actualizarSoftware(Integer id, SoftwarePcDTO softwarePcDTO) throws TypeSoftwareNotFoundException, SoftwareNotFoundException;
+    public SoftwarePcDTO actualizarSoftware(Integer id, SoftwarePcDTO softwarePcDTO) throws SelectNotAllowedException, UpdateNotAllowedException, TypeSoftwareNotFoundException, SoftwareNotFoundException;
 
     /**
      * Elimina (marca como eliminado) un software del sistema.

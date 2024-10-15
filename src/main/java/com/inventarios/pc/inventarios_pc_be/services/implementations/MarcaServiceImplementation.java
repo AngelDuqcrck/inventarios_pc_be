@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.inventarios.pc.inventarios_pc_be.entities.Marca;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.MarcaRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IMarcaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.MarcaDTO;
@@ -39,10 +40,13 @@ public class MarcaServiceImplementation implements IMarcaService {
     }
 
     @Override
-    public MarcaDTO actualizarMarca(Integer id, MarcaDTO marcaDTO)throws MarcaNotFoundException{
+    public MarcaDTO actualizarMarca(Integer id, MarcaDTO marcaDTO)throws MarcaNotFoundException, UpdateNotAllowedException{
         Marca marca = marcaRepository.findById(id).orElse(null);
         if(marca == null){
             throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
+        }
+        if(marca.getDeleteFlag() == true ){
+             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE MARCA").toUpperCase());
         }
         BeanUtils.copyProperties(marcaDTO, marca);
         marca.setDeleteFlag(false);

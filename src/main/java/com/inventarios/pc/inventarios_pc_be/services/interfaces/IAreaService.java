@@ -6,6 +6,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
 
@@ -21,7 +23,7 @@ public interface IAreaService {
      * @return Un objeto {@link AreaDTO} con los datos del área recién creada.
      * @throws LocationNotFoundException Si no se encuentra la sede especificada.
      */
-    public AreaDTO crearArea(AreaDTO areaDTO) throws LocationNotFoundException;
+    public AreaDTO crearArea(AreaDTO areaDTO) throws LocationNotFoundException, SelectNotAllowedException;
 
     /*
      * Lista un area especifica por su id.
@@ -47,7 +49,7 @@ public interface IAreaService {
      * @return Un objeto {@link AreaDTO} con los datos del área actualizada.
      * @throws LocationNotFoundException Si no se encuentra la área o la sede especificada.
      */
-    public AreaDTO actualizarArea(Integer id, AreaDTO areaDTO) throws LocationNotFoundException;
+    public AreaDTO actualizarArea(Integer id, AreaDTO areaDTO) throws SelectNotAllowedException,LocationNotFoundException, UpdateNotAllowedException;
 
     /**
      * Elimina (deshabilita) un área del sistema, marcándola como eliminada.

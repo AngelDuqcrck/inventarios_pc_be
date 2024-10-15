@@ -6,6 +6,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoDispositivoDTO;
 
 public interface ITipoDispositivoService {
@@ -14,7 +15,8 @@ public interface ITipoDispositivoService {
 
     public List<TipoDispositivo> listarTipos();
     
-    public TipoDispositivoDTO actualizarTipoDispositivo(Integer id, TipoDispositivoDTO tipoDispositivoDTO)throws TypeDeviceNotFoundException;
+    public TipoDispositivoDTO actualizarTipoDispositivo(Integer id, TipoDispositivoDTO tipoDispositivoDTO)
+            throws TypeDeviceNotFoundException, UpdateNotAllowedException;
 
     public void eliminarTipoDispositivo(Integer id) throws TypeDeviceNotFoundException, DeleteNotAllowedException;
 

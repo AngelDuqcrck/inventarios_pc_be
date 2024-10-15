@@ -24,8 +24,8 @@ public interface IUsuarioService {
          * @throws RolNotFoundException Si el rol del usuario no se encuentra.
          * @throws DocumentNotFoundException Si el tipo de documento del usuario no se encuentra.
          */
-        public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO) 
-            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException;
+        public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO)
+            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException, SelectNotAllowedException;
     
         /**
          * Restablece la contraseña de un usuario utilizando un token de recuperación.
@@ -78,7 +78,7 @@ public interface IUsuarioService {
          * @throws DocumentNotFoundException Si el tipo de documento del usuario no se encuentra.
          */
         public UsuarioDTO actualizarUsuario(Integer id, ActualizarUsuarioRequest usuarioDTO)
-            throws UserNotFoundException, RolNotFoundException, LocationNotFoundException, DocumentNotFoundException;
+            throws UserNotFoundException, RolNotFoundException, LocationNotFoundException, DocumentNotFoundException, UpdateNotAllowedException, SelectNotAllowedException;
     
         /**
          * Elimina (marca como eliminada) un usuario en el sistema.

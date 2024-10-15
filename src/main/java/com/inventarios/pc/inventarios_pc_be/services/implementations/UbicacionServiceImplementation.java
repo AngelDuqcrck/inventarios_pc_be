@@ -11,6 +11,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.AreaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SedeRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
@@ -47,7 +49,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
      * @throws LocationNotFoundException Si no se encuentra el área asociada a la ubicación.
      */
     @Override
-     public UbicacionDTO crearUbicacion(UbicacionDTO ubicacionDTO) throws LocationNotFoundException{
+     public UbicacionDTO crearUbicacion(UbicacionDTO ubicacionDTO) throws LocationNotFoundException, SelectNotAllowedException{
         Ubicacion ubicacion = new Ubicacion();
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
         //Con el id del area, llamamos al llamamos al repositorio para consultar y traernos la info, si no lo consigue manda nulo y manda la excepcion
@@ -55,6 +57,10 @@ public class UbicacionServiceImplementation implements IUbicacionService {
 
         if (areaPC == null){
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+        }
+
+        if(areaPC.getDeleteFlag()==true){
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT AREA").toUpperCase());
         }
         ubicacion.setArea(areaPC);
         ubicacion.setDeleteFlag(false);
@@ -83,11 +89,15 @@ public class UbicacionServiceImplementation implements IUbicacionService {
      * @throws LocationNotFoundException Si no se encuentra la ubicación o el área asociada.
      */
     @Override
-    public UbicacionDTO actualizarUbicacion(Integer id, UbicacionDTO ubicacionDTO) throws LocationNotFoundException{
+    public UbicacionDTO actualizarUbicacion(Integer id, UbicacionDTO ubicacionDTO) throws  UpdateNotAllowedException ,SelectNotAllowedException ,LocationNotFoundException{
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
         if(ubicacion == null){
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
                 
+        }
+
+        if(ubicacion.getDeleteFlag() == true){
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE LOCATION").toUpperCase());
         }
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
 
@@ -95,6 +105,9 @@ public class UbicacionServiceImplementation implements IUbicacionService {
             AreaPC areaPC = areaRepository.findById(ubicacionDTO.getArea()).orElse(null);
             if(areaPC == null){
                 throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());    }
+                if(areaPC.getDeleteFlag()==true){
+                    throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT AREA").toUpperCase());
+                }
                 ubicacion.setArea(areaPC);
         }
         Ubicacion ubicacionActualizada = ubicacionRepository.save(ubicacion);
@@ -141,7 +154,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     }
 
     @Override
-    public void actualizarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException {
+    public void activarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 
         if (ubicacion == null){

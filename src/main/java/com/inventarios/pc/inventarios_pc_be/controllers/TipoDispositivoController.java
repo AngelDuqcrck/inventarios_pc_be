@@ -1,4 +1,5 @@
 package com.inventarios.pc.inventarios_pc_be.controllers;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoDispositivoService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoDispositivoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
@@ -26,61 +28,64 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 @RestController
 @RequestMapping("/td")
 public class TipoDispositivoController {
-    
-    @Autowired
-    private ITipoDispositivoService tipoDispositivoService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearTipoDispositivo(@RequestBody TipoDispositivoDTO tipoDispositivoDTO){
-        tipoDispositivoService.creaDispositivoDTO(tipoDispositivoDTO);
+        @Autowired
+        private ITipoDispositivoService tipoDispositivoService;
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Tipo de dispositivo creado exitosamente"),
-                HttpStatus.OK);
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/crear")
+        public ResponseEntity<HttpResponse> crearTipoDispositivo(@RequestBody TipoDispositivoDTO tipoDispositivoDTO) {
+                tipoDispositivoService.creaDispositivoDTO(tipoDispositivoDTO);
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-    public ResponseEntity<List<TipoDispositivoDTO>> listarTiposDispositivos(){
-        return ResponseEntity.ok(
-            tipoDispositivoService.listarTipos().stream().map(tipoDispositivo ->{
-                TipoDispositivoDTO tipoDispositivoDTO = new TipoDispositivoDTO();
-                BeanUtils.copyProperties(tipoDispositivo, tipoDispositivoDTO);
-                return tipoDispositivoDTO;
-            }).collect(Collectors.toList()));
-        
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Tipo de dispositivo creado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/actualizar/{id}")
-    public ResponseEntity<HttpResponse> actualizarTipoDispositivo(@PathVariable Integer id, @RequestBody TipoDispositivoDTO tipoDispositivoDTO) throws TypeDeviceNotFoundException{
-        tipoDispositivoService.actualizarTipoDispositivo(id, tipoDispositivoDTO);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping
+        public ResponseEntity<List<TipoDispositivoDTO>> listarTiposDispositivos() {
+                return ResponseEntity.ok(
+                                tipoDispositivoService.listarTipos().stream().map(tipoDispositivo -> {
+                                        TipoDispositivoDTO tipoDispositivoDTO = new TipoDispositivoDTO();
+                                        BeanUtils.copyProperties(tipoDispositivo, tipoDispositivoDTO);
+                                        return tipoDispositivoDTO;
+                                }).collect(Collectors.toList()));
 
-        return new ResponseEntity<>(
-            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                    "Tipo dispositivo actualizado exitosamente"),
-            HttpStatus.OK);
-    }
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<HttpResponse> eliminarTipoDispositivo (@PathVariable Integer id) throws TypeDeviceNotFoundException, DeleteNotAllowedException{
-        tipoDispositivoService.eliminarTipoDispositivo(id);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Tipo dispositivo eliminada exitosamente"),
-                HttpStatus.OK);
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PutMapping("/actualizar/{id}")
+        public ResponseEntity<HttpResponse> actualizarTipoDispositivo(@PathVariable Integer id,
+                        @RequestBody TipoDispositivoDTO tipoDispositivoDTO) throws UpdateNotAllowedException , TypeDeviceNotFoundException {
+                tipoDispositivoService.actualizarTipoDispositivo(id, tipoDispositivoDTO);
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/activar/{id}")
-    public ResponseEntity<HttpResponse> activarTipoDispositivo (@PathVariable Integer id) throws TypeDeviceNotFoundException, ActivateNotAllowedException {
-        tipoDispositivoService.activarTipoDispositivo(id);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Tipo dispositivo activado exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Tipo dispositivo actualizado exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @DeleteMapping("/eliminar/{id}")
+        public ResponseEntity<HttpResponse> eliminarTipoDispositivo(@PathVariable Integer id)
+                        throws TypeDeviceNotFoundException, DeleteNotAllowedException {
+                tipoDispositivoService.eliminarTipoDispositivo(id);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Tipo dispositivo eliminada exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/activar/{id}")
+        public ResponseEntity<HttpResponse> activarTipoDispositivo(@PathVariable Integer id)
+                        throws TypeDeviceNotFoundException, ActivateNotAllowedException {
+                tipoDispositivoService.activarTipoDispositivo(id);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Tipo dispositivo activado exitosamente"),
+                                HttpStatus.OK);
+        }
 }

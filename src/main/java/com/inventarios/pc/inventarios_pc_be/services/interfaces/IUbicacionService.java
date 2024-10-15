@@ -6,6 +6,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 /**
@@ -21,7 +23,7 @@ public interface IUbicacionService {
      * @return Un objeto {@link UbicacionDTO} con los datos de la ubicación recién creada.
      * @throws LocationNotFoundException Si no se encuentra el área asociada a la ubicación.
      */
-    public UbicacionDTO crearUbicacion(UbicacionDTO ubicacionDTO) throws LocationNotFoundException;
+    public UbicacionDTO crearUbicacion(UbicacionDTO ubicacionDTO) throws LocationNotFoundException, SelectNotAllowedException;
 
     /**
      * Obtiene una lista de todas las ubicaciones registradas en el sistema.
@@ -38,7 +40,7 @@ public interface IUbicacionService {
      * @return Un objeto {@link UbicacionDTO} con los datos de la ubicación actualizada.
      * @throws LocationNotFoundException Si no se encuentra la ubicación o el área asociada.
      */
-    public UbicacionDTO actualizarUbicacion(Integer id, UbicacionDTO ubicacionDTO) throws LocationNotFoundException;
+    public UbicacionDTO actualizarUbicacion(Integer id, UbicacionDTO ubicacionDTO) throws SelectNotAllowedException, UpdateNotAllowedException, LocationNotFoundException;
 
     /**
      * Elimina (deshabilita) una ubicación existente, marcándola como no activa.
@@ -52,6 +54,6 @@ public interface IUbicacionService {
     //Lista la informacion de una ubicacion por su id
     public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException;
 
-    public void actualizarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException;
+    public void activarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException;
 } 
 

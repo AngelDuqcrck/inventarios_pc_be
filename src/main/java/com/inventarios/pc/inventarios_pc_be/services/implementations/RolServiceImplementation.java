@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.RolRepository;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
 
@@ -61,10 +62,14 @@ public class RolServiceImplementation implements IRolService {
      * @throws IllegalArgumentException Si el rol no se encuentra en la base de datos.
      */
     @Override
-    public RolDTO actualizarRol(RolDTO rolDTO){
+    public RolDTO actualizarRol(RolDTO rolDTO)throws RolNotFoundException, UpdateNotAllowedException{
         Rol rol = rolRepository.findById(rolDTO.getId()).orElse(null);
-        if(rol == null  ){
-            throw new IllegalArgumentException("Rol no encontrado");
+        if (rol == null) {
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+        }
+
+        if(rol.getDeleteFlag()==true){
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE ROL").toUpperCase());
         }
         BeanUtils.copyProperties(rolDTO, rol);
         Rol rolActualizado = rolRepository.save(rol);

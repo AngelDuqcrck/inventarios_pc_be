@@ -12,6 +12,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.Componente;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoComponente;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.ComponenteRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoComponenteRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IComponenteService;
@@ -31,7 +33,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
     private TipoComponenteRepository tipoComponenteRepository;
 
     @Override
-    public ComponenteDTO crearComponente(ComponenteDTO componenteDTO)throws ComponentNotFoundException{
+    public ComponenteDTO crearComponente(ComponenteDTO componenteDTO)throws ComponentNotFoundException, SelectNotAllowedException{
         Componente componente = new Componente();
 
         BeanUtils.copyProperties(componenteDTO, componente);
@@ -42,6 +44,9 @@ public class ComponenteServiceImplementation implements IComponenteService {
             throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "TYPE COMPONENT").toUpperCase());
         }
 
+        if(tipoComponente.getDeleteFlag() == true){
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT TYPE COMPONENT").toUpperCase());
+        }
         componente.setTipoComponente(tipoComponente);
         componente.setDeleteFlag(false);
         Componente componenteCreado = componenteRepository.save(componente);
@@ -72,21 +77,27 @@ public class ComponenteServiceImplementation implements IComponenteService {
     }
 
     @Override
-    public ComponenteDTO actualizarComponente(Integer id, ComponenteDTO componenteDTO)throws ComponentNotFoundException{
+    public ComponenteDTO actualizarComponente(Integer id, ComponenteDTO componenteDTO)throws SelectNotAllowedException, UpdateNotAllowedException ,ComponentNotFoundException{
         Componente componente = componenteRepository.findById(id).orElse(null);
         if(componente == null){
             throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "COMPONENT").toUpperCase());
         }
 
+        if(componente.getDeleteFlag()==true){
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE COMPONENT").toUpperCase());
+        }
         BeanUtils.copyProperties(componenteDTO, componente);
         componente.setDeleteFlag(false);
     
 
-        if(componenteDTO.getDeleteFlag()!= null){
+        if(componenteDTO.getTipoComponente()!= null){
             TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente().getId()).orElse(null);
             if(tipoComponente == null){
                 throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "TYPE COMPONENT").toUpperCase());
 
+            }
+            if(tipoComponente.getDeleteFlag() == true){
+                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT TYPE COMPONENT").toUpperCase());
             }
             componente.setTipoComponente(tipoComponente);
         }else{

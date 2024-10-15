@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoSoftware;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeSoftwareNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.SoftwarePcRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoSoftwareRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISoftwarePcService;
@@ -43,13 +45,16 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
      * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no existe.
      */
     @Override
-    public SoftwarePcDTO crearSoftware(SoftwarePcDTO  softwarePcDTO)throws TypeSoftwareNotFoundException{
+    public SoftwarePcDTO crearSoftware(SoftwarePcDTO  softwarePcDTO)throws TypeSoftwareNotFoundException, SelectNotAllowedException{
         SoftwarePC softwarePC = new SoftwarePC();
 
         TipoSoftware tipoSoftware = tipoSoftwareRepository.findById(softwarePcDTO.getTipoSoftware()).orElse(null);
 
         if(tipoSoftware == null){
             throw new TypeSoftwareNotFoundException(String.format(IS_NOT_FOUND, "TYPE SOFTWARE").toUpperCase());        
+        }
+        if(tipoSoftware.getDeleteFlag() == true){
+             throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT TYPE SOFTWARE").toUpperCase());
         }
 
         BeanUtils.copyProperties(softwarePcDTO, softwarePC);
@@ -102,11 +107,15 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
      * @throws SoftwareNotFoundException Si el software con el ID especificado no existe.
      */
     @Override
-    public SoftwarePcDTO actualizarSoftware(Integer id, SoftwarePcDTO softwarePcDTO) throws TypeSoftwareNotFoundException, SoftwareNotFoundException{
+    public SoftwarePcDTO actualizarSoftware(Integer id, SoftwarePcDTO softwarePcDTO) throws  UpdateNotAllowedException , SelectNotAllowedException ,TypeSoftwareNotFoundException, SoftwareNotFoundException{
         SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);
 
         if(softwarePC == null){
             throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());        
+        }
+
+        if(softwarePC.getDeleteFlag()== true){
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE SOFTWARE").toUpperCase());
         }
 
         BeanUtils.copyProperties(softwarePcDTO, softwarePC);
@@ -117,6 +126,11 @@ public class SofwareServiceImplementation implements ISoftwarePcService{
             if(tipoSoftware == null){
                 throw new TypeSoftwareNotFoundException(String.format(IS_NOT_FOUND, "TYPE SOFTWARE").toUpperCase());        
             }
+
+            if(tipoSoftware.getDeleteFlag() == true){
+                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT TYPE SOFTWARE").toUpperCase());
+           }
+   
             softwarePC.setTipoSoftware(tipoSoftware);
         }else{
             softwarePC.setTipoSoftware(softwarePC.getTipoSoftware());

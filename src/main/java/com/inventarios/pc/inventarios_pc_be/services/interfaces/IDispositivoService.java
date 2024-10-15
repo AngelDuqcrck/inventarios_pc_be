@@ -7,18 +7,22 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.DispositivoRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivoResponse;
 
 public interface IDispositivoService {
     
-    public DispositivoRequest crearDispositivo(DispositivoRequest dispositivoRequest)throws TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException;
-
+    public DispositivoRequest crearDispositivo(DispositivoRequest dispositivoRequest)throws SelectNotAllowedException , TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException;
+    
     public List<DispositivoPC> listarDispositivos();
 
-    public DispositivoRequest actualizarDispositivo (Integer id, DispositivoRequest dispositivoRequest)throws TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException, DeviceNotFoundException;
+    public DispositivoRequest actualizarDispositivo(Integer id, DispositivoRequest dispositivoRequest)
+            throws UpdateNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
+            StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException;
 
     public DispositivoResponse listarDispositivoById(Integer id)throws DeviceNotFoundException;
 

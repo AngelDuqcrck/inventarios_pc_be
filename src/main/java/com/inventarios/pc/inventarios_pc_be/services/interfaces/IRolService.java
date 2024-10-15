@@ -6,6 +6,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
 
 /**
@@ -34,7 +35,7 @@ public interface IRolService {
      * @return Un objeto {@link RolDTO} con los datos del rol actualizado.
      * @throws IllegalArgumentException Si el rol no se encuentra en la base de datos.
      */
-    public RolDTO actualizarRol(RolDTO rolDTO);
+    public RolDTO actualizarRol(RolDTO rolDTO)throws RolNotFoundException, UpdateNotAllowedException;
 
     /**
      * Deshabilita un rol en el sistema, impidiendo su uso en operaciones futuras.

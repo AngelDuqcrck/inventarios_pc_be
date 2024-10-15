@@ -75,7 +75,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      */
     @Override
     public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO)
-            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException {
+            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException, SelectNotAllowedException {
         if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
             throw new EmailExistException(String.format(IS_ALREADY_USE, "EMAIL").toUpperCase());
         }
@@ -93,6 +93,16 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         if (ubicacion == null)
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+        
+            if(ubicacion.getDeleteFlag()==true){
+                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT UBICACION").toUpperCase());
+            }
+
+            if(rol.getDeleteFlag()==true){
+                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT ROL").toUpperCase());
+            }
+
+            
         usuario.setRolId(rol);
         usuario.setTipoDocumento(tipoDocumento);
         usuario.setUbicacionId(ubicacion);
@@ -253,10 +263,14 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      */
     @Override
     public UsuarioDTO actualizarUsuario(Integer id, ActualizarUsuarioRequest usuarioDTO)
-            throws UserNotFoundException, RolNotFoundException, LocationNotFoundException, DocumentNotFoundException {
+            throws UserNotFoundException, RolNotFoundException, LocationNotFoundException, DocumentNotFoundException, UpdateNotAllowedException, SelectNotAllowedException {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario == null) {
             throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+        }
+
+        if(usuario.getDeleteFlag()==true){
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE USER").toUpperCase());
         }
 
         Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
@@ -273,6 +287,15 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         if (tipoDocumento == null) {
             throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "TYPE DOCUMENT").toUpperCase());
         }
+
+        if(ubicacion.getDeleteFlag()==true){
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT UBICACION").toUpperCase());
+        }
+
+        if(rol.getDeleteFlag()==true){
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT ROL").toUpperCase());
+        }
+
 
         usuario.setRolId(rol);
         usuario.setUbicacionId(ubicacion);

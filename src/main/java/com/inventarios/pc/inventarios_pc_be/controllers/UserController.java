@@ -113,7 +113,7 @@ public class UserController {
     @PutMapping("/actualizar/{usuarioId}")
     public ResponseEntity<HttpResponse> actualizarUsuario(@PathVariable Integer usuarioId,
             @RequestBody ActualizarUsuarioRequest actualizarUsuarioRequest)
-            throws RolNotFoundException, LocationNotFoundException, DocumentNotFoundException, UserNotFoundException {
+            throws SelectNotAllowedException, UpdateNotAllowedException,RolNotFoundException, LocationNotFoundException, DocumentNotFoundException, UserNotFoundException {
         usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),

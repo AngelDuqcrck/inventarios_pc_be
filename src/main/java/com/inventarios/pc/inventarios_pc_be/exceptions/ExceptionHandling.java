@@ -124,6 +124,11 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
 
+    @ExceptionHandler(UpdateNotAllowedException.class)
+    public ResponseEntity<HttpResponse> updateNotAllowedException(UpdateNotAllowedException exception){
+        return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+    }
+    
     @ExceptionHandler(ChangeNotAllowedException.class)
     public ResponseEntity<HttpResponse> changeNotAllowedException(ChangeNotAllowedException exception){
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
@@ -144,7 +149,12 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
 
- @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ExceptionHandler(SelectNotAllowedException.class)
+    public ResponseEntity<HttpResponse> selectNotAllowedException(SelectNotAllowedException exception){
+        return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<HttpResponse> methodNotAllowedException (HttpRequestMethodNotSupportedException exception){
         HttpMethod supportedMethod = Objects.requireNonNull(exception.getSupportedHttpMethods()).iterator().next();
         return createHttpResponse(HttpStatus.METHOD_NOT_ALLOWED, String.format(METHOD_IS_NOT_ALLOWED, supportedMethod));

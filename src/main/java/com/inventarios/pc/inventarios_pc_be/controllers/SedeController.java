@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.SedeServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISedeService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
@@ -87,7 +88,7 @@ public class SedeController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{sedeId}")
     public ResponseEntity<HttpResponse> actualizarSede(@PathVariable Integer sedeId, @RequestBody SedeDTO sedeDTO)
-            throws LocationNotFoundException {
+            throws LocationNotFoundException, UpdateNotAllowedException {
         sedeServiceImplementation.actualizarSede(sedeId, sedeDTO);
 
         return new ResponseEntity<>(

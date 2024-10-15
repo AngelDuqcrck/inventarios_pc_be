@@ -23,6 +23,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
@@ -154,7 +155,7 @@ public class AuthController {
         @PostMapping("/register")
         public ResponseEntity<HttpResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO)
                         throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException,
-                        EmailExistException {
+                        EmailExistException, SelectNotAllowedException {
                 usuarioService.registrarUsuario(usuarioDTO);
 
                 return new ResponseEntity<>(

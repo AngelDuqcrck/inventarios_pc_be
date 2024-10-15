@@ -6,6 +6,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.Marca;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.MarcaDTO;
 
 public interface IMarcaService {
@@ -14,7 +15,7 @@ public interface IMarcaService {
 
     public List<Marca> listarMarcas();
 
-    public MarcaDTO actualizarMarca(Integer id, MarcaDTO marcaDTO)throws MarcaNotFoundException;
+    public MarcaDTO actualizarMarca(Integer id, MarcaDTO marcaDTO)throws MarcaNotFoundException, UpdateNotAllowedException;
     
     public void eliminarMarca(Integer id)throws MarcaNotFoundException, DeleteNotAllowedException;
     

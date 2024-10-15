@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.inventarios.pc.inventarios_pc_be.entities.SedePC;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.SedeRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISedeService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
@@ -82,11 +83,14 @@ public class SedeServiceImplementation implements ISedeService {
      *                                   datos.
      */
     @Override
-    public SedeDTO actualizarSede(Integer id, SedeDTO sedeDTO) throws LocationNotFoundException {
+    public SedeDTO actualizarSede(Integer id, SedeDTO sedeDTO) throws LocationNotFoundException, UpdateNotAllowedException {
         SedePC sedePC = sedeRepository.findById(id).orElse(null);
 
         if (sedePC == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+        }
+        if(sedePC.getDeleteFlag() == true){
+             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE SEDE").toUpperCase());
         }
         BeanUtils.copyProperties(sedeDTO, sedePC);
         SedePC sedeActualizada = sedeRepository.save(sedePC);

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.RolServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IRolService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
@@ -59,8 +60,8 @@ public class RolController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping
-    public ResponseEntity<HttpResponse> actualizarRol (@RequestBody RolDTO rolDTO){
-        rolServiceImplementation.crearRol(rolDTO);
+    public ResponseEntity<HttpResponse> actualizarRol (@RequestBody RolDTO rolDTO) throws RolNotFoundException, UpdateNotAllowedException{
+        rolServiceImplementation.actualizarRol(rolDTO);
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                         "Rol actualizado exitosamente"),
