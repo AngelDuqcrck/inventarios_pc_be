@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenRefreshRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenRefreshResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenValidationResponse;
 
 import jakarta.validation.Valid;
 
@@ -169,8 +170,19 @@ public class AuthController {
      * @return Un ResponseEntity con true si el token es válido, o false si es inválido o ha expirado.
      */
     @GetMapping("/validar-recuperacion")
-    public ResponseEntity<Boolean> validarTokenRecuperacion(@RequestParam("token") String token) {
+    public ResponseEntity<TokenValidationResponse> validarTokenRecuperacion(@RequestParam("token") String token) {
+         if (token == null || token.isEmpty()) {
+            TokenValidationResponse response = new TokenValidationResponse(false, "El token no puede estar vacío.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
         boolean isValid = jwtGenerador.validarTokenRecuperacion(token);
-        return ResponseEntity.ok(isValid);
+        if (isValid) {
+            TokenValidationResponse response = new TokenValidationResponse(true, "El token es válido.");
+            return ResponseEntity.ok(response);
+        } else {
+            TokenValidationResponse response = new TokenValidationResponse(false, "El token es inválido o ha expirado.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
     }
 }
