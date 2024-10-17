@@ -15,18 +15,21 @@ import com.inventarios.pc.inventarios_pc_be.shared.requests.DispositivoRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivoResponse;
 
 public interface IDispositivoService {
-    
-    public DispositivoRequest crearDispositivo(DispositivoRequest dispositivoRequest)throws SelectNotAllowedException , TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException;
-    
-    public List<DispositivoPC> listarDispositivos();
 
-    public DispositivoRequest actualizarDispositivo(Integer id, DispositivoRequest dispositivoRequest)
-            throws UpdateNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
-            StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException;
+        public DispositivoRequest crearDispositivo(DispositivoRequest dispositivoRequest)
+                        throws SelectNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
+                        StateNotFoundException;
 
-    public DispositivoResponse listarDispositivoById(Integer id)throws DeviceNotFoundException;
+        public List<DispositivoPC> listarDispositivos();
 
-    public void eliminarDispositivo(Integer id)throws DeviceNotFoundException, DeleteNotAllowedException;
+        public DispositivoRequest actualizarDispositivo(Integer id, DispositivoRequest dispositivoRequest)
+                        throws UpdateNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
+                        StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException;
 
-    public void cambiarEstadoDispositivo(Integer dispositivoId, Integer nuevoEstadoDispositivoId)throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException;
+        public DispositivoResponse listarDispositivoById(Integer id) throws DeviceNotFoundException;
+
+        public void eliminarDispositivo(Integer id) throws DeviceNotFoundException, DeleteNotAllowedException;
+
+        public void cambiarEstadoDispositivo(Integer dispositivoId, Integer nuevoEstadoDispositivoId)
+                        throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException;
 }

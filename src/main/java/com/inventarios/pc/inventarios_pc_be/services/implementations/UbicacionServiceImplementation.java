@@ -21,15 +21,15 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
 
 /**
- * Servicio que implementa las operaciones CRUD para la gestión de ubicaciones en el sistema.
+ * Servicio que implementa las operaciones CRUD para la gestión de ubicaciones
+ * en el sistema.
  */
 @Service
 public class UbicacionServiceImplementation implements IUbicacionService {
-    
-     public static final String IS_ALREADY_USE = "The %s is already use";
-    public static final String IS_NOT_FOUND = "The %s is not found";
-    public static final String IS_NOT_ALLOWED = "The %s is not allowed";
 
+    public static final String IS_ALREADY_USE = "%s ya esta en uso";
+    public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
 
     @Autowired
     AreaRepository areaRepository;
@@ -40,76 +40,92 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     @Autowired
     UbicacionRepository ubicacionRepository;
 
-    
     /**
      * Crea una nueva ubicación en el sistema a partir de los datos proporcionados.
      * 
-     * @param ubicacionDTO Un objeto {@link UbicacionDTO} con los datos de la ubicación a crear.
-     * @return Un objeto {@link UbicacionDTO} con los datos de la ubicación recién creada.
-     * @throws LocationNotFoundException Si no se encuentra el área asociada a la ubicación.
+     * @param ubicacionDTO Un objeto {@link UbicacionDTO} con los datos de la
+     *                     ubicación a crear.
+     * @return Un objeto {@link UbicacionDTO} con los datos de la ubicación recién
+     *         creada.
+     * @throws LocationNotFoundException Si no se encuentra el área asociada a la
+     *                                   ubicación.
      */
     @Override
-     public UbicacionDTO crearUbicacion(UbicacionDTO ubicacionDTO) throws LocationNotFoundException, SelectNotAllowedException{
+    public UbicacionDTO crearUbicacion(UbicacionDTO ubicacionDTO)
+            throws LocationNotFoundException, SelectNotAllowedException {
         Ubicacion ubicacion = new Ubicacion();
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
-        //Con el id del area, llamamos al llamamos al repositorio para consultar y traernos la info, si no lo consigue manda nulo y manda la excepcion
+        // Con el id del area, llamamos al llamamos al repositorio para consultar y
+        // traernos la info, si no lo consigue manda nulo y manda la excepcion
         AreaPC areaPC = areaRepository.findById(ubicacionDTO.getArea()).orElse(null);
 
-        if (areaPC == null){
+        if (areaPC == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
         }
 
-        if(areaPC.getDeleteFlag()==true){
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT AREA").toUpperCase());
+        if (areaPC.getDeleteFlag() == true) {
+            throw new
+
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA AREA").toUpperCase());
         }
         ubicacion.setArea(areaPC);
         ubicacion.setDeleteFlag(false);
+
         Ubicacion ubicacionCreada = ubicacionRepository.save(ubicacion);
         UbicacionDTO ubicacionCreadaDTO = new UbicacionDTO();
         BeanUtils.copyProperties(ubicacionCreada, ubicacionCreadaDTO);
         return ubicacionCreadaDTO;
     }
 
-     /**
+    /**
      * Obtiene una lista de todas las ubicaciones registradas en el sistema.
      * 
-     * @return Una lista de objetos {@link Ubicacion} que representan todas las ubicaciones.
+     * @return Una lista de objetos {@link Ubicacion} que representan todas las
+     *         ubicaciones.
      */
     @Override
-    public List<Ubicacion> listarUbicaciones(){
+    public List<Ubicacion> listarUbicaciones() {
         return (List<Ubicacion>) ubicacionRepository.findAll();
     }
 
     /**
      * Actualiza los datos de una ubicación existente en el sistema.
      * 
-     * @param id El ID de la ubicación a actualizar.
-     * @param ubicacionDTO Un objeto {@link UbicacionDTO} con los nuevos datos de la ubicación.
-     * @return Un objeto {@link UbicacionDTO} con los datos de la ubicación actualizada.
-     * @throws LocationNotFoundException Si no se encuentra la ubicación o el área asociada.
+     * @param id           El ID de la ubicación a actualizar.
+     * @param ubicacionDTO Un objeto {@link UbicacionDTO} con los nuevos datos de la
+     *                     ubicación.
+     * @return Un objeto {@link UbicacionDTO} con los datos de la ubicación
+     *         actualizada.
+     * @throws LocationNotFoundException Si no se encuentra la ubicación o el área
+     *                                   asociada.
      */
     @Override
-    public UbicacionDTO actualizarUbicacion(Integer id, UbicacionDTO ubicacionDTO) throws  UpdateNotAllowedException ,SelectNotAllowedException ,LocationNotFoundException{
+    public UbicacionDTO actualizarUbicacion(Integer id, UbicacionDTO ubicacionDTO)
+            throws UpdateNotAllowedException, SelectNotAllowedException, LocationNotFoundException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
-        if(ubicacion == null){
+        if (ubicacion == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
-                
+
         }
 
-        if(ubicacion.getDeleteFlag() == true){
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE LOCATION").toUpperCase());
+        if (ubicacion.getDeleteFlag() == true) {
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA UBICACION").toUpperCase());
         }
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
 
-        if (ubicacionDTO.getArea()!= null) {
+        if (ubicacionDTO.getArea() != null) {
             AreaPC areaPC = areaRepository.findById(ubicacionDTO.getArea()).orElse(null);
-            if(areaPC == null){
-                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());    }
-                if(areaPC.getDeleteFlag()==true){
-                    throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT AREA").toUpperCase());
-                }
-                ubicacion.setArea(areaPC);
+            if (areaPC == null) {
+                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+            }
+            if (areaPC.getDeleteFlag() == true) {
+                throw new
+
+                SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA AREA").toUpperCase());
+            }
+            ubicacion.setArea(areaPC);
         }
+
         Ubicacion ubicacionActualizada = ubicacionRepository.save(ubicacion);
         UbicacionDTO ubicacionActualizadaDTO = new UbicacionDTO();
         BeanUtils.copyProperties(ubicacionActualizada, ubicacionActualizadaDTO);
@@ -123,29 +139,30 @@ public class UbicacionServiceImplementation implements IUbicacionService {
      * 
      * @param id El ID de la ubicación a eliminar.
      * @throws LocationNotFoundException Si no se encuentra la ubicación.
-     * @throws DeleteNotAllowedException Si la ubicación ya está marcada como eliminada.
+     * @throws DeleteNotAllowedException Si la ubicación ya está marcada como
+     *                                   eliminada.
      */
     @Override
-    public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException{
+    public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 
-        if (ubicacion == null){
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());        
+        if (ubicacion == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
 
         }
-        if(ubicacion.getDeleteFlag() ==true){
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE LOCATION").toUpperCase());
+        if (ubicacion.getDeleteFlag() == true) {
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTA UBICACION").toUpperCase());
 
         }
         ubicacion.setDeleteFlag(true);
         ubicacionRepository.save(ubicacion);
     }
 
-    //Lista la informacion de una ubicacion especifica de acuerdo a su id
-    public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException{
+    // Lista la informacion de una ubicacion especifica de acuerdo a su id
+    public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
-        if(ubicacion == null){
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());        
+        if (ubicacion == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
         }
         UbicacionResponse ubicacionResponse = new UbicacionResponse();
         BeanUtils.copyProperties(ubicacion, ubicacionResponse);
@@ -157,12 +174,12 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     public void activarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 
-        if (ubicacion == null){
+        if (ubicacion == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
 
         }
-        if(ubicacion.getDeleteFlag() ==false){
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE LOCATION").toUpperCase());
+        if (ubicacion.getDeleteFlag() == false) {
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA UBICACION").toUpperCase());
 
         }
         ubicacion.setDeleteFlag(false);

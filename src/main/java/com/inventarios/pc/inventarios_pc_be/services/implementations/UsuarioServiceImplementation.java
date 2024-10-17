@@ -29,12 +29,12 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.UsuariosResponse;
 @Service
 public class UsuarioServiceImplementation implements IUsuarioService {
 
-    public static final String IS_ALREADY_USE = "The %s is already use";
-    public static final String IS_NOT_FOUND = "The %s is not found";
-    public static final String IS_NOT_ALLOWED = "The %s is not allowed";
-    public static final String IS_NOT_VALID = "The %s is not valid";
-    public static final String ARE_NOT_EQUALS = "The %s are not equals";
-    public static final String IS_NOT_CORRECT = "The %s is not correct";
+    public static final String IS_ALREADY_USE = "%s ya esta en uso";
+    public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
+    public static final String IS_NOT_VALID = "%s no es valido";
+    public static final String ARE_NOT_EQUALS = "%s no son iguales";
+    public static final String IS_NOT_CORRECT = "%s no es correcto";
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -75,9 +75,10 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      */
     @Override
     public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO)
-            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException, SelectNotAllowedException {
+            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException,
+            SelectNotAllowedException {
         if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
-            throw new EmailExistException(String.format(IS_ALREADY_USE, "EMAIL").toUpperCase());
+            throw new EmailExistException(String.format(IS_ALREADY_USE, "CORREO").toUpperCase());
         }
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(usuarioDTO, usuario);
@@ -89,20 +90,25 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
 
         if (tipoDocumento == null)
-            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "DOCUMENT TYPE").toUpperCase());
+            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DOCUMENTO").toUpperCase());
 
         if (ubicacion == null)
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
-        
-            if(ubicacion.getDeleteFlag()==true){
-                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT UBICACION").toUpperCase());
-            }
 
-            if(rol.getDeleteFlag()==true){
-                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT ROL").toUpperCase());
-            }
+        if (ubicacion.getDeleteFlag() == true) {
+            throw new
 
-            
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+        }
+
+        if (rol.getDeleteFlag() == true)
+
+        {
+            throw new
+
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE ROL").toUpperCase());
+        }
+
         usuario.setRolId(rol);
         usuario.setTipoDocumento(tipoDocumento);
         usuario.setUbicacionId(ubicacion);
@@ -131,15 +137,16 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         // List<UsuariosResponse> usuariosResponses = new ArrayList<>();
 
         // for (Usuario usuario : usuarios) {
-        //     UsuariosResponse usuarioResponse = new UsuariosResponse();
-        //     usuarioResponse.setId(usuario.getId());
-        //     usuarioResponse.setNombreCompleto(usuario.getPrimerNombre() + " " + usuario.getSegundoNombre() + " "
-        //             + usuario.getPrimerApellido() + " " + usuario.getSegundoApellido());
-        //     usuarioResponse.setRol(usuario.getRolId().getNombre());
-        //     usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
-        //     usuarioResponse.setCorreo(usuario.getCorreo());
+        // UsuariosResponse usuarioResponse = new UsuariosResponse();
+        // usuarioResponse.setId(usuario.getId());
+        // usuarioResponse.setNombreCompleto(usuario.getPrimerNombre() + " " +
+        // usuario.getSegundoNombre() + " "
+        // + usuario.getPrimerApellido() + " " + usuario.getSegundoApellido());
+        // usuarioResponse.setRol(usuario.getRolId().getNombre());
+        // usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
+        // usuarioResponse.setCorreo(usuario.getCorreo());
 
-        //     usuariosResponses.add(usuarioResponse);
+        // usuariosResponses.add(usuarioResponse);
         // }
 
         return (List<Usuario>) usuarioRepository.findAll();
@@ -159,13 +166,13 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     public void enviarTokenRecuperacion(String correo) throws EmailNotFoundException {
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
         if (usuario == null) {
-            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EMAIL").toUpperCase());
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "CORREO").toUpperCase());
         }
 
         String tokenRecuperacion = jwtGenerador.generarTokenRecuperacion(correo);
         String urlRecuperacion = "http://localhost:4200/cambiar-contrasena?token=" + tokenRecuperacion; // Definir
-                                                                                                           // la
-                                                                                                           // password
+                                                                                                        // la
+                                                                                                        // password
 
         emailService.sendEmail(correo, "Solicitud de Cambio de Contraseña",
                 "Para restablecer su contraseña, presione el siguiente botón",
@@ -195,13 +202,13 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         Usuario usuario = usuarioRepository.findByCorreo(email).orElse(null);
         if (usuario == null) {
-            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EMAIL").toUpperCase());
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "CORREO").toUpperCase());
         }
 
         if (!nuevaPassword.equals(nuevaPassword2)) {
-            throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "NEW PASSWORDS").toUpperCase());
+            throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "LAS NUEVAS CONTRASEÑAS").toUpperCase());
         }
-        
+
         usuario.setPassword(passwordEncoder.encode(nuevaPassword));
         usuarioRepository.save(usuario);
     }
@@ -229,15 +236,15 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         Usuario usuario = usuarioRepository.findByCorreo(email).orElse(null);
         if (usuario == null) {
-            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EMAIL").toUpperCase());
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "CORREO").toUpperCase());
         }
 
         if (!passwordEncoder.matches(cambiarPasswordRequest.getActualPassword(), usuario.getPassword())) {
-            throw new PasswordNotEqualsException(String.format(IS_NOT_CORRECT, "CURRENT PASSWORD").toUpperCase());
+            throw new PasswordNotEqualsException(String.format(IS_NOT_CORRECT, "LA ACTUAL CONTRASEÑA").toUpperCase());
         }
 
         if (!cambiarPasswordRequest.getNuevaPassword().equals(cambiarPasswordRequest.getNuevaPassword2())) {
-            throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "NEW PASSWORDS").toUpperCase());
+            throw new PasswordNotEqualsException(String.format(ARE_NOT_EQUALS, "LAS NUEVAS CONTRASEÑAS").toUpperCase());
 
         }
 
@@ -263,14 +270,15 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      */
     @Override
     public UsuarioDTO actualizarUsuario(Integer id, ActualizarUsuarioRequest usuarioDTO)
-            throws UserNotFoundException, RolNotFoundException, LocationNotFoundException, DocumentNotFoundException, UpdateNotAllowedException, SelectNotAllowedException {
+            throws UserNotFoundException, RolNotFoundException, LocationNotFoundException, DocumentNotFoundException,
+            UpdateNotAllowedException, SelectNotAllowedException {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
         }
 
-        if(usuario.getDeleteFlag()==true){
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE USER").toUpperCase());
+        if (usuario.getDeleteFlag() == true) {
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE USUARIO").toUpperCase());
         }
 
         Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
@@ -279,23 +287,28 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
         Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacion()).orElse(null);
         if (ubicacion == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LOCATION").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
         }
 
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
 
         if (tipoDocumento == null) {
-            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "TYPE DOCUMENT").toUpperCase());
+            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DOCUMENTO").toUpperCase());
         }
 
-        if(ubicacion.getDeleteFlag()==true){
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT UBICACION").toUpperCase());
+        if (ubicacion.getDeleteFlag() == true) {
+            throw new
+
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
         }
 
-        if(rol.getDeleteFlag()==true){
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT ROL").toUpperCase());
-        }
+        if (rol.getDeleteFlag() == true)
 
+        {
+            throw new
+
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE ROL").toUpperCase());
+        }
 
         usuario.setRolId(rol);
         usuario.setUbicacionId(ubicacion);
@@ -323,11 +336,11 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
 
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
         }
 
         if (usuario.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE USER").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE USUARIO").toUpperCase());
         }
 
         usuario.setDeleteFlag(true);
@@ -339,21 +352,22 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
 
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
         }
 
         if (usuario.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE USER").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE USUARIO").toUpperCase());
         }
 
         usuario.setDeleteFlag(false);
         usuarioRepository.save(usuario);
     }
+
     @Override
-    public UsuarioResponse listarUsuarioById(Integer id)throws UserNotFoundException{
+    public UsuarioResponse listarUsuarioById(Integer id) throws UserNotFoundException {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
-        if(usuario == null){
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USER").toUpperCase());
+        if (usuario == null) {
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
         }
         UsuarioResponse usuarioResponse = new UsuarioResponse();
         BeanUtils.copyProperties(usuario, usuarioResponse);

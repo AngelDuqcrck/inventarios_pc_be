@@ -15,7 +15,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
  * Interfaz que define los métodos para gestionar los roles en el sistema.
  */
 public interface IAreaService {
-    
+
     /**
      * Crea una nueva área en el sistema.
      *
@@ -29,10 +29,11 @@ public interface IAreaService {
      * Lista un area especifica por su id.
      * 
      * @return la informacion de un area que representa toda la in
+     * 
      * @throws LocationNotFoundException Si no se encuentran áreas en el sistema.
      */
-    public AreaResponse listarAreaById(Integer id)throws LocationNotFoundException;
-    
+    public AreaResponse listarAreaById(Integer id) throws LocationNotFoundException;
+
     /**
      * Lista todas las áreas registradas en el sistema.
      *
@@ -44,21 +45,24 @@ public interface IAreaService {
     /**
      * Actualiza los datos de una área existente.
      *
-     * @param id El ID de la área a actualizar.
+     * @param id      El ID de la área a actualizar.
      * @param areaDTO El objeto {@link AreaDTO} con los nuevos datos del área.
      * @return Un objeto {@link AreaDTO} con los datos del área actualizada.
-     * @throws LocationNotFoundException Si no se encuentra la área o la sede especificada.
+     * @throws LocationNotFoundException Si no se encuentra la área o la sede
+     *                                   especificada.
      */
-    public AreaDTO actualizarArea(Integer id, AreaDTO areaDTO) throws SelectNotAllowedException,LocationNotFoundException, UpdateNotAllowedException;
+    public AreaDTO actualizarArea(Integer id, AreaDTO areaDTO)
+            throws SelectNotAllowedException, LocationNotFoundException, UpdateNotAllowedException;
 
     /**
      * Elimina (deshabilita) un área del sistema, marcándola como eliminada.
      *
      * @param id El ID de la área a eliminar.
      * @throws LocationNotFoundException Si no se encuentra la área especificada.
-     * @throws DeleteNotAllowedException Si la eliminación del área no está permitida.
+     * @throws DeleteNotAllowedException Si la eliminación del área no está
+     *                                   permitida.
      */
     public void eliminarArea(Integer id) throws LocationNotFoundException, DeleteNotAllowedException;
 
-    public void activarArea(Integer id)throws LocationNotFoundException, ActivateNotAllowedException;
+    public void activarArea(Integer id) throws LocationNotFoundException, ActivateNotAllowedException;
 }

@@ -30,12 +30,12 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivoResponse
 @Service
 public class DispositivoServiceImplementation implements IDispositivoService {
 
-    public static final String IS_ALREADY_USE = "The %s is already use";
-    public static final String IS_NOT_FOUND = "The %s is not found";
-    public static final String IS_NOT_ALLOWED = "The %s is not allowed";
-    public static final String IS_NOT_VALID = "The %s is not valid";
-    public static final String ARE_NOT_EQUALS = "The %s are not equals";
-    public static final String IS_NOT_CORRECT = "The %s is not correct";
+    public static final String IS_ALREADY_USE = "%s ya esta en uso";
+    public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
+    public static final String IS_NOT_VALID = "%s no es valido";
+    public static final String ARE_NOT_EQUALS = "%s no son iguales";
+    public static final String IS_NOT_CORRECT = "%s no es correcto";
 
     @Autowired
     private TipoDispositivoRepository tipoDispositivoRepository;
@@ -57,22 +57,23 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(dispositivoRequest.getTipoDispositivo())
                 .orElse(null);
         if (tipoDispositivo == null) {
-            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TYPE DEVICE").toUpperCase());
+            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DISPOSITIVO").toUpperCase());
         }
         if (tipoDispositivo.getDeleteFlag() == true) {
 
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT TYPE DEVICE").toUpperCase());
+            throw new SelectNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TIPO DE DISPOSITIVO").toUpperCase());
 
         }
         dispositivoPC.setTipoDispositivo(tipoDispositivo);
 
         EstadoDispositivo estadoDispositivo = estadoDispositivoRepository.findByNombre("Disponible").orElse(null);
         if (estadoDispositivo == null) {
-            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "STATE DEVICE").toUpperCase());
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DEL DISPOSITIVO").toUpperCase());
         }
 
         if (estadoDispositivo.getDeleteFlag() == true) {
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT STATE DEVICE").toUpperCase());
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE ESTADO DE DISPOSITIVO").toUpperCase());
         }
         dispositivoPC.setEstadoDispositivo(estadoDispositivo);
 
@@ -103,11 +104,11 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         DispositivoPC dispositivoPC = dispositivoRepository.findById(id).orElse(null);
 
         if (dispositivoPC == null) {
-            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DEVICE").toUpperCase());
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
         }
 
         if (dispositivoPC.getEstadoDispositivo().getNombre().equals("Baja")) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE DEVICE").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE DISPOSITIVO").toUpperCase());
         }
         BeanUtils.copyProperties(dispositivoRequest, dispositivoPC);
 
@@ -115,10 +116,10 @@ public class DispositivoServiceImplementation implements IDispositivoService {
             EstadoDispositivo estadoDispositivo = estadoDispositivoRepository
                     .findById(dispositivoRequest.getEstadoDispositivo()).orElse(null);
             if (estadoDispositivo == null) {
-                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "DEVICE STATE").toUpperCase());
+                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DEL DISPOSITIVO").toUpperCase());
             }
-            if(estadoDispositivo.getDeleteFlag() == true){
-                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT STATE DEVICE").toUpperCase());
+            if (estadoDispositivo.getDeleteFlag() == true) {
+                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE ESTADO DEL DISPOSITIVO").toUpperCase());
             }
             dispositivoPC.setEstadoDispositivo(estadoDispositivo);
 
@@ -144,12 +145,13 @@ public class DispositivoServiceImplementation implements IDispositivoService {
                     .findById(dispositivoRequest.getTipoDispositivo()).orElse(null);
 
             if (tipoDispositivo == null) {
-                throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TYPE DEVICE").toUpperCase());
+                throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DISPOSITIVO").toUpperCase());
             }
             if (tipoDispositivo.getDeleteFlag() == true) {
 
-                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECT TYPE DEVICE").toUpperCase());
-    
+                throw new SelectNotAllowedException(
+                        String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TIPO DE DISPOSITIVO").toUpperCase());
+
             }
             dispositivoPC.setTipoDispositivo(tipoDispositivo);
         } else {
@@ -168,7 +170,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         DispositivoPC dispositivoPC = dispositivoRepository.findById(id).orElse(null);
 
         if (dispositivoPC == null) {
-            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DEVICE").toUpperCase());
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
         }
 
         DispositivoResponse dispositivoResponse = new DispositivoResponse();
@@ -184,11 +186,11 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         DispositivoPC dispositivoPC = dispositivoRepository.findById(id).orElse(null);
 
         if (dispositivoPC == null) {
-            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DEVICE").toUpperCase());
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
         }
 
         if (dispositivoPC.getEstadoDispositivo().getNombre().equals("Baja")) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE DEVICE").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE DISPOSITIVO").toUpperCase());
         }
 
         EstadoDispositivo estadoDispositivo = estadoDispositivoRepository.findByNombre("Baja").get();
@@ -202,13 +204,13 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         DispositivoPC dispositivoPC = dispositivoRepository.findById(dispositivoId).orElse(null);
 
         if (dispositivoPC == null) {
-            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DEVICE").toUpperCase());
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
         }
 
         EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findById(nuevoEstadoDispositivoId)
                 .orElse(null);
         if (nuevoEstadoDispositivo == null) {
-            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "STATE DEVICE").toUpperCase());
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DEL DISPOSITIVO").toUpperCase());
         }
 
         String estadoActual = dispositivoPC.getEstadoDispositivo().getNombre();
@@ -218,40 +220,40 @@ public class DispositivoServiceImplementation implements IDispositivoService {
             case 1: // En uso
                 if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion")) {
                     throw new ChangeNotAllowedException(
-                            String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+                            String.format(IS_NOT_ALLOWED, "CAMBIO DE ESTADO DEL DISPOSITIVO").toUpperCase());
                 }
                 break;
 
             case 3: // Averiado
                 if (!estadoActual.equals("En uso")) {
                     throw new ChangeNotAllowedException(
-                            String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+                            String.format(IS_NOT_ALLOWED, "CAMBIO DE ESTADO DEL DISPOSITIVO").toUpperCase());
                 }
                 break;
 
             case 2: // En reparacion
                 if (!estadoActual.equals("Ninguno") && !estadoActual.equals("Averiado")) {
                     throw new ChangeNotAllowedException(
-                            String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+                            String.format(IS_NOT_ALLOWED, "CAMBIO DE ESTADO DEL DISPOSITIVO").toUpperCase());
                 }
                 break;
 
             case 4: // Disponible
                 if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion")) {
                     throw new ChangeNotAllowedException(
-                            String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+                            String.format(IS_NOT_ALLOWED, "CAMBIO DE ESTADO DEL DISPOSITIVOE").toUpperCase());
                 }
                 break;
 
             case 5: // Baja
                 if (!estadoActual.equals("Averiado") && !estadoActual.equals("Disponible")) {
                     throw new ChangeNotAllowedException(
-                            String.format(IS_NOT_ALLOWED, "CHANGE STATE DEVICE").toUpperCase());
+                            String.format(IS_NOT_ALLOWED, "CAMBIO DE ESTADO DEL DISPOSITIVO").toUpperCase());
                 }
                 break;
 
             default:
-                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "STATE DEVICE").toUpperCase());
+                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DEL DISPOSITIVO").toUpperCase());
 
         }
 

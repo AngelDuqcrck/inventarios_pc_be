@@ -85,7 +85,8 @@ public class SoftwarePcController {
         @PutMapping("/actualizar/{softwareId}")
         public ResponseEntity<HttpResponse> actualizarSoftware(@PathVariable Integer softwareId,
                         @RequestBody SoftwarePcDTO softwarePcDTO)
-                        throws SoftwareNotFoundException, TypeSoftwareNotFoundException, SelectNotAllowedException, UpdateNotAllowedException {
+                        throws SoftwareNotFoundException, TypeSoftwareNotFoundException, SelectNotAllowedException,
+                        UpdateNotAllowedException {
                 softwarePcService.actualizarSoftware(softwareId, softwarePcDTO);
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),

@@ -37,76 +37,79 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 @RequestMapping("/dispositivo")
 public class DispositivoController {
 
-    @Autowired
-    private IDispositivoService dispositivoService;
+        @Autowired
+        private IDispositivoService dispositivoService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearDispositivo(@RequestBody DispositivoRequest dispositivoRequest)
-            throws TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException, SelectNotAllowedException {
-        dispositivoService.crearDispositivo(dispositivoRequest);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Dispositivo creado exitosamente"),
-                HttpStatus.OK);
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/crear")
+        public ResponseEntity<HttpResponse> crearDispositivo(@RequestBody DispositivoRequest dispositivoRequest)
+                        throws TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException,
+                        SelectNotAllowedException {
+                dispositivoService.crearDispositivo(dispositivoRequest);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Dispositivo creado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-    public ResponseEntity<List<DispositivoResponse>> listarDispositivos() {
-        return ResponseEntity.ok(
-                dispositivoService.listarDispositivos().stream().map(dispositivo -> {
-                    DispositivoResponse dispositivoR = new DispositivoResponse();
-                    BeanUtils.copyProperties(dispositivo, dispositivoR);
-                    dispositivoR.setTipoDispositivo(dispositivo.getTipoDispositivo().getNombre());
-                    dispositivoR.setMarca(dispositivo.getMarca().getNombre());
-                    dispositivoR.setEstadoDispositivo(dispositivo.getEstadoDispositivo().getNombre());
-                    return dispositivoR;
-                }).collect(Collectors.toList()));
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping
+        public ResponseEntity<List<DispositivoResponse>> listarDispositivos() {
+                return ResponseEntity.ok(
+                                dispositivoService.listarDispositivos().stream().map(dispositivo -> {
+                                        DispositivoResponse dispositivoR = new DispositivoResponse();
+                                        BeanUtils.copyProperties(dispositivo, dispositivoR);
+                                        dispositivoR.setTipoDispositivo(dispositivo.getTipoDispositivo().getNombre());
+                                        dispositivoR.setMarca(dispositivo.getMarca().getNombre());
+                                        dispositivoR.setEstadoDispositivo(
+                                                        dispositivo.getEstadoDispositivo().getNombre());
+                                        return dispositivoR;
+                                }).collect(Collectors.toList()));
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/actualizar/{dispositivoId}")
-    public ResponseEntity<HttpResponse> actualizarDispositivo(@PathVariable Integer dispositivoId,
-            @RequestBody DispositivoRequest dispositivoRequest) throws TypeDeviceNotFoundException,
-            MarcaNotFoundException, StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException , UpdateNotAllowedException {
-        dispositivoService.actualizarDispositivo(dispositivoId, dispositivoRequest);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PutMapping("/actualizar/{dispositivoId}")
+        public ResponseEntity<HttpResponse> actualizarDispositivo(@PathVariable Integer dispositivoId,
+                        @RequestBody DispositivoRequest dispositivoRequest) throws TypeDeviceNotFoundException,
+                        MarcaNotFoundException, StateNotFoundException, DeviceNotFoundException,
+                        SelectNotAllowedException, UpdateNotAllowedException {
+                dispositivoService.actualizarDispositivo(dispositivoId, dispositivoRequest);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Dispositivo actualizado exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Dispositivo actualizado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/{dispositivoId}")
-    public ResponseEntity<DispositivoResponse> listarDispositivoById(@PathVariable Integer dispositivoId)
-            throws DeviceNotFoundException {
-        DispositivoResponse dispositivoResponse = dispositivoService.listarDispositivoById(dispositivoId);
-        return new ResponseEntity<>(dispositivoResponse, HttpStatus.OK);
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/{dispositivoId}")
+        public ResponseEntity<DispositivoResponse> listarDispositivoById(@PathVariable Integer dispositivoId)
+                        throws DeviceNotFoundException {
+                DispositivoResponse dispositivoResponse = dispositivoService.listarDispositivoById(dispositivoId);
+                return new ResponseEntity<>(dispositivoResponse, HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/eliminar/{dispositivoId}")
-    public ResponseEntity<HttpResponse> eliminarDispositivo(@PathVariable Integer dispositivoId)
-            throws DeviceNotFoundException, DeleteNotAllowedException {
-        dispositivoService.eliminarDispositivo(dispositivoId);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Dispositivo eliminado exitosamente"),
-                HttpStatus.OK);
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @DeleteMapping("/eliminar/{dispositivoId}")
+        public ResponseEntity<HttpResponse> eliminarDispositivo(@PathVariable Integer dispositivoId)
+                        throws DeviceNotFoundException, DeleteNotAllowedException {
+                dispositivoService.eliminarDispositivo(dispositivoId);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Dispositivo eliminado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/cambiar-estado")
-    public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestParam Integer dispositivoId,
-            @RequestParam Integer nuevoEstadoDispositivoId)
-            throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException {
-        dispositivoService.cambiarEstadoDispositivo(dispositivoId, nuevoEstadoDispositivoId);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Estado cambiado exitosamente"),
-                HttpStatus.OK);
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/cambiar-estado")
+        public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestParam Integer dispositivoId,
+                        @RequestParam Integer nuevoEstadoDispositivoId)
+                        throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException {
+                dispositivoService.cambiarEstadoDispositivo(dispositivoId, nuevoEstadoDispositivoId);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Estado cambiado exitosamente"),
+                                HttpStatus.OK);
+        }
 
 }

@@ -13,15 +13,17 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComponenteDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComponenteResponse;
 
 public interface IComponenteService {
-    public ComponenteDTO crearComponente(ComponenteDTO componenteDTO)throws SelectNotAllowedException , ComponentNotFoundException;
+    public ComponenteDTO crearComponente(ComponenteDTO componenteDTO)
+            throws SelectNotAllowedException, ComponentNotFoundException;
 
     public List<Componente> listarComponentes();
 
-    public ComponenteResponse listarComponenteById(Integer id)throws ComponentNotFoundException;
+    public ComponenteResponse listarComponenteById(Integer id) throws ComponentNotFoundException;
 
-    public ComponenteDTO actualizarComponente(Integer id, ComponenteDTO componenteDTO)throws SelectNotAllowedException ,UpdateNotAllowedException , ComponentNotFoundException;
+    public ComponenteDTO actualizarComponente(Integer id, ComponenteDTO componenteDTO)
+            throws SelectNotAllowedException, UpdateNotAllowedException, ComponentNotFoundException;
 
-    public void eliminarComponente (Integer id) throws ComponentNotFoundException, DeleteNotAllowedException;
+    public void eliminarComponente(Integer id) throws ComponentNotFoundException, DeleteNotAllowedException;
 
-    public void activarComponente (Integer id) throws ComponentNotFoundException, ActivateNotAllowedException;
+    public void activarComponente(Integer id) throws ComponentNotFoundException, ActivateNotAllowedException;
 }

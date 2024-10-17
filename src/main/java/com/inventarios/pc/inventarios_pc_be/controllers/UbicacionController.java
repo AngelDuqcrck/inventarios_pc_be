@@ -86,7 +86,8 @@ public class UbicacionController {
         @PreAuthorize("hasAuthority('ADMIN')")
         @PutMapping("/actualizar/{ubicacionId}")
         public ResponseEntity<HttpResponse> actualizarUbicacion(@PathVariable Integer ubicacionId,
-                        @RequestBody UbicacionDTO ubicacionDTO) throws LocationNotFoundException, SelectNotAllowedException, UpdateNotAllowedException {
+                        @RequestBody UbicacionDTO ubicacionDTO)
+                        throws LocationNotFoundException, SelectNotAllowedException, UpdateNotAllowedException {
                 ubicacionServiceImplementation.actualizarUbicacion(ubicacionId, ubicacionDTO);
 
                 return new ResponseEntity<>(

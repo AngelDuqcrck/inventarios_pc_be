@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class SedeServiceImplementation implements ISedeService {
 
-    public static final String IS_ALREADY_USE = "The %s is already use";
-    public static final String IS_NOT_FOUND = "The %s is not found";
-    public static final String IS_NOT_ALLOWED = "The %s is not allowed";
+    public static final String IS_ALREADY_USE = "%s ya esta en uso";
+    public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
 
     @Autowired
     private SedeRepository sedeRepository;
@@ -83,14 +83,15 @@ public class SedeServiceImplementation implements ISedeService {
      *                                   datos.
      */
     @Override
-    public SedeDTO actualizarSede(Integer id, SedeDTO sedeDTO) throws LocationNotFoundException, UpdateNotAllowedException {
+    public SedeDTO actualizarSede(Integer id, SedeDTO sedeDTO)
+            throws LocationNotFoundException, UpdateNotAllowedException {
         SedePC sedePC = sedeRepository.findById(id).orElse(null);
 
         if (sedePC == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
         }
-        if(sedePC.getDeleteFlag() == true){
-             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE SEDE").toUpperCase());
+        if (sedePC.getDeleteFlag() == true) {
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SEDE").toUpperCase());
         }
         BeanUtils.copyProperties(sedeDTO, sedePC);
         SedePC sedeActualizada = sedeRepository.save(sedePC);
@@ -117,7 +118,7 @@ public class SedeServiceImplementation implements ISedeService {
         }
 
         if (sedePC.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE SEDE").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTA SEDE").toUpperCase());
         }
         sedePC.setDeleteFlag(true);
         sedeRepository.save(sedePC);
@@ -132,7 +133,7 @@ public class SedeServiceImplementation implements ISedeService {
         }
 
         if (sedePC.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE SEDE").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA SEDE").toUpperCase());
         }
         sedePC.setDeleteFlag(false);
         sedeRepository.save(sedePC);

@@ -18,9 +18,9 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoComputadorDTO;
 @Service
 public class TipoPcServiceImplementation implements ITipoPcService {
 
-    public static final String IS_ALREADY_USE = "The %s is already use";
-    public static final String IS_NOT_FOUND = "The %s is not found";
-    public static final String IS_NOT_ALLOWED = "The %s is not allowed";
+    public static final String IS_ALREADY_USE = "%s ya esta en uso";
+    public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
 
     @Autowired
     TipoPcRepository tipoPcRepository;
@@ -47,11 +47,11 @@ public class TipoPcServiceImplementation implements ITipoPcService {
             throws TypePcNotFoundException, UpdateNotAllowedException {
         TipoPC tipoPC = tipoPcRepository.findById(id).orElse(null);
         if (tipoPC == null) {
-            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TYPE PC").toUpperCase());
+            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE PC").toUpperCase());
         }
 
-        if(tipoPC.getDeleteFlag() == true){
-             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE TYPE PC").toUpperCase());
+        if (tipoPC.getDeleteFlag() == true) {
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TIPO DE PC").toUpperCase());
         }
         BeanUtils.copyProperties(tipoComputadorDTO, tipoPC);
         tipoPC.setDeleteFlag(false);
@@ -65,10 +65,10 @@ public class TipoPcServiceImplementation implements ITipoPcService {
     public void eliminarTipoPc(Integer id) throws TypePcNotFoundException, DeleteNotAllowedException {
         TipoPC tipoPC = tipoPcRepository.findById(id).orElse(null);
         if (tipoPC == null) {
-            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TYPE PC").toUpperCase());
+            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE PC").toUpperCase());
         }
         if (tipoPC.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE TYPE PC").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE TIPO DE PC").toUpperCase());
         }
 
         tipoPC.setDeleteFlag(true);
@@ -79,10 +79,10 @@ public class TipoPcServiceImplementation implements ITipoPcService {
     public void activarTipoPc(Integer id) throws TypePcNotFoundException, ActivateNotAllowedException {
         TipoPC tipoPC = tipoPcRepository.findById(id).orElse(null);
         if (tipoPC == null) {
-            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TYPE PC").toUpperCase());
+            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE PC").toUpperCase());
         }
         if (tipoPC.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE TYPE PC").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE TIPO DE PC").toUpperCase());
         }
 
         tipoPC.setDeleteFlag(false);

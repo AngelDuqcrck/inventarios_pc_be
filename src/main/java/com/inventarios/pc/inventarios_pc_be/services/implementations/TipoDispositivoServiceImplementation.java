@@ -18,9 +18,9 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoDispositivoDTO;
 @Service
 public class TipoDispositivoServiceImplementation implements ITipoDispositivoService {
 
-    public static final String IS_ALREADY_USE = "The %s is already use";
-    public static final String IS_NOT_FOUND = "The %s is not found";
-    public static final String IS_NOT_ALLOWED = "The %s is not allowed";
+    public static final String IS_ALREADY_USE = "%s ya esta en uso";
+    public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
 
     @Autowired
     private TipoDispositivoRepository tipoDispositivoRepository;
@@ -46,10 +46,11 @@ public class TipoDispositivoServiceImplementation implements ITipoDispositivoSer
             throws TypeDeviceNotFoundException, UpdateNotAllowedException {
         TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(id).orElse(null);
         if (tipoDispositivo == null) {
-            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TYPE DEVICE").toUpperCase());
+            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DISPOSITIVO").toUpperCase());
         }
-        if(tipoDispositivo.getDeleteFlag() == true){
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE TYPE DEVICE").toUpperCase());
+        if (tipoDispositivo.getDeleteFlag() == true) {
+            throw new UpdateNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TIPO DE DISPOSITIVO").toUpperCase());
         }
         BeanUtils.copyProperties(tipoDispositivoDTO, tipoDispositivo);
         tipoDispositivo.setDeleteFlag(false);
@@ -64,11 +65,12 @@ public class TipoDispositivoServiceImplementation implements ITipoDispositivoSer
     public void eliminarTipoDispositivo(Integer id) throws TypeDeviceNotFoundException, DeleteNotAllowedException {
         TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(id).orElse(null);
         if (tipoDispositivo == null) {
-            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TYPE DEVICE").toUpperCase());
+            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DISPOSITIVO").toUpperCase());
         }
 
         if (tipoDispositivo.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE TYPE DEVICE").toUpperCase());
+            throw new DeleteNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE TIPO DE DISPOSITIVO").toUpperCase());
         }
         tipoDispositivo.setDeleteFlag(true);
         tipoDispositivoRepository.save(tipoDispositivo);
@@ -78,11 +80,12 @@ public class TipoDispositivoServiceImplementation implements ITipoDispositivoSer
     public void activarTipoDispositivo(Integer id) throws TypeDeviceNotFoundException, ActivateNotAllowedException {
         TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(id).orElse(null);
         if (tipoDispositivo == null) {
-            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TYPE DEVICE").toUpperCase());
+            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DISPOSITIVO").toUpperCase());
         }
 
         if (tipoDispositivo.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE TYPE DEVICE").toUpperCase());
+            throw new ActivateNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE TIPO DE DISPOSITIVO").toUpperCase());
         }
         tipoDispositivo.setDeleteFlag(false);
         tipoDispositivoRepository.save(tipoDispositivo);

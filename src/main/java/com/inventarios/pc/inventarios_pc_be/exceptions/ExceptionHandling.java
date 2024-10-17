@@ -1,4 +1,5 @@
 package com.inventarios.pc.inventarios_pc_be.exceptions;
+
 import jakarta.persistence.NoResultException;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
+
 //En esta clase se realiza todo el manejo de excepciones y la creracion de nuevas excepciones permitidas
 @RestControllerAdvice
 public class ExceptionHandling {
@@ -31,25 +33,26 @@ public class ExceptionHandling {
     private static final String NOT_ENOUGH_PERMISSION = "You do not have enough permission";
     private static final String INCORRECT_CREDENTIALS = "Username or password incorrect. Please try again";
 
-      @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<HttpResponse> accountDisabledException (){
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<HttpResponse> accountDisabledException() {
         return createHttpResponse(HttpStatus.BAD_REQUEST, ACCOUNT_DISABLED);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<HttpResponse> badCredentialsException (){
+    public ResponseEntity<HttpResponse> badCredentialsException() {
         return createHttpResponse(HttpStatus.BAD_REQUEST, INCORRECT_CREDENTIALS);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<HttpResponse> accessDeniedException (){
+    public ResponseEntity<HttpResponse> accessDeniedException() {
         return createHttpResponse(HttpStatus.BAD_REQUEST, NOT_ENOUGH_PERMISSION);
     }
 
     @ExceptionHandler(LockedException.class)
-    public ResponseEntity<HttpResponse> accountLockedException (){
+    public ResponseEntity<HttpResponse> accountLockedException() {
         return createHttpResponse(HttpStatus.UNAUTHORIZED, ACCOUNT_LOCKED);
     }
+
     @ExceptionHandler(EmailExistException.class)
     public ResponseEntity<HttpResponse> emailExistException(EmailExistException exception) {
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
@@ -61,91 +64,99 @@ public class ExceptionHandling {
     }
 
     @ExceptionHandler(RolNotFoundException.class)
-    public ResponseEntity<HttpResponse> rolNotFoundException(RolNotFoundException exception){
+    public ResponseEntity<HttpResponse> rolNotFoundException(RolNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(SoftwareNotFoundException.class)
-    public ResponseEntity<HttpResponse> softwareNotFoundException(SoftwareNotFoundException exception){
+    public ResponseEntity<HttpResponse> softwareNotFoundException(SoftwareNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
-    @ExceptionHandler (TypeSoftwareNotFoundException.class)
-    public ResponseEntity<HttpResponse> typeSoftwareNotFoundException(TypeSoftwareNotFoundException exception){
+    @ExceptionHandler(TypeSoftwareNotFoundException.class)
+    public ResponseEntity<HttpResponse> typeSoftwareNotFoundException(TypeSoftwareNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(MarcaNotFoundException.class)
-    public ResponseEntity<HttpResponse> marcaNotFoundException(MarcaNotFoundException exception){
+    public ResponseEntity<HttpResponse> marcaNotFoundException(MarcaNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(DocumentNotFoundException.class)
-    public ResponseEntity<HttpResponse> documentNotFoundException(DocumentNotFoundException exception){
+    public ResponseEntity<HttpResponse> documentNotFoundException(DocumentNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(DeviceNotFoundException.class)
-    public ResponseEntity<HttpResponse> deviceNotFoundException(DeviceNotFoundException exception){
+    public ResponseEntity<HttpResponse> deviceNotFoundException(DeviceNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
-    @ExceptionHandler (StateNotFoundException.class)
-    public ResponseEntity<HttpResponse> stateNotFoundException(StateNotFoundException exception){
-        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
-    }
-    @ExceptionHandler (TypeDeviceNotFoundException.class)
-    public ResponseEntity<HttpResponse> typeDeviceNotFoundException(TypeDeviceNotFoundException exception){
+    @ExceptionHandler(StateNotFoundException.class)
+    public ResponseEntity<HttpResponse> stateNotFoundException(StateNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
-    @ExceptionHandler (TypePcNotFoundException.class)
-    public ResponseEntity<HttpResponse> typePcNotFoundException(TypePcNotFoundException exception){
+    @ExceptionHandler(TypeDeviceNotFoundException.class)
+    public ResponseEntity<HttpResponse> typeDeviceNotFoundException(TypeDeviceNotFoundException exception) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
+    @ExceptionHandler(TypePcNotFoundException.class)
+    public ResponseEntity<HttpResponse> typePcNotFoundException(TypePcNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
 
     }
-    
+
     @ExceptionHandler(LocationNotFoundException.class)
-    public ResponseEntity<HttpResponse> locationNotFoundException(LocationNotFoundException exception){
+    public ResponseEntity<HttpResponse> locationNotFoundException(LocationNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(ComponentNotFoundException.class)
-    public ResponseEntity<HttpResponse> componentNotFoundException(ComponentNotFoundException exception){
+    public ResponseEntity<HttpResponse> componentNotFoundException(ComponentNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
-    
+
+    @ExceptionHandler(MiscellaneousNotFoundException.class)
+    public ResponseEntity<HttpResponse> miscellaneousNotFoundException(MiscellaneousNotFoundException exception) {
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
     @ExceptionHandler(DeleteNotAllowedException.class)
-    public ResponseEntity<HttpResponse> deleteNotAllowedException(DeleteNotAllowedException exception){
+    public ResponseEntity<HttpResponse> deleteNotAllowedException(DeleteNotAllowedException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
 
     @ExceptionHandler(UpdateNotAllowedException.class)
-    public ResponseEntity<HttpResponse> updateNotAllowedException(UpdateNotAllowedException exception){
+    public ResponseEntity<HttpResponse> updateNotAllowedException(UpdateNotAllowedException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
-    
+
     @ExceptionHandler(ChangeNotAllowedException.class)
-    public ResponseEntity<HttpResponse> changeNotAllowedException(ChangeNotAllowedException exception){
+    public ResponseEntity<HttpResponse> changeNotAllowedException(ChangeNotAllowedException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
 
     @ExceptionHandler(ActivateNotAllowedException.class)
-    public ResponseEntity<HttpResponse> activateNotAllowedException(ActivateNotAllowedException exception){
+    public ResponseEntity<HttpResponse> activateNotAllowedException(ActivateNotAllowedException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
+
     @ExceptionHandler(PasswordNotEqualsException.class)
-    public ResponseEntity<HttpResponse> passwordNotEqualsException(PasswordNotEqualsException exception){
+    public ResponseEntity<HttpResponse> passwordNotEqualsException(PasswordNotEqualsException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
 
     }
 
     @ExceptionHandler(TokenNotValidException.class)
-    public ResponseEntity<HttpResponse> tokenNotValidException(TokenNotValidException exception){
+    public ResponseEntity<HttpResponse> tokenNotValidException(TokenNotValidException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
 
@@ -155,31 +166,32 @@ public class ExceptionHandling {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<HttpResponse> methodNotAllowedException (HttpRequestMethodNotSupportedException exception){
+    public ResponseEntity<HttpResponse> methodNotAllowedException(HttpRequestMethodNotSupportedException exception) {
         HttpMethod supportedMethod = Objects.requireNonNull(exception.getSupportedHttpMethods()).iterator().next();
         return createHttpResponse(HttpStatus.METHOD_NOT_ALLOWED, String.format(METHOD_IS_NOT_ALLOWED, supportedMethod));
     }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<HttpResponse> internalErrorException (Exception exception){
+    public ResponseEntity<HttpResponse> internalErrorException(Exception exception) {
         LOGGER.error(exception.getMessage());
         return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage().toUpperCase());
     }
 
     @ExceptionHandler(NoResultException.class)
-    public ResponseEntity<HttpResponse> notFoundException (NoResultException exception){
+    public ResponseEntity<HttpResponse> notFoundException(NoResultException exception) {
         LOGGER.error(exception.getMessage());
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<HttpResponse> iOException (IOException exception){
+    public ResponseEntity<HttpResponse> iOException(IOException exception) {
         LOGGER.error(exception.getMessage());
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
+
     private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message) {
         return new ResponseEntity<>(
                 new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase(), message),
-                httpStatus
-        );
+                httpStatus);
     }
 }

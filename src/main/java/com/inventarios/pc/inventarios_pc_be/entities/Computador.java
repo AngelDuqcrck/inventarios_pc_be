@@ -32,7 +32,6 @@ public class Computador {
     private Ubicacion ubicacion;
 
     @NotEmpty
-    @UniqueElements
     @Column(nullable = false, unique = true)
     private String nombre;
 
@@ -66,7 +65,6 @@ public class Computador {
     private TipoAlmacenamientoRam tipoRam;
 
     @NotEmpty
-    @UniqueElements
     @Column(nullable = false, unique = true)
     private String placa;
 

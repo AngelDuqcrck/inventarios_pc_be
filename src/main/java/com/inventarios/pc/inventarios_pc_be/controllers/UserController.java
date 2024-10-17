@@ -37,137 +37,140 @@ import jakarta.validation.Valid;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private IUsuarioService usuarioServiceImplementation;
+        @Autowired
+        private IUsuarioService usuarioServiceImplementation;
 
-    @Autowired
-    private JwtGenerador jwtGenerador;
+        @Autowired
+        private JwtGenerador jwtGenerador;
 
-    /**
-     * Cambia la contraseña de un usuario autenticado.
-     * 
-     * @param cambiarPasswordRequest Objeto que contiene la contraseña actual y la
-     *                               nueva contraseña.
-     * @return Respuesta HTTP con un mensaje indicando el éxito o error de la
-     *         operación.
-     * @throws EmailNotFoundException     Si no se encuentra un usuario asociado al
-     *                                    correo.
-     * @throws TokenNotValidException     Si el token de autenticación no es válido.
-     * @throws PasswordNotEqualsException Si la contraseña actual no coincide o las
-     *                                    nuevas contraseñas no son iguales.
-     */
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/cambiar-password")
-    public ResponseEntity<HttpResponse> cambiarPassword(@Valid @RequestBody CambiarPasswordRequest cambiarPasswordRequest)
-            throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException {
-        usuarioServiceImplementation.cambiarContraseña(cambiarPasswordRequest);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        " Contraseña cambiada exitosamente"),
-                HttpStatus.OK);
-    }
-
-    /**
-     * Lista todos los usuarios del sistema.
-     * Este método está restringido solo para los usuarios con el rol "ADMIN".
-     *
-     * @return ResponseEntity que contiene una lista de objetos UsuariosResponse y
-     *         el estado HTTP OK.
-     */
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-//     public ResponseEntity<List<UsuariosResponse>> listarUsuarios() {
-//         List<UsuariosResponse> usuariosResponses = usuarioServiceImplementation.listarUsuarios();
-//         return new ResponseEntity<>(usuariosResponses, HttpStatus.OK);
-//     }
-        public ResponseEntity<List<UsuarioResponse>> listarUsuarios(){
-        return ResponseEntity.ok(
-            usuarioServiceImplementation.listarUsuarios().stream().map(usuario ->{
-                UsuarioResponse usuarioResponse = new UsuarioResponse();
-                BeanUtils.copyProperties(usuario, usuarioResponse);
-                usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
-                usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
-                usuarioResponse.setRol(usuario.getRolId().getNombre());
-                usuarioResponse.setDelete_flag(usuario.getDeleteFlag());
-                return usuarioResponse;
-            }).collect(Collectors.toList())
-        );
-    }
-
-    /**
-     * Actualiza la información de un usuario específico.
-     * Solo los usuarios con el rol "ADMIN" pueden acceder a este servicio.
-     *
-     * @param usuarioId                El ID del usuario que se va a actualizar.
-     * @param actualizarUsuarioRequest Objeto que contiene la nueva información del
-     *                                 usuario.
-     * @return ResponseEntity con un mensaje de éxito y el estado HTTP OK.
-     * @throws RolNotFoundException      Si el rol especificado no existe.
-     * @throws LocationNotFoundException Si la ubicación especificada no existe.
-     * @throws DocumentNotFoundException Si el tipo de documento especificado no
-     *                                   existe.
-     * @throws UserNotFoundException     Si el usuario no existe en la base de
-     *                                   datos.
-     */
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/actualizar/{usuarioId}")
-    public ResponseEntity<HttpResponse> actualizarUsuario(@PathVariable Integer usuarioId,
-            @RequestBody ActualizarUsuarioRequest actualizarUsuarioRequest)
-            throws SelectNotAllowedException, UpdateNotAllowedException,RolNotFoundException, LocationNotFoundException, DocumentNotFoundException, UserNotFoundException {
-        usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        " Usuario actializado con exito"),
-                HttpStatus.OK);
-    }
-
-    /**
- * Elimina un usuario marcándolo como eliminado.
- * Solo los usuarios con el rol "ADMIN" pueden acceder a este servicio.
- *
- * @param usuarioId El ID del usuario que se va a eliminar.
- * @return ResponseEntity con un mensaje de éxito y el estado HTTP OK.
- * @throws UserNotFoundException Si el usuario no existe.
- * @throws DeleteNotAllowedException Si el usuario ya está marcado como eliminado.
- */
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/eliminar/{usuarioId}")
-    public ResponseEntity<HttpResponse> eliminarUsuario(@PathVariable Integer usuarioId)
-            throws UserNotFoundException, DeleteNotAllowedException {
-        usuarioServiceImplementation.eliminarUsuario(usuarioId);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        " Usuario eliminado con exito"),
-                HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/activar/{usuarioId}")
-    public ResponseEntity<HttpResponse> activarUsuario(@PathVariable Integer usuarioId)
-            throws UserNotFoundException, ActivateNotAllowedException {
-        usuarioServiceImplementation.activarUsuario(usuarioId);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        " Usuario activado con exito"),
-                HttpStatus.OK);
-    }
-
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponse> getUsuarioById(@PathVariable Integer id) throws UserNotFoundException{
-        UsuarioResponse usuarioResponse = usuarioServiceImplementation.listarUsuarioById(id);
-        return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/validar")
-    public ResponseEntity<Boolean> validarToken(@RequestHeader("Authorization") String token) {
-        // Elimina el prefijo "Bearer " del token si está presente
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
+        /**
+         * Cambia la contraseña de un usuario autenticado.
+         * 
+         * @param cambiarPasswordRequest Objeto que contiene la contraseña actual y la
+         *                               nueva contraseña.
+         * @return Respuesta HTTP con un mensaje indicando el éxito o error de la
+         *         operación.
+         * @throws EmailNotFoundException     Si no se encuentra un usuario asociado al
+         *                                    correo.
+         * @throws TokenNotValidException     Si el token de autenticación no es válido.
+         * @throws PasswordNotEqualsException Si la contraseña actual no coincide o las
+         *                                    nuevas contraseñas no son iguales.
+         */
+        @PreAuthorize("isAuthenticated()")
+        @PostMapping("/cambiar-password")
+        public ResponseEntity<HttpResponse> cambiarPassword(
+                        @Valid @RequestBody CambiarPasswordRequest cambiarPasswordRequest)
+                        throws EmailNotFoundException, TokenNotValidException, PasswordNotEqualsException {
+                usuarioServiceImplementation.cambiarContraseña(cambiarPasswordRequest);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                " Contraseña cambiada exitosamente"),
+                                HttpStatus.OK);
         }
 
-        boolean isValid = jwtGenerador.validarToken(token);
-        return ResponseEntity.ok(isValid);
-    }
+        /**
+         * Lista todos los usuarios del sistema.
+         * Este método está restringido solo para los usuarios con el rol "ADMIN".
+         *
+         * @return ResponseEntity que contiene una lista de objetos UsuariosResponse y
+         *         el estado HTTP OK.
+         */
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping
+        // public ResponseEntity<List<UsuariosResponse>> listarUsuarios() {
+        // List<UsuariosResponse> usuariosResponses =
+        // usuarioServiceImplementation.listarUsuarios();
+        // return new ResponseEntity<>(usuariosResponses, HttpStatus.OK);
+        // }
+        public ResponseEntity<List<UsuarioResponse>> listarUsuarios() {
+                return ResponseEntity.ok(
+                                usuarioServiceImplementation.listarUsuarios().stream().map(usuario -> {
+                                        UsuarioResponse usuarioResponse = new UsuarioResponse();
+                                        BeanUtils.copyProperties(usuario, usuarioResponse);
+                                        usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
+                                        usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
+                                        usuarioResponse.setRol(usuario.getRolId().getNombre());
+                                        usuarioResponse.setDelete_flag(usuario.getDeleteFlag());
+                                        return usuarioResponse;
+                                }).collect(Collectors.toList()));
+        }
+
+        /**
+         * Actualiza la información de un usuario específico.
+         * Solo los usuarios con el rol "ADMIN" pueden acceder a este servicio.
+         *
+         * @param usuarioId                El ID del usuario que se va a actualizar.
+         * @param actualizarUsuarioRequest Objeto que contiene la nueva información del
+         *                                 usuario.
+         * @return ResponseEntity con un mensaje de éxito y el estado HTTP OK.
+         * @throws RolNotFoundException      Si el rol especificado no existe.
+         * @throws LocationNotFoundException Si la ubicación especificada no existe.
+         * @throws DocumentNotFoundException Si el tipo de documento especificado no
+         *                                   existe.
+         * @throws UserNotFoundException     Si el usuario no existe en la base de
+         *                                   datos.
+         */
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PutMapping("/actualizar/{usuarioId}")
+        public ResponseEntity<HttpResponse> actualizarUsuario(@PathVariable Integer usuarioId,
+                        @RequestBody ActualizarUsuarioRequest actualizarUsuarioRequest)
+                        throws SelectNotAllowedException, UpdateNotAllowedException, RolNotFoundException,
+                        LocationNotFoundException, DocumentNotFoundException, UserNotFoundException {
+                usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                " Usuario actializado con exito"),
+                                HttpStatus.OK);
+        }
+
+        /**
+         * Elimina un usuario marcándolo como eliminado.
+         * Solo los usuarios con el rol "ADMIN" pueden acceder a este servicio.
+         *
+         * @param usuarioId El ID del usuario que se va a eliminar.
+         * @return ResponseEntity con un mensaje de éxito y el estado HTTP OK.
+         * @throws UserNotFoundException     Si el usuario no existe.
+         * @throws DeleteNotAllowedException Si el usuario ya está marcado como
+         *                                   eliminado.
+         */
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @DeleteMapping("/eliminar/{usuarioId}")
+        public ResponseEntity<HttpResponse> eliminarUsuario(@PathVariable Integer usuarioId)
+                        throws UserNotFoundException, DeleteNotAllowedException {
+                usuarioServiceImplementation.eliminarUsuario(usuarioId);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                " Usuario eliminado con exito"),
+                                HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/activar/{usuarioId}")
+        public ResponseEntity<HttpResponse> activarUsuario(@PathVariable Integer usuarioId)
+                        throws UserNotFoundException, ActivateNotAllowedException {
+                usuarioServiceImplementation.activarUsuario(usuarioId);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                " Usuario activado con exito"),
+                                HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/{id}")
+        public ResponseEntity<UsuarioResponse> getUsuarioById(@PathVariable Integer id) throws UserNotFoundException {
+                UsuarioResponse usuarioResponse = usuarioServiceImplementation.listarUsuarioById(id);
+                return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
+        }
+
+        @PreAuthorize("isAuthenticated()")
+        @GetMapping("/validar")
+        public ResponseEntity<Boolean> validarToken(@RequestHeader("Authorization") String token) {
+                // Elimina el prefijo "Bearer " del token si está presente
+                if (token.startsWith("Bearer ")) {
+                        token = token.substring(7);
+                }
+
+                boolean isValid = jwtGenerador.validarToken(token);
+                return ResponseEntity.ok(isValid);
+        }
 }

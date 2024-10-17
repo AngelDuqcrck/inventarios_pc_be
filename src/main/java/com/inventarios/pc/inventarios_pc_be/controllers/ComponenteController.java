@@ -32,74 +32,75 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 @RequestMapping("/componente")
 public class ComponenteController {
 
-    @Autowired
-    private IComponenteService componenteService;
+        @Autowired
+        private IComponenteService componenteService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearComponente(@RequestBody ComponenteDTO componenteDTO)
-            throws ComponentNotFoundException, SelectNotAllowedException {
-        componenteService.crearComponente(componenteDTO);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/crear")
+        public ResponseEntity<HttpResponse> crearComponente(@RequestBody ComponenteDTO componenteDTO)
+                        throws ComponentNotFoundException, SelectNotAllowedException {
+                componenteService.crearComponente(componenteDTO);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Componente creado exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Componente creado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-    public ResponseEntity<List<ComponenteDTO>> listarCompoenetes() {
-        return ResponseEntity.ok(
-                componenteService.listarComponentes().stream().map(componente -> {
-                    ComponenteDTO componenteDTO = new ComponenteDTO();
-                    BeanUtils.copyProperties(componente, componenteDTO);
-                    componenteDTO.setTipoComponente(componente.getTipoComponente());
-                    return componenteDTO;
-                }).collect(Collectors.toList()));
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping
+        public ResponseEntity<List<ComponenteDTO>> listarCompoenetes() {
+                return ResponseEntity.ok(
+                                componenteService.listarComponentes().stream().map(componente -> {
+                                        ComponenteDTO componenteDTO = new ComponenteDTO();
+                                        BeanUtils.copyProperties(componente, componenteDTO);
+                                        componenteDTO.setTipoComponente(componente.getTipoComponente());
+                                        return componenteDTO;
+                                }).collect(Collectors.toList()));
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/actualizar/{componenteId}")
-    public ResponseEntity<HttpResponse> actualizarComponente(@PathVariable Integer componenteId,
-            @RequestBody ComponenteDTO componenteDTO) throws ComponentNotFoundException, SelectNotAllowedException, UpdateNotAllowedException {
-        componenteService.actualizarComponente(componenteId, componenteDTO);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Componente actualizado exitosamente"),
-                HttpStatus.OK);
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PutMapping("/actualizar/{componenteId}")
+        public ResponseEntity<HttpResponse> actualizarComponente(@PathVariable Integer componenteId,
+                        @RequestBody ComponenteDTO componenteDTO)
+                        throws ComponentNotFoundException, SelectNotAllowedException, UpdateNotAllowedException {
+                componenteService.actualizarComponente(componenteId, componenteDTO);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Componente actualizado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/eliminar/{componenteId}")
-    public ResponseEntity<HttpResponse> eliminarComponente(@PathVariable Integer componenteId)
-            throws DeleteNotAllowedException, ComponentNotFoundException {
-        componenteService.eliminarComponente(componenteId);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @DeleteMapping("/eliminar/{componenteId}")
+        public ResponseEntity<HttpResponse> eliminarComponente(@PathVariable Integer componenteId)
+                        throws DeleteNotAllowedException, ComponentNotFoundException {
+                componenteService.eliminarComponente(componenteId);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Componente eliminado exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Componente eliminado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/activar/{componenteId}")
-    public ResponseEntity<HttpResponse> activarComponente(@PathVariable Integer componenteId)
-            throws ActivateNotAllowedException, ComponentNotFoundException {
-        componenteService.activarComponente(componenteId);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/activar/{componenteId}")
+        public ResponseEntity<HttpResponse> activarComponente(@PathVariable Integer componenteId)
+                        throws ActivateNotAllowedException, ComponentNotFoundException {
+                componenteService.activarComponente(componenteId);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Componente activado exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Componente activado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/{id}")
-    public ResponseEntity<ComponenteResponse> listarComponenteById(@PathVariable Integer id)
-            throws ComponentNotFoundException {
-        ComponenteResponse componenteResponse = componenteService.listarComponenteById(id);
-        return new ResponseEntity<>(componenteResponse, HttpStatus.OK);
-    }
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/{id}")
+        public ResponseEntity<ComponenteResponse> listarComponenteById(@PathVariable Integer id)
+                        throws ComponentNotFoundException {
+                ComponenteResponse componenteResponse = componenteService.listarComponenteById(id);
+                return new ResponseEntity<>(componenteResponse, HttpStatus.OK);
+        }
 
 }

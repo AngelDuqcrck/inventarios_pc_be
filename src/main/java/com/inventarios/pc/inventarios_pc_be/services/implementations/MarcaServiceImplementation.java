@@ -17,14 +17,14 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.MarcaDTO;
 
 @Service
 public class MarcaServiceImplementation implements IMarcaService {
-    public static final String IS_ALREADY_USE = "The %s is already use";
-    public static final String IS_NOT_FOUND = "The %s is not found";
-    public static final String IS_NOT_ALLOWED = "The %s is not allowed";
+    public static final String IS_ALREADY_USE = "%s ya esta en uso";
+    public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
     @Autowired
     private MarcaRepository marcaRepository;
 
     @Override
-    public MarcaDTO crearMarca(MarcaDTO marcaDTO){
+    public MarcaDTO crearMarca(MarcaDTO marcaDTO) {
         Marca marca = new Marca();
         BeanUtils.copyProperties(marcaDTO, marca);
         marca.setDeleteFlag(false);
@@ -35,18 +35,19 @@ public class MarcaServiceImplementation implements IMarcaService {
     }
 
     @Override
-    public List<Marca> listarMarcas(){
+    public List<Marca> listarMarcas() {
         return (List<Marca>) marcaRepository.findAll();
     }
 
     @Override
-    public MarcaDTO actualizarMarca(Integer id, MarcaDTO marcaDTO)throws MarcaNotFoundException, UpdateNotAllowedException{
+    public MarcaDTO actualizarMarca(Integer id, MarcaDTO marcaDTO)
+            throws MarcaNotFoundException, UpdateNotAllowedException {
         Marca marca = marcaRepository.findById(id).orElse(null);
-        if(marca == null){
+        if (marca == null) {
             throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
         }
-        if(marca.getDeleteFlag() == true ){
-             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "UPDATE MARCA").toUpperCase());
+        if (marca.getDeleteFlag() == true) {
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA MARCA").toUpperCase());
         }
         BeanUtils.copyProperties(marcaDTO, marca);
         marca.setDeleteFlag(false);
@@ -57,34 +58,34 @@ public class MarcaServiceImplementation implements IMarcaService {
     }
 
     @Override
-    public void eliminarMarca(Integer id)throws MarcaNotFoundException, DeleteNotAllowedException{
+    public void eliminarMarca(Integer id) throws MarcaNotFoundException, DeleteNotAllowedException {
         Marca marca = marcaRepository.findById(id).orElse(null);
-        if(marca == null){
+        if (marca == null) {
             throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
         }
-        if(marca.getDeleteFlag() == true){
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DELETE MARCA").toUpperCase());        
+        if (marca.getDeleteFlag() == true) {
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTA MARCA").toUpperCase());
         }
         marca.setDeleteFlag(true);
         marcaRepository.save(marca);
     }
 
-    public void activarMarca(Integer id)throws MarcaNotFoundException, ActivateNotAllowedException {
+    public void activarMarca(Integer id) throws MarcaNotFoundException, ActivateNotAllowedException {
         Marca marca = marcaRepository.findById(id).orElse(null);
-        if(marca == null){
+        if (marca == null) {
             throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
         }
-        if(marca.getDeleteFlag() == false){
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVATE MARCA").toUpperCase());
+        if (marca.getDeleteFlag() == false) {
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA MARCA").toUpperCase());
         }
         marca.setDeleteFlag(false);
         marcaRepository.save(marca);
     }
 
     @Override
-    public MarcaDTO listarMarcaById(Integer id)throws MarcaNotFoundException{
+    public MarcaDTO listarMarcaById(Integer id) throws MarcaNotFoundException {
         Marca marca = marcaRepository.findById(id).orElse(null);
-        if(marca == null){
+        if (marca == null) {
             throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
         }
         MarcaDTO marcaDTO = new MarcaDTO();

@@ -113,7 +113,7 @@ public class AuthController {
                 ResponseEntity<HttpResponse> response = new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                                                 "Se le ha enviado un correo con instrucciones para restablecer su contraseña"),
-                                HttpStatus.OK);            
+                                HttpStatus.OK);
                 usuarioService.enviarTokenRecuperacion(correo);
 
                 return response;
@@ -165,25 +165,29 @@ public class AuthController {
         }
 
         /**
-     * Endpoint para validar si un token de recuperación de contraseña es válido y no ha expirado.
-     *
-     * @param token El token de recuperación de contraseña a validar.
-     * @return Un ResponseEntity con true si el token es válido, o false si es inválido o ha expirado.
-     */
-    @GetMapping("/validar-recuperacion")
-    public ResponseEntity<TokenValidationResponse> validarTokenRecuperacion(@RequestParam("token") String token) {
-         if (token == null || token.isEmpty()) {
-            TokenValidationResponse response = new TokenValidationResponse(false, "El token no puede estar vacío.");
-            return ResponseEntity.badRequest().body(response);
-        }
+         * Endpoint para validar si un token de recuperación de contraseña es válido y
+         * no ha expirado.
+         *
+         * @param token El token de recuperación de contraseña a validar.
+         * @return Un ResponseEntity con true si el token es válido, o false si es
+         *         inválido o ha expirado.
+         */
+        @GetMapping("/validar-recuperacion")
+        public ResponseEntity<TokenValidationResponse> validarTokenRecuperacion(@RequestParam("token") String token) {
+                if (token == null || token.isEmpty()) {
+                        TokenValidationResponse response = new TokenValidationResponse(false,
+                                        "El token no puede estar vacío.");
+                        return ResponseEntity.badRequest().body(response);
+                }
 
-        boolean isValid = jwtGenerador.validarTokenRecuperacion(token);
-        if (isValid) {
-            TokenValidationResponse response = new TokenValidationResponse(true, "El token es válido.");
-            return ResponseEntity.ok(response);
-        } else {
-            TokenValidationResponse response = new TokenValidationResponse(false, "El token es inválido o ha expirado.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                boolean isValid = jwtGenerador.validarTokenRecuperacion(token);
+                if (isValid) {
+                        TokenValidationResponse response = new TokenValidationResponse(true, "El token es válido.");
+                        return ResponseEntity.ok(response);
+                } else {
+                        TokenValidationResponse response = new TokenValidationResponse(false,
+                                        "El token es inválido o ha expirado.");
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                }
         }
-    }
 }
