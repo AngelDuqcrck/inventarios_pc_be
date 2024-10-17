@@ -4,6 +4,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.TipoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
@@ -12,6 +13,8 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 
+import java.util.List;
+import java.util.ArrayList;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,8 @@ import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IComputadorService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComputadorDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
 
 @Service
 public class ComputadorServiceImplementation implements IComputadorService {
@@ -226,5 +231,50 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
     }
 
+    @Override
+    public List<ComputadoresResponse> listarComputadores(){
+        List<Computador> computadores = computadorRepository.findAll();
+
+        List<ComputadoresResponse> computadoresResponses = new ArrayList<>();
+
+        for(Computador computador : computadores){
+            ComputadoresResponse computadorResponse = new ComputadoresResponse();
+            BeanUtils.copyProperties(computador, computadorResponse);
+            computadorResponse.setResponsable(computador.getResponsable().getPrimerNombre()+" "+computador.getResponsable().getSegundoNombre()+" "+computador.getResponsable().getPrimerApellido()+" "+computador.getResponsable().getSegundoApellido());
+            computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+            computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
+            computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+
+            computadoresResponses.add(computadorResponse);
+        }
+
+        return computadoresResponses;
+    }
+
+    
+    @Override
+    public ComputadorIdResponse listarComputadorById(Integer id)throws ComputerNotFoundException{
+        Computador computador = computadorRepository.findById(id).orElse(null);
+
+        if(computador == null){
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+        }
+
+        ComputadorIdResponse computadorIdResponse = new ComputadorIdResponse();
+
+        BeanUtils.copyProperties(computador, computadorIdResponse);
+        computadorIdResponse.setTipoPC(computador.getTipoPC().getNombre());
+        computadorIdResponse.setResponsable(computador.getResponsable().getPrimerNombre()+" "+computador.getResponsable().getSegundoNombre()+" "+computador.getResponsable().getPrimerApellido()+" "+computador.getResponsable().getSegundoApellido());
+        computadorIdResponse.setUbicacion(computador.getUbicacion().getNombre());
+        computadorIdResponse.setMarca(computador.getMarca().getNombre());
+        computadorIdResponse.setProcesador(computador.getProcesador().getNombre());
+        computadorIdResponse.setRam(computador.getRam().getNombre());
+        computadorIdResponse.setAlmacenamiento(computador.getAlmacenamiento().getNombre());
+        computadorIdResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+        computadorIdResponse.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
+        computadorIdResponse.setTipoRam(computador.getTipoRam().getNombre());
+
+        return computadorIdResponse;
+    }
 
 }

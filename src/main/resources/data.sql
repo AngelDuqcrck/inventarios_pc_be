@@ -232,7 +232,7 @@ CREATE TABLE IF NOT EXISTS computadores (
 );
 
 -- Insertar el dato de prueba
-INSERT INTO computadores (
+INSERT IGNORE INTO computadores (
     id,
     tipo_pc_id,
     responsable_id,
