@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 import java.util.List;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
@@ -24,6 +25,8 @@ public interface IComputadorService {
       public List<ComputadoresResponse> listarComputadores();
 
      public ComputadorIdResponse listarComputadorById(Integer id)throws ComputerNotFoundException;
+
+     public void darBajaComputador(Integer id)throws ComputerNotFoundException, DeleteNotAllowedException;
 
 
 }

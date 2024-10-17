@@ -5,6 +5,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
@@ -276,5 +277,25 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         return computadorIdResponse;
     }
+
+
+    @Override
+    public void darBajaComputador(Integer id)throws ComputerNotFoundException, DeleteNotAllowedException{
+        Computador computador = computadorRepository.findById(id).orElse(null);
+
+        if(computador == null){
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+        }
+
+        if(computador.getEstadoDispositivo().getNombre().equals("Baja")) {
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DAR DE BAJA ESTE COMPUTADOR").toUpperCase());
+        }
+
+        EstadoDispositivo estadoDispositivo = estadoDispositivoRepository.findByNombre("Baja").get();
+        computador.setEstadoDispositivo(estadoDispositivo);
+        computadorRepository.save(computador);
+
+    }
+
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
@@ -23,6 +24,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdRespons
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,5 +67,17 @@ public class ComputadorController {
         List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadores();
 
         return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/baja/{computadorId}")
+    public ResponseEntity<HttpResponse> darBajaComputador(@PathVariable Integer computadorId)throws ComputerNotFoundException, DeleteNotAllowedException{
+        computadorService.darBajaComputador(computadorId);
+
+        return new ResponseEntity<>(
+            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                            "Equipo PC dado de baja exitosamente"),
+            HttpStatus.OK);
     }
 }
