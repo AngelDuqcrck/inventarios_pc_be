@@ -24,4 +24,6 @@ public class HistorialDispositivo {
     private Computador computador;
 
     private Date fechaCambio;
+
+    private Date fechaDesvinculacion;
 }

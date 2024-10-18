@@ -27,6 +27,8 @@ public class SoftwareCSA {
     @JoinColumn(name = "computador_id")
     private Computador computador;
 
-    private Date fechaExpiración;
+    private Date fechaDesvinculación;
+
+    private Date fechaVinculacion;
 
 }
