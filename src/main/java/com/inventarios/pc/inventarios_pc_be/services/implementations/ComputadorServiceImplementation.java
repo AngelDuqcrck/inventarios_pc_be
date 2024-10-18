@@ -311,8 +311,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
     }
 
-    
-    public EstadoDispositivo cambiarEstadoPc(Integer computadorId, Integer nuevoEstadoDispositivoId)
+    @Override
+    public void cambiarEstadoPc(Integer computadorId, Integer nuevoEstadoDispositivoId)
             throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException {
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
 
@@ -370,7 +370,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         }
 
-        return nuevoEstadoDispositivo;
+        computador.setEstadoDispositivo(nuevoEstadoDispositivo);
+        computadorRepository.save(computador);
     }
 
     
