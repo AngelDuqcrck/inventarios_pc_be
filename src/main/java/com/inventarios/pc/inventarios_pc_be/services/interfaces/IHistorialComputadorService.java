@@ -8,4 +8,7 @@ public interface IHistorialComputadorService {
     
      public void vincularDispositivo(Integer computadorId, Integer dispositivoId)
             throws ComputerNotFoundException, SelectNotAllowedException, DeviceNotFoundException;
+
+     public void desvincularDispositivo(Integer computadorId, Integer dispositivoId)
+            throws ComputerNotFoundException, DeviceNotFoundException, SelectNotAllowedException;
 }

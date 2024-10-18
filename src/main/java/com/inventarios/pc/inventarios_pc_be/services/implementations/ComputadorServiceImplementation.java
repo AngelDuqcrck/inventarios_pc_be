@@ -352,7 +352,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
                 break;
 
             case 4: // Disponible
-                if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion")) {
+                if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion") && !estadoActual.equals("En uso")) {
                     throw new ChangeNotAllowedException(
                             String.format(IS_NOT_ALLOWED, "CAMBIO DE ESTADO DEL COMPUTADOR").toUpperCase());
                 }

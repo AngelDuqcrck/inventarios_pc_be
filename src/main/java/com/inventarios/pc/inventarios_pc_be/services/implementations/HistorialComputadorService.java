@@ -75,12 +75,11 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         if (existeDispositivoMismoTipo) {
             throw new SelectNotAllowedException(
                     String.format(IS_ALREADY_USE,
-                            "EN ESTE COMPUTADOR UN "+dispositivoPC.getTipoDispositivo().getNombre() )
+                            "EN ESTE COMPUTADOR UN " + dispositivoPC.getTipoDispositivo().getNombre())
                             .toUpperCase());
         }
 
-
-        if (!computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
+        if (!dispositivoPC.getEstadoDispositivo().getNombre().equals("Disponible")) {
             throw new SelectNotAllowedException(
                     String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE DISPOSITIVO").toUpperCase());
         }
@@ -102,7 +101,41 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         historialDispositivoRepository.save(historialDispositivo);
     }
 
-    public void desvincularDispositivo(Integer computadorId, Integer dispositivoId) {
+    @Override
+    public void desvincularDispositivo(Integer computadorId, Integer dispositivoId)
+            throws ComputerNotFoundException, DeviceNotFoundException, SelectNotAllowedException {
+
+        Computador computador = computadorRepository.findById(computadorId).orElse(null);
+        if (computador == null) {
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+        }
+
+        DispositivoPC dispositivoPC = dispositivoRepository.findById(dispositivoId).orElse(null);
+        if (dispositivoPC == null) {
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+        }
+
+        HistorialDispositivo historialDispositivo = historialDispositivoRepository
+                .findByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivoPC);
+
+        if (historialDispositivo == null) {
+            throw new SelectNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "DESVINCULAR ESTE DISPOSITIVO").toUpperCase());
+        }
+
+        historialDispositivo.setFechaDesvinculacion(new Date());
+
+        EstadoDispositivo estadoDisponible = estadoDispositivoRepository.findByNombre("Disponible").orElse(null);
+        if (estadoDisponible == null) {
+            throw new SelectNotAllowedException(
+                    String.format(IS_NOT_FOUND, "ESTADO DEL DISPOSITIVO 'DISPONIBLE'").toUpperCase());
+        }
+
+        dispositivoPC.setEstadoDispositivo(estadoDisponible);
+
+        historialDispositivoRepository.save(historialDispositivo);
+        dispositivoRepository.save(dispositivoPC);
 
     }
+
 }
