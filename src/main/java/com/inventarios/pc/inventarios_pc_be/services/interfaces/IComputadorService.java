@@ -1,6 +1,9 @@
 package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 
 import java.util.List;
+
+import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
@@ -10,6 +13,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundExce
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComputadorDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
@@ -27,6 +31,17 @@ public interface IComputadorService {
      public ComputadorIdResponse listarComputadorById(Integer id)throws ComputerNotFoundException;
 
      public void darBajaComputador(Integer id)throws ComputerNotFoundException, DeleteNotAllowedException;
+
+      /*
+       * public EstadoDispositivo cambiarEstadoPc(Integer computadorId, Integer nuevoEstadoDispositivoId)
+       *     throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException;
+       */
+
+      
+            public ComputadorDTO actualizarComputador(Integer computadorId, ComputadorDTO computadorDTO)
+            throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
+            LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
+            StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException, ChangeNotAllowedException;
 
 
 }
