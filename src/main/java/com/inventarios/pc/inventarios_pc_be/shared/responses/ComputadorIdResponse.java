@@ -14,6 +14,8 @@ public class ComputadorIdResponse {
 
     
     private String responsable;
+    
+    private String resPrimerNombre;
 
     
     private String ubicacion;

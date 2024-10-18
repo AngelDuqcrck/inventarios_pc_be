@@ -69,5 +69,14 @@ public class TiposController {
                 }).collect(Collectors.toList()));
     }
 
-    
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/almram")
+    public ResponseEntity<List<TipoComponenteDTO>> getTipoAlmacenamientoRam(){
+        return ResponseEntity.ok(
+            tiposService.listarTipoAlmRam().stream().map(TAR ->{
+                TipoComponenteDTO tarDTO = new TipoComponenteDTO();
+                    BeanUtils.copyProperties(TAR, tarDTO);
+                    return tarDTO;
+                }).collect(Collectors.toList()));
+    }
 }
