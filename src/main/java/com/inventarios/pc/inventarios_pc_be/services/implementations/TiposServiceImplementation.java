@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
+import com.inventarios.pc.inventarios_pc_be.entities.TipoAlmacenamientoRam;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoComponente;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoSoftware;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.TipoAlmacenamientoRamRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoComponenteRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDocumentoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoSoftwareRepository;
@@ -27,8 +29,11 @@ public class TiposServiceImplementation implements ITiposService {
     @Autowired
     private TipoSoftwareRepository tipoSoftwareRepository;
 
-     @Autowired
-    EstadoDispositivoRepository estadoDispositivoRepository;
+    @Autowired
+    private EstadoDispositivoRepository estadoDispositivoRepository;
+
+    @Autowired
+    private TipoAlmacenamientoRamRepository tipoAlmacenamientoRamRepository;
 
     /**
      * Obtiene una lista de todos los tipos de documentos (DNI) registrados en el sistema.
@@ -68,5 +73,15 @@ public class TiposServiceImplementation implements ITiposService {
     @Override
     public List<EstadoDispositivo> listarEstadosDisp(){
         return (List<EstadoDispositivo>) estadoDispositivoRepository.findAll();
+    }
+
+         /**
+     * Obtiene una lista de todos los tipos de documentos (DNI) registrados en el sistema.
+     * 
+     * @return Una lista de objetos {@link EstadoDispositivo} que representan todos los tipos de documentos.
+     */
+    @Override
+    public List<TipoAlmacenamientoRam> listarTipoAlmRam(){
+        return (List<TipoAlmacenamientoRam>) tipoAlmacenamientoRamRepository.findAll();
     }
 }
