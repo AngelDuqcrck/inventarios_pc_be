@@ -567,11 +567,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             computador.setTipoRam(computador.getTipoRam());
         }
 
-        if(computadorDTO.getEstadoDispositivo()!= null){
-            computador.setEstadoDispositivo(cambiarEstadoPc(computadorId, computadorDTO.getEstadoDispositivo()));
-        }else{
-            computador.setEstadoDispositivo(computador.getEstadoDispositivo());
-        }
+        computador.setEstadoDispositivo(computador.getEstadoDispositivo());
 
         Computador computadorActualizado = computadorRepository.save(computador);
         ComputadorDTO computadorActualizadoDTO = new ComputadorDTO();

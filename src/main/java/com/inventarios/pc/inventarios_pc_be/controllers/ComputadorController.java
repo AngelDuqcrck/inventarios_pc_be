@@ -102,8 +102,8 @@ public class ComputadorController {
                 HttpStatus.OK);
     }
 
-    /*
-     * @PreAuthorize("hasAuthority('ADMIN')")
+    
+      @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/cambiar-estado")
     public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestParam Integer computadorId,
             @RequestParam Integer nuevoEstadoDispositivoId)
@@ -114,5 +114,5 @@ public class ComputadorController {
                         "Estado cambiado exitosamente"),
                 HttpStatus.OK);
     }
-     */
+     
 }

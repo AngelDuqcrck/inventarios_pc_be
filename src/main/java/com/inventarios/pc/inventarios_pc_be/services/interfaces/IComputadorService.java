@@ -32,10 +32,10 @@ public interface IComputadorService {
 
      public void darBajaComputador(Integer id)throws ComputerNotFoundException, DeleteNotAllowedException;
 
-      /*
-       * public EstadoDispositivo cambiarEstadoPc(Integer computadorId, Integer nuevoEstadoDispositivoId)
-       *     throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException;
-       */
+      
+       public EstadoDispositivo cambiarEstadoPc(Integer computadorId, Integer nuevoEstadoDispositivoId)
+            throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException;
+       
 
       
             public ComputadorDTO actualizarComputador(Integer computadorId, ComputadorDTO computadorDTO)
