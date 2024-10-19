@@ -20,6 +20,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResp
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareXPcResponse;
 
 @RestController
 @RequestMapping("/historial")
@@ -91,6 +92,15 @@ public class HistorialComputadorController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/software-pc/{computadorId}")
+    public ResponseEntity<SoftwareXPcResponse> listarSoftwaresXPc(@PathVariable Integer computadorId)
+            throws ComputerNotFoundException {
+        SoftwareXPcResponse softwareXPcResponse = historialComputadorService.listarSoftwaresXPc(computadorId);
+
+        return new ResponseEntity<>(softwareXPcResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/cv-pc/{computadorId}")
     public ResponseEntity<HojaVidaPcResponse> hojaDeVidaPc(@PathVariable Integer computadorId)
             throws ComputerNotFoundException {
@@ -107,4 +117,6 @@ public class HistorialComputadorController {
         HistorialResponse historialResponse = historialComputadorService.listarHistorialDispositivosXPc(computadorId);
         return new ResponseEntity<>(historialResponse, HttpStatus.OK);
     }
+
+
 }
