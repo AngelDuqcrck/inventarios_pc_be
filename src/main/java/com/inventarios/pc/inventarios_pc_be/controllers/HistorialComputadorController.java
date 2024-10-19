@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComputadorService;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 
@@ -33,6 +34,17 @@ public class HistorialComputadorController {
                                 HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/vincular-software")
+    public ResponseEntity<HttpResponse> vincularSoftware(@RequestParam Integer computadorId, @RequestParam Integer softwareId) throws ComputerNotFoundException, SelectNotAllowedException, SoftwareNotFoundException {
+        historialComputadorService.vincularSoftware(computadorId, softwareId);
+
+        return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Software vinculado exitosamente"),
+                                HttpStatus.OK);
+    }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/desvincular-dispositivo")
@@ -42,6 +54,18 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                                                 "Dispositivo desvinculado exitosamente"),
+                                HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/desvincular-software")
+    public ResponseEntity<HttpResponse> desvincularSoftware(@RequestParam Integer computadorId, @RequestParam Integer softwareId) throws ComputerNotFoundException, SelectNotAllowedException, SoftwareNotFoundException {
+        historialComputadorService.desvincularSoftware(computadorId, softwareId);
+
+        return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Software desvinculado exitosamente"),
                                 HttpStatus.OK);
     }
 }
