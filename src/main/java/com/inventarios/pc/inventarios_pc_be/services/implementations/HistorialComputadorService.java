@@ -1,7 +1,7 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
-import java.util.Date;
-
+import java.util.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +11,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwareCSA;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
+import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
@@ -21,7 +22,12 @@ import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoReposi
 import com.inventarios.pc.inventarios_pc_be.repositories.HistorialDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SoftwareCsaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SoftwarePcRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.TipoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComputadorService;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosVinculadosResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
 
 @Service
 public class HistorialComputadorService implements IHistorialComputadorService {
@@ -32,6 +38,9 @@ public class HistorialComputadorService implements IHistorialComputadorService {
     public static final String IS_NOT_VALID = "%s no es valido";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
+
+    @Autowired
+    private TipoDispositivoRepository tipoDispositivoRepository;
 
     @Autowired
     private HistorialDispositivoRepository historialDispositivoRepository;
@@ -230,4 +239,71 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         softwareCsaRepository.save(softwareCSA);
     }
 
+    @Override
+    public DispositivosXPcResponse listarDispositivosXPc(Integer computadorId) throws ComputerNotFoundException {
+
+        Computador computador = computadorRepository.findById(computadorId).orElse(null);
+        if (computador == null) {
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+        }
+
+        List<TipoDispositivo> tiposDispositivos = tipoDispositivoRepository.findAllByDeleteFlagFalse();
+
+        List<DispositivosVinculadosResponse> dispositivosVinculadosList = new ArrayList<>();
+
+        for (TipoDispositivo tipo : tiposDispositivos) {
+
+            HistorialDispositivo historial = historialDispositivoRepository
+                    .findFirstByComputadorAndDispositivoPC_TipoDispositivoAndFechaDesvinculacionIsNull(
+                            computador, tipo);
+
+            if (historial != null) {
+                DispositivosVinculadosResponse dispositivoVinculado = DispositivosVinculadosResponse.builder()
+                        .id(historial.getDispositivoPC().getId())
+                        .nombre(historial.getDispositivoPC().getNombre())
+                        .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
+                        .build();
+                dispositivosVinculadosList.add(dispositivoVinculado);
+            } else {
+                DispositivosVinculadosResponse dispositivoNoVinculado = DispositivosVinculadosResponse.builder()
+                        .id(null).nombre(null).tipoDispositivo(tipo.getNombre()).build();
+                dispositivosVinculadosList.add(dispositivoNoVinculado);
+            }
+        }
+
+        DispositivosXPcResponse response = DispositivosXPcResponse.builder()
+            .id(computador.getId())
+            .nombre(computador.getNombre())
+            .dispositivosVinculados(dispositivosVinculadosList)
+            .build();
+
+        return response;
+    }
+
+    public HojaVidaPcResponse hojaDeVidaPc(Integer computadorId) throws ComputerNotFoundException {
+
+        Computador computador = computadorRepository.findById(computadorId).orElse(null);
+        if (computador == null) {
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+        }
+
+        HojaVidaPcResponse hojadeVidaPc = new HojaVidaPcResponse();
+
+        BeanUtils.copyProperties(computador, hojadeVidaPc);
+        hojadeVidaPc.setTipoPC(computador.getTipoPC().getNombre());
+        hojadeVidaPc.setResponsable(computador.getResponsable().getPrimerNombre() + " "
+                + computador.getResponsable().getSegundoNombre() + " " + computador.getResponsable().getPrimerApellido()
+                + " " + computador.getResponsable().getSegundoApellido());
+        hojadeVidaPc.setUbicacion(computador.getUbicacion().getNombre());
+        hojadeVidaPc.setMarca(computador.getMarca().getNombre());
+        hojadeVidaPc.setProcesador(computador.getProcesador().getNombre());
+        hojadeVidaPc.setRam(computador.getRam().getNombre());
+        hojadeVidaPc.setAlmacenamiento(computador.getAlmacenamiento().getNombre());
+        hojadeVidaPc.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+        hojadeVidaPc.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
+        hojadeVidaPc.setTipoRam(computador.getTipoRam().getNombre());
+        hojadeVidaPc.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
+
+        return hojadeVidaPc;
+    }
 }

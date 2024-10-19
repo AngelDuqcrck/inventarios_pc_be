@@ -4,6 +4,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
 
 public interface IHistorialComputadorService {
 
@@ -18,4 +19,6 @@ public interface IHistorialComputadorService {
 
        public void desvincularSoftware(Integer computadorId, Integer softwareId)
                      throws ComputerNotFoundException, SoftwareNotFoundException, SelectNotAllowedException;
+
+       public DispositivosXPcResponse listarDispositivosXPc(Integer computadorId) throws ComputerNotFoundException;
 }
