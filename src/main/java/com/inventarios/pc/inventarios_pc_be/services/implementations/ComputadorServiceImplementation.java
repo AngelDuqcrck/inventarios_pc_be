@@ -287,7 +287,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorIdResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
         computadorIdResponse.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
         computadorIdResponse.setTipoRam(computador.getTipoRam().getNombre());
-        //computadorIdResponse.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
+        computadorIdResponse.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
 
         return computadorIdResponse;
     }
