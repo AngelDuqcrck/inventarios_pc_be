@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwareCSA;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
+import java.util.List;
+
 
 public interface SoftwareCsaRepository extends JpaRepository<SoftwareCSA, Integer> {
     
@@ -14,5 +16,9 @@ public interface SoftwareCsaRepository extends JpaRepository<SoftwareCSA, Intege
     boolean existsByComputadorAndSoftwarePCAndFechaDesvinculacionIsNull(Computador computador, SoftwarePC softwarePC);
 
     List<SoftwareCSA> findAllByComputadorAndFechaDesvinculacionIsNull(Computador computador);
+
+    List<SoftwareCSA> findByComputador(Computador computador);
+
+    List<SoftwareCSA> findByComputadorAndFechaDesvinculacionIsNull(Computador computador);
 
 }

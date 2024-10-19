@@ -31,6 +31,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialDispositiv
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareVinculadosResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareXPcResponse;
 
 @Service
 public class HistorialComputadorService implements IHistorialComputadorService {
@@ -281,6 +282,38 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                 .build();
 
         return response;
+    }
+
+    @Override
+    public SoftwareXPcResponse listarSoftwaresXPc(Integer computadorId) throws ComputerNotFoundException {
+        Computador computador = computadorRepository.findById(computadorId).orElse(null);
+        if (computador == null) {
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+        }
+
+        List<SoftwareCSA> softwaresVinculados = softwareCsaRepository
+                .findByComputadorAndFechaDesvinculacionIsNull(computador);
+
+        List<SoftwareVinculadosResponse> softwareVinculadosResponses = new ArrayList<>();
+
+        for (SoftwareCSA software : softwaresVinculados) {
+            SoftwareVinculadosResponse softwareResponse = SoftwareVinculadosResponse.builder()
+                    .id(software.getSoftwarePC().getId())
+                    .nombre(software.getSoftwarePC().getNombre())
+                    .version(software.getSoftwarePC().getVersion())
+                    .build();
+
+            softwareVinculadosResponses.add(softwareResponse);
+        }
+
+
+        SoftwareXPcResponse softwareXPcResponse = SoftwareXPcResponse.builder()
+                .id(computador.getId())
+                .nombre(computador.getNombre())
+                .softwareVinculados(softwareVinculadosResponses)
+                .build();
+
+        return softwareXPcResponse;
     }
 
     @Override

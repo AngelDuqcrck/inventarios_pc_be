@@ -7,6 +7,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareXPcResponse;
 
 public interface IHistorialComputadorService {
 
@@ -23,6 +24,8 @@ public interface IHistorialComputadorService {
                      throws ComputerNotFoundException, SoftwareNotFoundException, SelectNotAllowedException;
 
        public DispositivosXPcResponse listarDispositivosXPc(Integer computadorId) throws ComputerNotFoundException;
+
+       public SoftwareXPcResponse listarSoftwaresXPc(Integer computadorId) throws ComputerNotFoundException;
 
        public HojaVidaPcResponse hojaDeVidaPc(Integer computadorId) throws ComputerNotFoundException;
 
