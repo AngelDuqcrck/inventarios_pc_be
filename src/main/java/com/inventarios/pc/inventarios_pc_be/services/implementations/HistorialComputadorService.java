@@ -28,6 +28,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdRespons
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosVinculadosResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareVinculadosResponse;
 
 @Service
 public class HistorialComputadorService implements IHistorialComputadorService {
@@ -272,14 +273,15 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         }
 
         DispositivosXPcResponse response = DispositivosXPcResponse.builder()
-            .id(computador.getId())
-            .nombre(computador.getNombre())
-            .dispositivosVinculados(dispositivosVinculadosList)
-            .build();
+                .id(computador.getId())
+                .nombre(computador.getNombre())
+                .dispositivosVinculados(dispositivosVinculadosList)
+                .build();
 
         return response;
     }
 
+    @Override
     public HojaVidaPcResponse hojaDeVidaPc(Integer computadorId) throws ComputerNotFoundException {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
@@ -291,9 +293,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         BeanUtils.copyProperties(computador, hojadeVidaPc);
         hojadeVidaPc.setTipoPC(computador.getTipoPC().getNombre());
-        hojadeVidaPc.setResponsable(computador.getResponsable().getPrimerNombre() + " "
-                + computador.getResponsable().getSegundoNombre() + " " + computador.getResponsable().getPrimerApellido()
-                + " " + computador.getResponsable().getSegundoApellido());
+        hojadeVidaPc.setResponsable(computador.getResponsable().getPrimerNombre() + " "+ computador.getResponsable().getSegundoNombre() + " " + computador.getResponsable().getPrimerApellido()+ " " + computador.getResponsable().getSegundoApellido());
         hojadeVidaPc.setUbicacion(computador.getUbicacion().getNombre());
         hojadeVidaPc.setMarca(computador.getMarca().getNombre());
         hojadeVidaPc.setProcesador(computador.getProcesador().getNombre());
@@ -302,7 +302,46 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         hojadeVidaPc.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
         hojadeVidaPc.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
         hojadeVidaPc.setTipoRam(computador.getTipoRam().getNombre());
-        hojadeVidaPc.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
+        //hojadeVidaPc.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
+
+        List<TipoDispositivo> tiposDispositivos = tipoDispositivoRepository.findAllByDeleteFlagFalse();
+
+        List<DispositivosVinculadosResponse> dispositivosVinculadosList = new ArrayList<>();
+        List<SoftwareVinculadosResponse> softwareVinculadosList = new ArrayList<>();
+
+        for (TipoDispositivo tipo : tiposDispositivos) {
+
+            HistorialDispositivo historial = historialDispositivoRepository
+                    .findFirstByComputadorAndDispositivoPC_TipoDispositivoAndFechaDesvinculacionIsNull(
+                            computador, tipo);
+
+            if (historial != null) {
+                DispositivosVinculadosResponse dispositivoVinculado = DispositivosVinculadosResponse.builder()
+                        .id(historial.getDispositivoPC().getId())
+                        .nombre(historial.getDispositivoPC().getNombre())
+                        .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
+                        .build();
+                dispositivosVinculadosList.add(dispositivoVinculado);
+            } else {
+                DispositivosVinculadosResponse dispositivoNoVinculado = DispositivosVinculadosResponse.builder()
+                        .id(null).nombre(null).tipoDispositivo(tipo.getNombre()).build();
+                dispositivosVinculadosList.add(dispositivoNoVinculado);
+            }
+        }
+
+        List<SoftwareCSA> softwaresCSA = softwareCsaRepository
+                .findAllByComputadorAndFechaDesvinculacionIsNull(computador);
+        for (SoftwareCSA softwareCSA : softwaresCSA) {
+            SoftwareVinculadosResponse softwareVinculado = SoftwareVinculadosResponse.builder()
+                    .id(softwareCSA.getSoftwarePC().getId())
+                    .nombre(softwareCSA.getSoftwarePC().getNombre())
+                    .version(softwareCSA.getSoftwarePC().getVersion())
+                    .build();
+            softwareVinculadosList.add(softwareVinculado);
+        }
+
+        hojadeVidaPc.setDispositivosVinculados(dispositivosVinculadosList);
+        hojadeVidaPc.setSoftwareVinculados(softwareVinculadosList);
 
         return hojadeVidaPc;
     }

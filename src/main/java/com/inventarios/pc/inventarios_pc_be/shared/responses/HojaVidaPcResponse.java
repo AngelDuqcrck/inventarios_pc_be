@@ -17,7 +17,7 @@ public class HojaVidaPcResponse {
     
     private String responsable;
     
-    private String resPrimerNombre;
+    //private String resPrimerNombre;
 
     
     private String ubicacion;

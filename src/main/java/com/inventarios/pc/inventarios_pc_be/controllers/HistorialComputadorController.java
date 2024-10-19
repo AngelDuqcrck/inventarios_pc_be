@@ -17,6 +17,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComputadorService;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 
 @RestController
@@ -78,20 +79,6 @@ public class HistorialComputadorController {
                 HttpStatus.OK);
     }
 
-    /*
-     * @PreAuthorize("hasAuthority('ADMIN')")
-     * 
-     * @GetMapping("/{computadorId}")
-     * public ResponseEntity<ComputadorIdResponse>
-     * listarComputadorById(@PathVariable Integer computadorId)
-     * throws ComputerNotFoundException {
-     * ComputadorIdResponse computadorIdResponse =
-     * computadorService.listarComputadorById(computadorId);
-     * 
-     * return new ResponseEntity<>(computadorIdResponse, HttpStatus.OK);
-     * }
-     */
-
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/dispositivos-pc/{computadorId}")
     public ResponseEntity<DispositivosXPcResponse> listarDispositivosXPc(@PathVariable Integer computadorId)
@@ -102,4 +89,12 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(dispositivosXPcResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/cv-pc/{computadorId}")
+    public ResponseEntity<HojaVidaPcResponse> hojaDeVidaPc(@PathVariable Integer computadorId)
+            throws ComputerNotFoundException {
+        
+        HojaVidaPcResponse hojaVidaPcResponse = historialComputadorService.hojaDeVidaPc(computadorId);
+        return new ResponseEntity<>(hojaVidaPcResponse, HttpStatus.OK);
+    }
 }

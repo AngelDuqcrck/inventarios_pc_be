@@ -1,5 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.repositories;
 
+import java.util.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
@@ -12,5 +13,6 @@ public interface SoftwareCsaRepository extends JpaRepository<SoftwareCSA, Intege
 
     boolean existsByComputadorAndSoftwarePCAndFechaDesvinculacionIsNull(Computador computador, SoftwarePC softwarePC);
 
+    List<SoftwareCSA> findAllByComputadorAndFechaDesvinculacionIsNull(Computador computador);
 
 }
