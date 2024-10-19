@@ -27,6 +27,8 @@ import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComput
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosVinculadosResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialDispositivosResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareVinculadosResponse;
 
@@ -293,7 +295,9 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         BeanUtils.copyProperties(computador, hojadeVidaPc);
         hojadeVidaPc.setTipoPC(computador.getTipoPC().getNombre());
-        hojadeVidaPc.setResponsable(computador.getResponsable().getPrimerNombre() + " "+ computador.getResponsable().getSegundoNombre() + " " + computador.getResponsable().getPrimerApellido()+ " " + computador.getResponsable().getSegundoApellido());
+        hojadeVidaPc.setResponsable(computador.getResponsable().getPrimerNombre() + " "
+                + computador.getResponsable().getSegundoNombre() + " " + computador.getResponsable().getPrimerApellido()
+                + " " + computador.getResponsable().getSegundoApellido());
         hojadeVidaPc.setUbicacion(computador.getUbicacion().getNombre());
         hojadeVidaPc.setMarca(computador.getMarca().getNombre());
         hojadeVidaPc.setProcesador(computador.getProcesador().getNombre());
@@ -302,7 +306,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         hojadeVidaPc.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
         hojadeVidaPc.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
         hojadeVidaPc.setTipoRam(computador.getTipoRam().getNombre());
-        //hojadeVidaPc.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
+        // hojadeVidaPc.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
 
         List<TipoDispositivo> tiposDispositivos = tipoDispositivoRepository.findAllByDeleteFlagFalse();
 
@@ -344,5 +348,37 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         hojadeVidaPc.setSoftwareVinculados(softwareVinculadosList);
 
         return hojadeVidaPc;
+    }
+
+    @Override
+    public HistorialResponse listarHistorialDispositivosXPc(Integer computadorId) throws ComputerNotFoundException {
+        Computador computador = computadorRepository.findById(computadorId).orElse(null);
+        if (computador == null) {
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+        }
+
+        List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository.findByComputador(computador);
+
+        List<HistorialDispositivosResponse> historialDispositivosResponses = new ArrayList<>();
+
+        for (HistorialDispositivo historial : historialDispositivos) {
+            HistorialDispositivosResponse historialResponse = HistorialDispositivosResponse.builder()
+                    .id(historial.getDispositivoPC().getId())
+                    .nombre(historial.getDispositivoPC().getNombre())
+                    .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
+                    .fechaCambio(historial.getFechaCambio())
+                    .fechaDesvinculacion(historial.getFechaDesvinculacion())
+                    .build();
+
+            historialDispositivosResponses.add(historialResponse);
+        }
+
+        HistorialResponse historialResponse = HistorialResponse.builder()
+                .id(computador.getId())
+                .nombre(computador.getNombre())
+                .historialDispositivosResponses(historialDispositivosResponses)
+                .build();
+
+        return historialResponse;
     }
 }

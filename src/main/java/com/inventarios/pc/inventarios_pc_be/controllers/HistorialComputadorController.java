@@ -17,6 +17,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComputadorService;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 
@@ -96,5 +97,14 @@ public class HistorialComputadorController {
         
         HojaVidaPcResponse hojaVidaPcResponse = historialComputadorService.hojaDeVidaPc(computadorId);
         return new ResponseEntity<>(hojaVidaPcResponse, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/pc/{computadorId}")
+    public ResponseEntity<HistorialResponse> listarHistorialDispositivoXPc(@PathVariable Integer computadorId)
+            throws ComputerNotFoundException {
+        
+        HistorialResponse historialResponse = historialComputadorService.listarHistorialDispositivosXPc(computadorId);
+        return new ResponseEntity<>(historialResponse, HttpStatus.OK);
     }
 }
