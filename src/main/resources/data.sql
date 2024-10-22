@@ -267,3 +267,35 @@ INSERT IGNORE INTO computadores (
     '192.168.1.15',       -- ipAsignada
     4           --Estado del dispositivo (Disponible)
 );
+
+-- Creamos la tabla tipo_solicitudes si no existe
+CREATE TABLE IF NOT EXISTS tipo_solicitudes
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos los tipos de solicitudes si no existen en el sistema
+INSERT IGNORE INTO tipo_solicitudes (id, nombre, delete_flag) VALUES
+    (1, 'Reparacion', 0),
+    (2, 'Cambio de ubicacion', 0);
+
+-- Creamos la tabla estado_solicitudes si no existe
+CREATE TABLE IF NOT EXISTS estado_solicitudes
+(
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos los estados de solicitudes si no existen en el sistema
+INSERT IGNORE INTO estado_solicitudes (id, nombre, delete_flag) VALUES
+    (1, 'Pendiente', 0),
+    (2, 'En Proceso', 0),
+    (3, 'Completada', 0),
+    (4, 'Cancelada', 0);

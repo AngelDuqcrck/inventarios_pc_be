@@ -14,4 +14,6 @@ public class DispositivosVinculadosResponse {
 
     private String tipoDispositivo;
 
+    private String placa;
+
 }

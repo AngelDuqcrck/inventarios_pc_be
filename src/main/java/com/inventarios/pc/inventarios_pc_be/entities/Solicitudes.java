@@ -16,7 +16,7 @@ public class Solicitudes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty
+    
     private String descripcion;
     
     @NotEmpty
@@ -37,4 +37,16 @@ public class Solicitudes {
     @ManyToOne
     @JoinColumn(name = "estado_solicitudes_id")
     private EstadoSolicitudes estadoSolicitudes;
+
+    @ManyToOne
+    @JoinColumn(name = "ubicacion_origen_id")
+    private Ubicacion ubicacionOrigen;
+
+    @ManyToOne
+    @JoinColumn(name = "ubicacion_destino_id")
+    private Ubicacion ubicacionDestino;
+
+    @ManyToOne
+    @JoinColumn( name = "dispositivo_id")
+    private DispositivoPC dispositivoPC;
 }
