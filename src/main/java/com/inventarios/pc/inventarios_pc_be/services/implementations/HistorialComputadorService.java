@@ -356,6 +356,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                 DispositivosVinculadosResponse dispositivoVinculado = DispositivosVinculadosResponse.builder()
                         .id(historial.getDispositivoPC().getId())
                         .nombre(historial.getDispositivoPC().getNombre())
+                        .placa(historial.getDispositivoPC().getPlaca())
                         .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
                         .build();
                 dispositivosVinculadosList.add(dispositivoVinculado);

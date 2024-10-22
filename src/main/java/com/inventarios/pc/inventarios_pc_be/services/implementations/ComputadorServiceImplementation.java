@@ -50,7 +50,6 @@ public class ComputadorServiceImplementation implements IComputadorService {
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
 
-    
     @Autowired
     private ComputadorRepository computadorRepository;
 
@@ -242,6 +241,63 @@ public class ComputadorServiceImplementation implements IComputadorService {
     }
 
     @Override
+    public List<ComputadoresResponse> listarComputadoresByUsuario(Integer usuarioId) throws UserNotFoundException {
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
+
+        if (usuario == null) {
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+        }
+
+        List<Computador> computadores = computadorRepository.findByResponsable(usuario);
+        List<ComputadoresResponse> computadoresResponses = new ArrayList<>();
+
+        for (Computador computador : computadores) {
+            ComputadoresResponse computadorResponse = new ComputadoresResponse();
+            BeanUtils.copyProperties(computador, computadorResponse);
+            computadorResponse.setResponsable(
+                computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre() + " " 
+                + computador.getResponsable().getPrimerApellido() + " " + computador.getResponsable().getSegundoApellido()
+            );
+            computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+            computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
+            computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+    
+            computadoresResponses.add(computadorResponse);
+        }
+    
+        return computadoresResponses;
+    }
+
+    @Override
+    public List<ComputadoresResponse> listarComputadoresByUbicacion(Integer ubicacionId)
+            throws LocationNotFoundException {
+                Ubicacion ubicacion = ubicacionRepository.findById(ubicacionId).orElse(null);
+    
+                if (ubicacion == null) {
+                    throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+                }
+                
+                List<Computador> computadores = computadorRepository.findByUbicacion(ubicacion);
+                List<ComputadoresResponse> computadoresResponses = new ArrayList<>();
+                
+                for (Computador computador : computadores) {
+                    ComputadoresResponse computadorResponse = new ComputadoresResponse();
+                    BeanUtils.copyProperties(computador, computadorResponse);
+                    computadorResponse.setResponsable(
+                        computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre() + " " 
+                        + computador.getResponsable().getPrimerApellido() + " " + computador.getResponsable().getSegundoApellido()
+                    );
+                    computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+                    computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
+                    computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+            
+                    computadoresResponses.add(computadorResponse);
+                }
+            
+                return computadoresResponses;
+    }
+
+    @Override
     public List<ComputadoresResponse> listarComputadores() {
         List<Computador> computadores = computadorRepository.findAll();
 
@@ -352,7 +408,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
                 break;
 
             case 4: // Disponible
-                if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion") && !estadoActual.equals("En uso")) {
+                if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion")
+                        && !estadoActual.equals("En uso")) {
                     throw new ChangeNotAllowedException(
                             String.format(IS_NOT_ALLOWED, "CAMBIO DE ESTADO DEL COMPUTADOR").toUpperCase());
                 }
@@ -374,11 +431,11 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorRepository.save(computador);
     }
 
-    
     public ComputadorDTO actualizarComputador(Integer computadorId, ComputadorDTO computadorDTO)
             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-            StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException, ChangeNotAllowedException {
+            StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
+            ChangeNotAllowedException {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
 
@@ -565,7 +622,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             }
 
             computador.setTipoRam(tipoRam);
-        }else{
+        } else {
             computador.setTipoRam(computador.getTipoRam());
         }
 
@@ -588,5 +645,4 @@ public class ComputadorServiceImplementation implements IComputadorService {
         return computadorActualizadoDTO;
     }
 
-    
 }

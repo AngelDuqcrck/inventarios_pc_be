@@ -20,28 +20,30 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdRespons
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
 
 public interface IComputadorService {
-    
+
      public ComputadorDTO crearComputador(ComputadorDTO computadorDTO)
-            throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
-            LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-            StateNotFoundException, MarcaNotFoundException;
+               throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
+               LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
+               StateNotFoundException, MarcaNotFoundException;
 
-      public List<ComputadoresResponse> listarComputadores();
+     public List<ComputadoresResponse> listarComputadores();
 
-     public ComputadorIdResponse listarComputadorById(Integer id)throws ComputerNotFoundException;
+     public ComputadorIdResponse listarComputadorById(Integer id) throws ComputerNotFoundException;
 
-     public void darBajaComputador(Integer id)throws ComputerNotFoundException, DeleteNotAllowedException;
+     public void darBajaComputador(Integer id) throws ComputerNotFoundException, DeleteNotAllowedException;
 
-      
-       public void cambiarEstadoPc(Integer computadorId, Integer nuevoEstadoDispositivoId)
-            throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException;
-       
+     public void cambiarEstadoPc(Integer computadorId, Integer nuevoEstadoDispositivoId)
+               throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException;
 
-      
-            public ComputadorDTO actualizarComputador(Integer computadorId, ComputadorDTO computadorDTO)
-            throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
-            LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-            StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException, ChangeNotAllowedException;
+     public ComputadorDTO actualizarComputador(Integer computadorId, ComputadorDTO computadorDTO)
+               throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
+               LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
+               StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
+               ChangeNotAllowedException;
 
+     public List<ComputadoresResponse> listarComputadoresByUbicacion(Integer ubicacionId)
+               throws LocationNotFoundException;
+
+     public List<ComputadoresResponse> listarComputadoresByUsuario(Integer usuarioId) throws UserNotFoundException;    
 
 }

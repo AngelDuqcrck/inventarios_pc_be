@@ -39,80 +39,100 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/computador")
 public class ComputadorController {
 
-    @Autowired
-    private IComputadorService computadorService;
+        @Autowired
+        private IComputadorService computadorService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearComputador(@RequestBody ComputadorDTO computadorDTO)
-            throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
-            LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-            StateNotFoundException, MarcaNotFoundException {
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/crear")
+        public ResponseEntity<HttpResponse> crearComputador(@RequestBody ComputadorDTO computadorDTO)
+                        throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
+                        LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
+                        StateNotFoundException, MarcaNotFoundException {
 
-        computadorService.crearComputador(computadorDTO);
+                computadorService.crearComputador(computadorDTO);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Equipo PC creado exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Equipo PC creado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/{computadorId}")
-    public ResponseEntity<ComputadorIdResponse> listarComputadorById(@PathVariable Integer computadorId)
-            throws ComputerNotFoundException {
-        ComputadorIdResponse computadorIdResponse = computadorService.listarComputadorById(computadorId);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/{computadorId}")
+        public ResponseEntity<ComputadorIdResponse> listarComputadorById(@PathVariable Integer computadorId)
+                        throws ComputerNotFoundException {
+                ComputadorIdResponse computadorIdResponse = computadorService.listarComputadorById(computadorId);
 
-        return new ResponseEntity<>(computadorIdResponse, HttpStatus.OK);
-    }
+                return new ResponseEntity<>(computadorIdResponse, HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-    public ResponseEntity<List<ComputadoresResponse>> listarComputadores() {
-        List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadores();
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping
+        public ResponseEntity<List<ComputadoresResponse>> listarComputadores() {
+                List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadores();
 
-        return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
-    }
+                return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
+        }
 
-    @PutMapping("/actualizar/{computadorId}")
-    public ResponseEntity<HttpResponse> actualizarComputador(@PathVariable Integer computadorId,
-            @RequestBody ComputadorDTO computadorDTO)
-            throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
-            LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-            StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
-            ChangeNotAllowedException {
-        
-        computadorService.actualizarComputador(computadorId, computadorDTO);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/ubicacion/{ubicacionId}")
+        public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByUbicacion(
+                        @PathVariable Integer ubicacionId) throws LocationNotFoundException {
+                List<ComputadoresResponse> computadoresResponses = computadorService
+                                .listarComputadoresByUbicacion(ubicacionId);
 
-        return new ResponseEntity<>(
-            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                    "Computador actualizado exitosamente"),
-            HttpStatus.OK);
-    }
+                return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/baja/{computadorId}")
-    public ResponseEntity<HttpResponse> darBajaComputador(@PathVariable Integer computadorId)
-            throws ComputerNotFoundException, DeleteNotAllowedException {
-        computadorService.darBajaComputador(computadorId);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/usuario/{usuarioId}")
+        public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByUsuario(@PathVariable Integer usuarioId)
+                        throws UserNotFoundException {
+                List<ComputadoresResponse> computadoresResponses = computadorService
+                                .listarComputadoresByUsuario(usuarioId);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Equipo PC dado de baja exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
+        }
 
-    
-      @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/cambiar-estado")
-    public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestParam Integer computadorId,
-            @RequestParam Integer nuevoEstadoDispositivoId)
-            throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException {
-        computadorService.cambiarEstadoPc(computadorId, nuevoEstadoDispositivoId);
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Estado cambiado exitosamente"),
-                HttpStatus.OK);
-    }
-     
+        @PutMapping("/actualizar/{computadorId}")
+        public ResponseEntity<HttpResponse> actualizarComputador(@PathVariable Integer computadorId,
+                        @RequestBody ComputadorDTO computadorDTO)
+                        throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
+                        LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
+                        StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException,
+                        ComputerNotFoundException,
+                        ChangeNotAllowedException {
+
+                computadorService.actualizarComputador(computadorId, computadorDTO);
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Computador actualizado exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @DeleteMapping("/baja/{computadorId}")
+        public ResponseEntity<HttpResponse> darBajaComputador(@PathVariable Integer computadorId)
+                        throws ComputerNotFoundException, DeleteNotAllowedException {
+                computadorService.darBajaComputador(computadorId);
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Equipo PC dado de baja exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/cambiar-estado")
+        public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestParam Integer computadorId,
+                        @RequestParam Integer nuevoEstadoDispositivoId)
+                        throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException {
+                computadorService.cambiarEstadoPc(computadorId, nuevoEstadoDispositivoId);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Estado cambiado exitosamente"),
+                                HttpStatus.OK);
+        }
+
 }

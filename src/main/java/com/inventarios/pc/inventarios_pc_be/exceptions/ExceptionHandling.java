@@ -134,6 +134,17 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+
+    @ExceptionHandler(RequestNotFoundException.class)
+    public ResponseEntity<HttpResponse> requestNotFoundException(RequestNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+    
+    @ExceptionHandler(TypeRequestNotFoundException.class)
+    public ResponseEntity<HttpResponse> typeRequestNotFoundException(TypeRequestNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
     @ExceptionHandler(DeleteNotAllowedException.class)
     public ResponseEntity<HttpResponse> deleteNotAllowedException(DeleteNotAllowedException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
