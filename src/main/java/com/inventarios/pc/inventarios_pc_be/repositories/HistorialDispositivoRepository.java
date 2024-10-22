@@ -11,6 +11,8 @@ public interface HistorialDispositivoRepository extends JpaRepository<HistorialD
     
     boolean existsByComputadorAndDispositivoPC_TipoDispositivoAndFechaDesvinculacionIsNull(Computador computador, TipoDispositivo tipoDispositivo);
 
+    boolean existsByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(Computador computador, DispositivoPC dispositivoPC);
+
     HistorialDispositivo findByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(Computador computador, DispositivoPC dispositivoPC);
 
     HistorialDispositivo findFirstByComputadorAndDispositivoPC_TipoDispositivoAndFechaDesvinculacionIsNull(
