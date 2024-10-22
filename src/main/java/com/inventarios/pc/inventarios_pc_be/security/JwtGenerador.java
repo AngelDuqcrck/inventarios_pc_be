@@ -15,12 +15,14 @@ public class JwtGenerador {
     // Metodo para crear un token por medio de la autenticación
     public String generarToken(Authentication authentication) {
         String correo = authentication.getName();
+        String role = authentication.getAuthorities().stream().findFirst().get().getAuthority();
         Date tiempoActual = new Date();
         Date expiracionToken = new Date(tiempoActual.getTime() + ConstantesSeguridad.JWT_EXPIRATION_TIME_TOKEN);
 
         // Aqui generamos el token
         String token = Jwts.builder()
                 .setSubject(correo)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(expiracionToken)
                 .signWith(SignatureAlgorithm.HS512, ConstantesSeguridad.JWT_FIRMA)
