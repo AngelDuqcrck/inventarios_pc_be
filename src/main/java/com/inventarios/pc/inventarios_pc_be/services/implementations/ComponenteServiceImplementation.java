@@ -65,6 +65,8 @@ public class ComponenteServiceImplementation implements IComponenteService {
         return (List<Componente>) componenteRepository.findAll();
     }
 
+    
+
     @Override
     public ComponenteResponse listarComponenteById(Integer id) throws ComponentNotFoundException {
         Componente componente = componenteRepository.findById(id).orElse(null);

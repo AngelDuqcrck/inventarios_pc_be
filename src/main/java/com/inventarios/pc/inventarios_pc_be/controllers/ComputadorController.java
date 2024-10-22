@@ -74,6 +74,22 @@ public class ComputadorController {
         return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/ubicacion/{ubicacionId}")
+    public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByUbicacion(@PathVariable Integer ubicacionId)throws LocationNotFoundException {
+        List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadoresByUbicacion(ubicacionId);
+
+        return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByUsuario(@PathVariable Integer usuarioId)throws UserNotFoundException {
+        List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadoresByUsuario(usuarioId);
+
+        return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
+    }
+
     @PutMapping("/actualizar/{computadorId}")
     public ResponseEntity<HttpResponse> actualizarComputador(@PathVariable Integer computadorId,
             @RequestBody ComputadorDTO computadorDTO)
