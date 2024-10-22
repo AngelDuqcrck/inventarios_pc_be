@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
+import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoSolicitudes;
 import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Solicitudes;
@@ -21,6 +22,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.TypeRequestNotFoundExcept
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.repositories.ComputadorRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoSolicitudesRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.HistorialDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SolicitudRepository;
@@ -43,6 +45,9 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
     @Autowired
     private HistorialDispositivoRepository historialDispositivoRepository;
+
+    @Autowired
+    private EstadoDispositivoRepository estadoDispositivoRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -137,9 +142,17 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
                 }
 
+                EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findByNombre("Averiado").orElse(null);
+                if(nuevoEstadoDispositivo == null){
+                    throw new StateNotFoundException(String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
+                }
                 solicitudes.setDispositivoPC(dispositivo);
+                dispositivo.setEstadoDispositivo(nuevoEstadoDispositivo);
+                dispositivoRepository.save(dispositivo);
             }
         }
+
+       
 
         EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Pendiente").orElse(null);
 
