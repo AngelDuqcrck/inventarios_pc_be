@@ -98,6 +98,13 @@ public class DispositivoServiceImplementation implements IDispositivoService {
     }
 
     @Override
+    public List<DispositivoPC> listarDispTipoEstado(Integer tipoDispositivo, Integer estadoDispositivo) {
+        TipoDispositivo tipoDispositivo2 = tipoDispositivoRepository.findById(tipoDispositivo).orElse(null);
+        EstadoDispositivo estadoDispositivo2 = estadoDispositivoRepository.findById(estadoDispositivo).orElse(null);
+        return dispositivoRepository.findByTipoDispositivoAndEstadoDispositivo(tipoDispositivo2, estadoDispositivo2);
+    }
+
+    @Override
     public DispositivoRequest actualizarDispositivo(Integer id, DispositivoRequest dispositivoRequest)
             throws UpdateNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
             StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException {
@@ -260,4 +267,6 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
         dispositivoRepository.save(dispositivoPC);
     }
+
+
 }

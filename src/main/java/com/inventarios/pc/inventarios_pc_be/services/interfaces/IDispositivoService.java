@@ -22,6 +22,8 @@ public interface IDispositivoService {
 
         public List<DispositivoPC> listarDispositivos();
 
+        public List<DispositivoPC> listarDispTipoEstado(Integer tipoDispositivo, Integer estadoDispositivo);
+
         public DispositivoRequest actualizarDispositivo(Integer id, DispositivoRequest dispositivoRequest)
                         throws UpdateNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
                         StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException;

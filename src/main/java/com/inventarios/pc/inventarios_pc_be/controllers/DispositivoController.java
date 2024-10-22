@@ -68,6 +68,22 @@ public class DispositivoController {
         }
 
         @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/listbytipe-state")
+        public ResponseEntity<List<DispositivoResponse>> listarDispTipoDisponible(@RequestParam Integer tipoDispositivo) {
+                return ResponseEntity.ok(
+                                dispositivoService.listarDispTipoEstado(tipoDispositivo, 4).stream().map(dispositivo -> {
+                                        DispositivoResponse dispositivoR = new DispositivoResponse();
+                                        BeanUtils.copyProperties(dispositivo, dispositivoR);
+                                        dispositivoR.setTipoDispositivo(dispositivo.getTipoDispositivo().getNombre());
+                                        dispositivoR.setMarca(dispositivo.getMarca().getNombre());
+                                        dispositivoR.setEstadoDispositivo(
+                                                        dispositivo.getEstadoDispositivo().getNombre());
+                                        return dispositivoR;
+                                }).collect(Collectors.toList()));
+        }
+
+
+        @PreAuthorize("hasAuthority('ADMIN')")
         @PutMapping("/actualizar/{dispositivoId}")
         public ResponseEntity<HttpResponse> actualizarDispositivo(@PathVariable Integer dispositivoId,
                         @RequestBody DispositivoRequest dispositivoRequest) throws TypeDeviceNotFoundException,
