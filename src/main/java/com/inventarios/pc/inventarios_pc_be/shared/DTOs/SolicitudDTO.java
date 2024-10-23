@@ -1,5 +1,7 @@
 package com.inventarios.pc.inventarios_pc_be.shared.DTOs;
 
+import java.util.Date;
+
 import lombok.*;
 
 @Data
@@ -16,6 +18,9 @@ public class SolicitudDTO {
     
     private String titulo;
 
+    private Date fechaCreacion;
+
+    private Date fechaCierre;
     
     private Integer usuario;
 

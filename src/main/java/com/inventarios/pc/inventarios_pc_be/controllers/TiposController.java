@@ -79,4 +79,7 @@ public class TiposController {
                     return tarDTO;
                 }).collect(Collectors.toList()));
     }
+
+
+    
 }

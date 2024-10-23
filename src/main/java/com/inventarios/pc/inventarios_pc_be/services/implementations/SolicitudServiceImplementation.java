@@ -1,5 +1,9 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISolicitudService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SolicitudDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudesResponse;
 
 @Service
 public class SolicitudServiceImplementation implements ISolicitudService {
@@ -165,7 +170,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudes.setTipoSolicitudes(tipoSolicitud);
         solicitudes.setEstadoSolicitudes(estadoSolicitudes);
         solicitudes.setUbicacionOrigen(ubicacionOrigen);
-
+        solicitudes.setFechaCreacion(new Date());
         Computador computador = computadorRepository.findById(solicitudDTO.getComputador()).orElse(null);
         if (computador == null) {
             throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
@@ -187,6 +192,28 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         return solicitudCreada;
 
     }
+
+    @Override
+    public List<SolicitudesResponse> listarSolicitudes(){
+
+        List<Solicitudes> solicitudes = solicitudRepository.findAll();
+
+        List<SolicitudesResponse> solicitudesResponses = new ArrayList<>();
+
+        for(Solicitudes solicitud : solicitudes){
+
+            SolicitudesResponse solicitudResponse = new SolicitudesResponse();
+            BeanUtils.copyProperties(solicitud, solicitudResponse);
+            solicitudResponse.setEstadoSolicitud(solicitud.getEstadoSolicitudes().getNombre());
+            solicitudResponse.setResponsable(solicitud.getUsuario().getPrimerNombre()+" "+solicitud.getUsuario().getPrimerApellido());
+            solicitudResponse.setTipoSolicitud(solicitud.getTipoSolicitudes().getNombre());
+            solicitudResponse.setFechaCierre(solicitud.getFechaCierre());
+            solicitudesResponses.add(solicitudResponse);
+        }
+
+        return solicitudesResponses;
+    }
+
 
     
 }

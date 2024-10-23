@@ -1,9 +1,12 @@
 package com.inventarios.pc.inventarios_pc_be.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISolicitudService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SolicitudDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudesResponse;
 
 @RestController
 @RequestMapping("/solicitud")
@@ -41,4 +45,12 @@ public class SolicitudController {
                                 HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping
+    public ResponseEntity<List<SolicitudesResponse>> listarSolicitudes(){
+
+        List<SolicitudesResponse> solicitudesResponses = solicitudService.listarSolicitudes();
+
+        return new ResponseEntity<>(solicitudesResponses, HttpStatus.OK);
+    }
 }
