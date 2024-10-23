@@ -11,4 +11,6 @@ import java.util.List;
 public interface SolicitudRepository extends JpaRepository<Solicitudes, Integer> {
     
     List<Solicitudes> findByUsuario(Usuario usuario);
+
+    
 }

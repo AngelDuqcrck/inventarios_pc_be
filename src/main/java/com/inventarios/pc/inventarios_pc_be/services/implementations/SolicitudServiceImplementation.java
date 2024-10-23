@@ -20,6 +20,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.RequestNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeRequestNotFoundException;
@@ -35,6 +36,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISolicitudService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SolicitudDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudesResponse;
 
 @Service
@@ -244,5 +246,40 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         }
 
         return solicitudesResponses;
+    }
+
+
+    @Override
+    public SolicitudIdResponse listarSolicitudById(Integer solicitudId)throws RequestNotFoundException{
+
+        Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
+
+        if(solicitud == null){
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+        }
+
+        SolicitudIdResponse solicitudIdResponse = new SolicitudIdResponse();
+
+        BeanUtils.copyProperties(solicitud, solicitudIdResponse);
+
+        solicitudIdResponse.setUsuario(solicitud.getUsuario().getPrimerNombre()+" "+solicitud.getUsuario().getPrimerApellido());
+        solicitudIdResponse.setComputador(solicitud.getComputador().getNombre());
+        solicitudIdResponse.setTipoSolicitudes(solicitud.getTipoSolicitudes().getNombre());
+        solicitudIdResponse.setEstadoSolicitudes(solicitud.getEstadoSolicitudes().getNombre());
+        solicitudIdResponse.setUbicacionOrigen(solicitud.getUbicacionOrigen().getNombre());
+        solicitudIdResponse.setAreaOrigen(solicitud.getUbicacionOrigen().getArea().getNombre());
+        solicitudIdResponse.setSedeOrigen(solicitud.getUbicacionOrigen().getArea().getSede().getNombre());
+        
+        if(solicitud.getDispositivoPC() != null){
+            solicitudIdResponse.setDispositivoPC(solicitud.getDispositivoPC().getNombre());
+        }
+        if(solicitud.getUbicacionDestino()!= null){
+        solicitudIdResponse.setUbicacionDestino(solicitud.getUbicacionDestino().getNombre());
+        solicitudIdResponse.setAreaDestino(solicitud.getUbicacionDestino().getArea().getNombre());
+        solicitudIdResponse.setSedeDestino(solicitud.getUbicacionDestino().getArea().getSede().getNombre());
+        }
+        
+        return solicitudIdResponse;
+
     }
 }

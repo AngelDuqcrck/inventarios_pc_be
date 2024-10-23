@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.RequestNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeRequestNotFoundException;
@@ -22,6 +23,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISolicitudService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SolicitudDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudesResponse;
 
 @RestController
@@ -57,12 +59,21 @@ public class SolicitudController {
 
 
     @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL', 'EMPLEADO_ADMINISTRATIVO')")
-    @GetMapping("/{usuarioId}")
+    @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<SolicitudesResponse>> listarSolicitudesByUsuario(@PathVariable Integer usuarioId) throws UserNotFoundException{
 
         List<SolicitudesResponse> solicitudesResponses = solicitudService.listarSolicitudesByUsuario(usuarioId);
 
         return new ResponseEntity<>(solicitudesResponses, HttpStatus.OK);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{solicitudId}")
+    public ResponseEntity<SolicitudIdResponse> listarSolicitudesById(@PathVariable Integer solicitudId) throws RequestNotFoundException{
+
+        SolicitudIdResponse solicitudIdResponse = solicitudService.listarSolicitudById(solicitudId);
+
+        return new ResponseEntity<>(solicitudIdResponse, HttpStatus.OK);
     }
 
 }
