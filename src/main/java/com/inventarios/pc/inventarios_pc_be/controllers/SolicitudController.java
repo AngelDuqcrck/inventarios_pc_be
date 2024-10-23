@@ -34,42 +34,58 @@ public class SolicitudController {
     private ISolicitudService solicitudService;
 
     @PreAuthorize("hasAuthority('EMPLEADO_ASISTENCIAL')")
-    @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearSolicitudAs(@RequestBody SolicitudDTO solicitudDTO,
+    @PostMapping("/crear/asistencial")
+    public ResponseEntity<HttpResponse> crearSolicitudAsistencial(@RequestBody SolicitudDTO solicitudDTO,
             @RequestParam Integer tipoSolicitudId)
             throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,
             TypeRequestNotFoundException {
 
-        solicitudService.crearSolicitud(solicitudDTO, tipoSolicitudId);
+        solicitudService.crearSolicitudAsistencial(solicitudDTO, tipoSolicitudId);
 
         return new ResponseEntity<>(
-                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                                                "Solicitud creada exitosamente"),
-                                HttpStatus.OK);
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Solicitud creada exitosamente"),
+                HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAuthority('EMPLEADO_ADMINISTRATIVO')")
+    @PostMapping("/crear/administrativo")
+    public ResponseEntity<HttpResponse> crearSolicitudAdministrativo(@RequestBody SolicitudDTO solicitudDTO,
+            @RequestParam Integer tipoSolicitudId)
+            throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,
+            TypeRequestNotFoundException {
+
+        solicitudService.crearSolicitudAdministrativo(solicitudDTO, tipoSolicitudId);
+
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Solicitud creada exitosamente"),
+                HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<SolicitudesResponse>> listarSolicitudes(){
+    public ResponseEntity<List<SolicitudesResponse>> listarSolicitudes() {
 
         List<SolicitudesResponse> solicitudesResponses = solicitudService.listarSolicitudes();
 
         return new ResponseEntity<>(solicitudesResponses, HttpStatus.OK);
     }
 
-
     @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL', 'EMPLEADO_ADMINISTRATIVO')")
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<SolicitudesResponse>> listarSolicitudesByUsuario(@PathVariable Integer usuarioId) throws UserNotFoundException{
+    @GetMapping("/usuario/{usuario}")
+    public ResponseEntity<List<SolicitudesResponse>> listarSolicitudesByUsuario(@PathVariable String usuario)
+            throws UserNotFoundException {
 
-        List<SolicitudesResponse> solicitudesResponses = solicitudService.listarSolicitudesByUsuario(usuarioId);
+        List<SolicitudesResponse> solicitudesResponses = solicitudService.listarSolicitudesByUsuario(usuario);
 
         return new ResponseEntity<>(solicitudesResponses, HttpStatus.OK);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{solicitudId}")
-    public ResponseEntity<SolicitudIdResponse> listarSolicitudesById(@PathVariable Integer solicitudId) throws RequestNotFoundException{
+    public ResponseEntity<SolicitudIdResponse> listarSolicitudesById(@PathVariable Integer solicitudId)
+            throws RequestNotFoundException {
 
         SolicitudIdResponse solicitudIdResponse = solicitudService.listarSolicitudById(solicitudId);
 

@@ -78,12 +78,137 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     private EstadoSolicitudesRepository estadoSolicitudesRepository;
 
     @Override
-    public SolicitudDTO crearSolicitud(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
+    public SolicitudDTO crearSolicitudAsistencial(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
             throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,
             TypeRequestNotFoundException {
+        Solicitudes solicitudCreadaAsistencial = crearSolicitud(solicitudDTO, tipoSolicitudId);
+
+        solicitudRepository.save(solicitudCreadaAsistencial);
+
+        SolicitudDTO solicitudAsistencialCreadaDTO = new SolicitudDTO();
+        BeanUtils.copyProperties(solicitudCreadaAsistencial, solicitudAsistencialCreadaDTO);
+        return solicitudAsistencialCreadaDTO;
+
+    }
+
+    @Override
+    public SolicitudDTO crearSolicitudAdministrativo(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
+            throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,
+            TypeRequestNotFoundException {
+
+        Solicitudes solicitudCreadaAdministrativo = crearSolicitud(solicitudDTO, tipoSolicitudId);
+
+        Ubicacion ubicacion = solicitudCreadaAdministrativo.getComputador().getUbicacion();
+
+        solicitudCreadaAdministrativo.setUbicacionOrigen(ubicacion);
+
+        solicitudRepository.save(solicitudCreadaAdministrativo);
+
+        SolicitudDTO solicitudCreadaAdministrativoDTO = new SolicitudDTO();
+        BeanUtils.copyProperties(solicitudCreadaAdministrativo, solicitudCreadaAdministrativoDTO);
+
+        return solicitudCreadaAdministrativoDTO;
+
+    }
+
+    @Override
+    public List<SolicitudesResponse> listarSolicitudes() {
+
+        List<Solicitudes> solicitudes = solicitudRepository.findAll();
+
+        List<SolicitudesResponse> solicitudesResponses = new ArrayList<>();
+
+        for (Solicitudes solicitud : solicitudes) {
+
+            SolicitudesResponse solicitudResponse = new SolicitudesResponse();
+            BeanUtils.copyProperties(solicitud, solicitudResponse);
+            solicitudResponse.setEstadoSolicitud(solicitud.getEstadoSolicitudes().getNombre());
+            solicitudResponse.setResponsable(
+                    solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
+            solicitudResponse.setTipoSolicitud(solicitud.getTipoSolicitudes().getNombre());
+            solicitudResponse.setFechaCierre(solicitud.getFechaCierre());
+            solicitudesResponses.add(solicitudResponse);
+        }
+
+        return solicitudesResponses;
+    }
+
+    @Override
+    public List<SolicitudesResponse> listarSolicitudesByUsuario(String correo) throws UserNotFoundException {
+
+        Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
+
+        if (usuario == null) {
+
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+
+        }
+
+        List<Solicitudes> solicitudes = solicitudRepository.findByUsuario(usuario);
+
+        List<SolicitudesResponse> solicitudesResponses = new ArrayList<>();
+
+        for (Solicitudes solicitud : solicitudes) {
+
+            SolicitudesResponse solicitudResponse = new SolicitudesResponse();
+            BeanUtils.copyProperties(solicitud, solicitudResponse);
+            solicitudResponse.setEstadoSolicitud(solicitud.getEstadoSolicitudes().getNombre());
+            solicitudResponse.setResponsable(
+                    solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
+            solicitudResponse.setTipoSolicitud(solicitud.getTipoSolicitudes().getNombre());
+            solicitudResponse.setFechaCierre(solicitud.getFechaCierre());
+            solicitudesResponses.add(solicitudResponse);
+        }
+
+        return solicitudesResponses;
+    }
+
+    @Override
+    public SolicitudIdResponse listarSolicitudById(Integer solicitudId) throws RequestNotFoundException {
+
+        Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
+
+        if (solicitud == null) {
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+        }
+
+        SolicitudIdResponse solicitudIdResponse = new SolicitudIdResponse();
+
+        BeanUtils.copyProperties(solicitud, solicitudIdResponse);
+
+        solicitudIdResponse.setUsuario(
+                solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
+        solicitudIdResponse.setComputador(solicitud.getComputador().getNombre());
+        solicitudIdResponse.setTipoSolicitudes(solicitud.getTipoSolicitudes().getNombre());
+        solicitudIdResponse.setEstadoSolicitudes(solicitud.getEstadoSolicitudes().getNombre());
+        solicitudIdResponse.setUbicacionOrigen(solicitud.getUbicacionOrigen().getNombre());
+        solicitudIdResponse.setAreaOrigen(solicitud.getUbicacionOrigen().getArea().getNombre());
+        solicitudIdResponse.setSedeOrigen(solicitud.getUbicacionOrigen().getArea().getSede().getNombre());
+
+        if (solicitud.getDispositivoPC() != null) {
+            solicitudIdResponse.setDispositivoPC(solicitud.getDispositivoPC().getNombre());
+        }
+        if (solicitud.getUbicacionDestino() != null) {
+            solicitudIdResponse.setUbicacionDestino(solicitud.getUbicacionDestino().getNombre());
+            solicitudIdResponse.setAreaDestino(solicitud.getUbicacionDestino().getArea().getNombre());
+            solicitudIdResponse.setSedeDestino(solicitud.getUbicacionDestino().getArea().getSede().getNombre());
+        }
+
+        return solicitudIdResponse;
+
+    }
+
+
+
+
+
+    private Solicitudes crearSolicitud(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
+            throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,
+            TypeRequestNotFoundException {
+
         Solicitudes solicitudes = new Solicitudes();
 
-        Usuario usuario = usuarioRepository.findById(solicitudDTO.getUsuario()).orElse(null);
+        Usuario usuario = usuarioRepository.findByCorreo(solicitudDTO.getUsuario()).orElse(null);
 
         if (usuario == null) {
             throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
@@ -99,14 +224,18 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             throw new TypeRequestNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE SOLICITUD").toUpperCase());
         }
 
-        Ubicacion ubicacionOrigen = ubicacionRepository.findById(solicitudDTO.getUbicacionOrigen()).orElse(null);
-        if (ubicacionOrigen == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACIÓN DE ORIGEN").toUpperCase());
-        }
+        if (solicitudDTO.getUbicacionOrigen() != null) {
+            Ubicacion ubicacionOrigen = ubicacionRepository.findById(solicitudDTO.getUbicacionOrigen()).orElse(null);
+            if (ubicacionOrigen == null) {
+                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACIÓN DE ORIGEN").toUpperCase());
+            }
 
-        if (ubicacionOrigen.getDeleteFlag() == true) {
-            throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+            if (ubicacionOrigen.getDeleteFlag() == true) {
+                throw new SelectNotAllowedException(
+                        String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+            }
+
+            solicitudes.setUbicacionOrigen(ubicacionOrigen);
         }
 
         if (tipoSolicitud.getNombre().equalsIgnoreCase("Cambio de ubicacion")) {
@@ -172,7 +301,6 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudes.setUsuario(usuario);
         solicitudes.setTipoSolicitudes(tipoSolicitud);
         solicitudes.setEstadoSolicitudes(estadoSolicitudes);
-        solicitudes.setUbicacionOrigen(ubicacionOrigen);
         solicitudes.setFechaCreacion(new Date());
         Computador computador = computadorRepository.findById(solicitudDTO.getComputador()).orElse(null);
         if (computador == null) {
@@ -186,100 +314,6 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         solicitudes.setComputador(computador);
 
-        solicitudes = solicitudRepository.save(solicitudes);
-
-        SolicitudDTO solicitudCreada = new SolicitudDTO();
-        BeanUtils.copyProperties(solicitudes, solicitudCreada);
-
-        return solicitudCreada;
-
-    }
-
-    @Override
-    public List<SolicitudesResponse> listarSolicitudes() {
-
-        List<Solicitudes> solicitudes = solicitudRepository.findAll();
-
-        List<SolicitudesResponse> solicitudesResponses = new ArrayList<>();
-
-        for (Solicitudes solicitud : solicitudes) {
-
-            SolicitudesResponse solicitudResponse = new SolicitudesResponse();
-            BeanUtils.copyProperties(solicitud, solicitudResponse);
-            solicitudResponse.setEstadoSolicitud(solicitud.getEstadoSolicitudes().getNombre());
-            solicitudResponse.setResponsable(
-                    solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
-            solicitudResponse.setTipoSolicitud(solicitud.getTipoSolicitudes().getNombre());
-            solicitudResponse.setFechaCierre(solicitud.getFechaCierre());
-            solicitudesResponses.add(solicitudResponse);
-        }
-
-        return solicitudesResponses;
-    }
-
-
-    @Override
-    public List<SolicitudesResponse> listarSolicitudesByUsuario(Integer usuarioId) throws UserNotFoundException {
-
-        Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
-
-        if (usuario == null) {
-
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
-
-        }
-
-        List<Solicitudes> solicitudes = solicitudRepository.findByUsuario(usuario);
-
-        List<SolicitudesResponse> solicitudesResponses = new ArrayList<>();
-
-        for (Solicitudes solicitud : solicitudes) {
-
-            SolicitudesResponse solicitudResponse = new SolicitudesResponse();
-            BeanUtils.copyProperties(solicitud, solicitudResponse);
-            solicitudResponse.setEstadoSolicitud(solicitud.getEstadoSolicitudes().getNombre());
-            solicitudResponse.setResponsable(
-                    solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
-            solicitudResponse.setTipoSolicitud(solicitud.getTipoSolicitudes().getNombre());
-            solicitudResponse.setFechaCierre(solicitud.getFechaCierre());
-            solicitudesResponses.add(solicitudResponse);
-        }
-
-        return solicitudesResponses;
-    }
-
-
-    @Override
-    public SolicitudIdResponse listarSolicitudById(Integer solicitudId)throws RequestNotFoundException{
-
-        Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
-
-        if(solicitud == null){
-            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
-        }
-
-        SolicitudIdResponse solicitudIdResponse = new SolicitudIdResponse();
-
-        BeanUtils.copyProperties(solicitud, solicitudIdResponse);
-
-        solicitudIdResponse.setUsuario(solicitud.getUsuario().getPrimerNombre()+" "+solicitud.getUsuario().getPrimerApellido());
-        solicitudIdResponse.setComputador(solicitud.getComputador().getNombre());
-        solicitudIdResponse.setTipoSolicitudes(solicitud.getTipoSolicitudes().getNombre());
-        solicitudIdResponse.setEstadoSolicitudes(solicitud.getEstadoSolicitudes().getNombre());
-        solicitudIdResponse.setUbicacionOrigen(solicitud.getUbicacionOrigen().getNombre());
-        solicitudIdResponse.setAreaOrigen(solicitud.getUbicacionOrigen().getArea().getNombre());
-        solicitudIdResponse.setSedeOrigen(solicitud.getUbicacionOrigen().getArea().getSede().getNombre());
-        
-        if(solicitud.getDispositivoPC() != null){
-            solicitudIdResponse.setDispositivoPC(solicitud.getDispositivoPC().getNombre());
-        }
-        if(solicitud.getUbicacionDestino()!= null){
-        solicitudIdResponse.setUbicacionDestino(solicitud.getUbicacionDestino().getNombre());
-        solicitudIdResponse.setAreaDestino(solicitud.getUbicacionDestino().getArea().getNombre());
-        solicitudIdResponse.setSedeDestino(solicitud.getUbicacionDestino().getArea().getSede().getNombre());
-        }
-        
-        return solicitudIdResponse;
-
+        return solicitudes;
     }
 }

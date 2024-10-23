@@ -13,13 +13,17 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudIdResponse
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudesResponse;
 
 public interface ISolicitudService {
-    public SolicitudDTO crearSolicitud(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
+    public SolicitudDTO crearSolicitudAsistencial(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
             throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,
             TypeRequestNotFoundException;
 
     public List<SolicitudesResponse> listarSolicitudes();
 
-    public List<SolicitudesResponse> listarSolicitudesByUsuario(Integer usuarioId) throws UserNotFoundException;
+    public List<SolicitudesResponse> listarSolicitudesByUsuario(String correo) throws UserNotFoundException;
 
-    public SolicitudIdResponse listarSolicitudById(Integer solicitudId)throws RequestNotFoundException;
+    public SolicitudIdResponse listarSolicitudById(Integer solicitudId) throws RequestNotFoundException;
+    
+    public SolicitudDTO crearSolicitudAdministrativo(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
+            throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,
+            TypeRequestNotFoundException;
 }

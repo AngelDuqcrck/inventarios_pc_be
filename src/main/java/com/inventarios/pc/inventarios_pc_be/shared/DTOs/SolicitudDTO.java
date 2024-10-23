@@ -22,7 +22,7 @@ public class SolicitudDTO {
 
     private Date fechaCierre;
     
-    private Integer usuario;
+    private String usuario;
 
     
     private Integer computador;
