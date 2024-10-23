@@ -16,4 +16,6 @@ public interface ISolicitudService {
             TypeRequestNotFoundException;
 
     public List<SolicitudesResponse> listarSolicitudes();
+
+    public List<SolicitudesResponse> listarSolicitudesByUsuario(Integer usuarioId) throws UserNotFoundException;
 }

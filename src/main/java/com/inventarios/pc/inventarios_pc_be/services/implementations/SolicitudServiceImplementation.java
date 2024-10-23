@@ -75,7 +75,6 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     @Autowired
     private EstadoSolicitudesRepository estadoSolicitudesRepository;
 
-
     @Override
     public SolicitudDTO crearSolicitud(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
             throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,
@@ -127,37 +126,39 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 if (computador == null) {
                     throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
                 }
-                
+
                 if (!computador.getEstadoDispositivo().getNombre().equals("En uso")) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
                 }
 
-                DispositivoPC dispositivo = dispositivoRepository.findById(solicitudDTO.getDispositivoPC()).orElse(null);
-                
-                Boolean existeDispositivoVinculado = historialDispositivoRepository.existsByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivo);
+                DispositivoPC dispositivo = dispositivoRepository.findById(solicitudDTO.getDispositivoPC())
+                        .orElse(null);
+
+                Boolean existeDispositivoVinculado = historialDispositivoRepository
+                        .existsByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivo);
 
                 if (dispositivo == null) {
-                    
+
                     throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
-                    
+
                 }
-                if(existeDispositivoVinculado == false){
+                if (existeDispositivoVinculado == false) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
                 }
 
-                EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findByNombre("Averiado").orElse(null);
-                if(nuevoEstadoDispositivo == null){
-                    throw new StateNotFoundException(String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
+                EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findByNombre("Averiado")
+                        .orElse(null);
+                if (nuevoEstadoDispositivo == null) {
+                    throw new StateNotFoundException(
+                            String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
                 }
                 solicitudes.setDispositivoPC(dispositivo);
                 dispositivo.setEstadoDispositivo(nuevoEstadoDispositivo);
                 dispositivoRepository.save(dispositivo);
             }
         }
-
-       
 
         EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Pendiente").orElse(null);
 
@@ -175,7 +176,6 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         if (computador == null) {
             throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
         }
-        
 
         if (!computador.getEstadoDispositivo().getNombre().equals("En uso")) {
             throw new SelectNotAllowedException(
@@ -194,18 +194,19 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     }
 
     @Override
-    public List<SolicitudesResponse> listarSolicitudes(){
+    public List<SolicitudesResponse> listarSolicitudes() {
 
         List<Solicitudes> solicitudes = solicitudRepository.findAll();
 
         List<SolicitudesResponse> solicitudesResponses = new ArrayList<>();
 
-        for(Solicitudes solicitud : solicitudes){
+        for (Solicitudes solicitud : solicitudes) {
 
             SolicitudesResponse solicitudResponse = new SolicitudesResponse();
             BeanUtils.copyProperties(solicitud, solicitudResponse);
             solicitudResponse.setEstadoSolicitud(solicitud.getEstadoSolicitudes().getNombre());
-            solicitudResponse.setResponsable(solicitud.getUsuario().getPrimerNombre()+" "+solicitud.getUsuario().getPrimerApellido());
+            solicitudResponse.setResponsable(
+                    solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
             solicitudResponse.setTipoSolicitud(solicitud.getTipoSolicitudes().getNombre());
             solicitudResponse.setFechaCierre(solicitud.getFechaCierre());
             solicitudesResponses.add(solicitudResponse);
@@ -215,5 +216,33 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     }
 
 
-    
+    @Override
+    public List<SolicitudesResponse> listarSolicitudesByUsuario(Integer usuarioId) throws UserNotFoundException {
+
+        Usuario usuario = usuarioRepository.findById(usuarioId).orElse(null);
+
+        if (usuario == null) {
+
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+
+        }
+
+        List<Solicitudes> solicitudes = solicitudRepository.findByUsuario(usuario);
+
+        List<SolicitudesResponse> solicitudesResponses = new ArrayList<>();
+
+        for (Solicitudes solicitud : solicitudes) {
+
+            SolicitudesResponse solicitudResponse = new SolicitudesResponse();
+            BeanUtils.copyProperties(solicitud, solicitudResponse);
+            solicitudResponse.setEstadoSolicitud(solicitud.getEstadoSolicitudes().getNombre());
+            solicitudResponse.setResponsable(
+                    solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
+            solicitudResponse.setTipoSolicitud(solicitud.getTipoSolicitudes().getNombre());
+            solicitudResponse.setFechaCierre(solicitud.getFechaCierre());
+            solicitudesResponses.add(solicitudResponse);
+        }
+
+        return solicitudesResponses;
+    }
 }
