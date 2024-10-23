@@ -1,5 +1,7 @@
 package com.inventarios.pc.inventarios_pc_be.entities;
 
+import java.util.Date;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -18,6 +20,11 @@ public class Solicitudes {
 
     
     private String descripcion;
+    
+
+    private Date fechaCreacion;
+
+    private Date fechaCierre;
     
     @NotEmpty
     private String titulo;

@@ -13,13 +13,16 @@ import com.inventarios.pc.inventarios_pc_be.entities.TipoComponente;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoSoftware;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoSolicitudes;
+import com.inventarios.pc.inventarios_pc_be.entities.TipoSolicitudes;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoSolicitudesRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoTicketsRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoAlmacenamientoRamRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoComponenteRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDocumentoRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.TipoPcRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoSoftwareRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.TipoSolicitudRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoSolicitudRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITiposService;
 
