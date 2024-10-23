@@ -79,6 +79,32 @@ public class AreaServiceImplementation implements IAreaService {
         return (List<AreaPC>) areaRepository.findAll();
     }
 
+        /**
+     * Lista todas las áreas registradas en el sistema.
+     *
+     * @return Una lista de objetos {@link AreaPC} que representan todas las áreas.
+     */
+    @Override
+    public List<AreaPC> listarAreasPorSede(Integer sedeId) throws LocationNotFoundException, SelectNotAllowedException {
+        SedePC sedePC = sedeRepository.findById(sedeId).orElse(null);
+
+        if (sedePC == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+        }
+
+        if (sedePC.getDeleteFlag() == true) {
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR SEDE").toUpperCase());
+        }
+
+        List<AreaPC> areas = areaRepository.findBySede(sedePC);
+
+        if(areas.isEmpty()){
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+        }
+        return areas;
+    }
+
+
     // Metodo que lista toda la informacion especifica de acuerdo a su id
     @Override
     public AreaResponse listarAreaById(Integer id) throws LocationNotFoundException {

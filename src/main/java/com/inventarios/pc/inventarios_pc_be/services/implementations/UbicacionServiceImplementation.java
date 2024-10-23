@@ -171,6 +171,26 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     }
 
     @Override
+    public List<Ubicacion> listarUbicacionesPorArea(Integer areaId) throws LocationNotFoundException, SelectNotAllowedException {
+        AreaPC areaPC = areaRepository.findById(areaId).orElse(null);
+
+        if (areaPC == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+        }
+
+        if (areaPC.getDeleteFlag() == true) {
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA AREA").toUpperCase());
+        }
+
+        List<Ubicacion> ubicaciones = ubicacionRepository.findByArea(areaPC);
+
+        if(ubicaciones.isEmpty()){
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+        }
+        return ubicaciones;
+    }
+
+    @Override
     public void activarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 

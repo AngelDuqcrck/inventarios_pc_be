@@ -79,4 +79,39 @@ public class TiposController {
                     return tarDTO;
                 }).collect(Collectors.toList()));
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/tps")
+    public ResponseEntity<List<TipoComponenteDTO>> getTipoSolicitudes(){
+        return ResponseEntity.ok(
+            tiposService.listarTipoSolicitudes().stream().map(TS ->{
+                TipoComponenteDTO tsDTO = new TipoComponenteDTO();
+                    BeanUtils.copyProperties(TS, tsDTO);
+                    return tsDTO;
+                }).collect(Collectors.toList()));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/es")
+    public ResponseEntity<List<TipoComponenteDTO>> getEstadoSolicitudes(){
+        return ResponseEntity.ok(
+            tiposService.listarEstadosSolicitud().stream().map(ES ->{
+                TipoComponenteDTO esDTO = new TipoComponenteDTO();
+                    BeanUtils.copyProperties(ES, esDTO);
+                    return esDTO;
+                }).collect(Collectors.toList()));
+    }
+
+    @PreAuthorize("isAuthenticated()") //Revisar para confirmar el role de ADMIN y Tecnico Sistemas
+    @GetMapping("/et")
+    public ResponseEntity<List<TipoComponenteDTO>> getEstadoTickets(){
+        return ResponseEntity.ok(
+            tiposService.listarEstadosTickets().stream().map(ET ->{
+                TipoComponenteDTO etDTO = new TipoComponenteDTO();
+                    BeanUtils.copyProperties(ET, etDTO);
+                    return etDTO;
+                }).collect(Collectors.toList()));
+    }
+
+    
 }

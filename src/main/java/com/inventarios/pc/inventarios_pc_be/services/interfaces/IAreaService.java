@@ -42,6 +42,14 @@ public interface IAreaService {
      */
     public List<AreaPC> listarAreas() throws LocationNotFoundException;
 
+        /**
+     * Lista todas las áreas registradas en el sistema.
+     *
+     * @return Una lista de objetos {@link AreaPC} que representan todas las áreas que están en una misma sede.
+     * @throws LocationNotFoundException Si no se encuentran áreas en el sistema.
+     */
+    public List<AreaPC> listarAreasPorSede(Integer sedeId) throws LocationNotFoundException, SelectNotAllowedException;
+
     /**
      * Actualiza los datos de una área existente.
      *

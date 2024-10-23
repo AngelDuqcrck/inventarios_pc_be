@@ -75,9 +75,9 @@ public class ComputadorController {
         }
 
         @PreAuthorize("hasAuthority('ADMIN')")
-        @GetMapping("/ubicacion/{ubicacionId}")
+        @GetMapping("/ubicacionPC")
         public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByUbicacion(
-                        @PathVariable Integer ubicacionId) throws LocationNotFoundException {
+                        @RequestParam Integer ubicacionId) throws LocationNotFoundException {
                 List<ComputadoresResponse> computadoresResponses = computadorService
                                 .listarComputadoresByUbicacion(ubicacionId);
 

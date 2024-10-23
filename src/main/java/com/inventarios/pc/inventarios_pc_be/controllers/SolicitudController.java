@@ -26,7 +26,7 @@ public class SolicitudController {
     @Autowired
     private ISolicitudService solicitudService;
 
-    @PreAuthorize("hasAuthority('EMPLEADO_ASISTENCIAL')")
+    //@PreAuthorize("hasAuthority('EMPLEADO_ASISTENCIAL')")
     @PostMapping("/crear")
     public ResponseEntity<HttpResponse> crearSolicitudAs(@RequestBody SolicitudDTO solicitudDTO,
             @RequestParam Integer tipoSolicitudId)

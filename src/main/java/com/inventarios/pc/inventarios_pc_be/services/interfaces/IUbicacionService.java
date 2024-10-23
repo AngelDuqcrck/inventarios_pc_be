@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 
 import java.util.List;
 
+import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
@@ -37,6 +38,14 @@ public interface IUbicacionService {
      *         ubicaciones.
      */
     public List<Ubicacion> listarUbicaciones();
+
+            /**
+     * Lista todas las áreas registradas en el sistema.
+     *
+     * @return Una lista de objetos {@link Ubicacion} que representan todas las ubicaciones que están en una misma área.
+     * @throws LocationNotFoundException Si no se encuentran ubicaciones en el sistema.
+     */
+    public List<Ubicacion> listarUbicacionesPorArea(Integer areaId) throws LocationNotFoundException, SelectNotAllowedException;
 
     /**
      * Actualiza los datos de una ubicación existente.

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
@@ -131,5 +132,17 @@ public class AreaController {
         public ResponseEntity<AreaResponse> listarAreaById(@PathVariable Integer id) throws LocationNotFoundException {
                 AreaResponse areaResponse = areaServiceImplementation.listarAreaById(id);
                 return new ResponseEntity<>(areaResponse, HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')") //ACA VA TAMBIÉN ROL ASISTENCIAL, ADMINISTRATIVO, ETC
+        @GetMapping("/sede")
+        public ResponseEntity<List<AreaResponse>> listarAreaBySede(@RequestParam Integer sedeId) throws LocationNotFoundException, SelectNotAllowedException {
+                return ResponseEntity.ok(
+                        areaServiceImplementation.listarAreasPorSede(sedeId).stream().map(area -> {
+                                AreaResponse areaR = new AreaResponse();
+                                BeanUtils.copyProperties(area, areaR);
+                                areaR.setSede(area.getSede().getNombre());
+                                return areaR;
+                        }).collect(Collectors.toList()));
         }
 }

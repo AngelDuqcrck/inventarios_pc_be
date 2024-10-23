@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.services.implementations.UbicacionServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUbicacionService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
@@ -72,6 +72,18 @@ public class UbicacionController {
                                         ubicacionR.setArea(ubicacion.getArea().getNombre());
                                         return ubicacionR;
                                 }).collect(Collectors.toList()));
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')") //ACA VA TAMBIÉN ROL ASISTENCIAL, ADMINISTRATIVO, ETC
+        @GetMapping("/area")
+        public ResponseEntity<List<UbicacionResponse>> listarUbicByArea(@RequestParam Integer areaId) throws LocationNotFoundException, SelectNotAllowedException {
+                return ResponseEntity.ok(
+                        ubicacionServiceImplementation.listarUbicacionesPorArea(areaId).stream().map(ubic -> {
+                                UbicacionResponse ubicR = new UbicacionResponse();
+                                BeanUtils.copyProperties(ubic, ubicR);
+                                ubicR.setArea(ubic.getArea().getNombre());
+                                return ubicR;
+                        }).collect(Collectors.toList()));
         }
 
         /**
