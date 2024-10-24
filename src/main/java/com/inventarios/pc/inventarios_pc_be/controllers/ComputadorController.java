@@ -57,7 +57,7 @@ public class ComputadorController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("isAuthenticated()")
         @GetMapping("/{computadorId}")
         public ResponseEntity<ComputadorIdResponse> listarComputadorById(@PathVariable Integer computadorId)
                         throws ComputerNotFoundException {
@@ -74,7 +74,7 @@ public class ComputadorController {
                 return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("isAuthenticated()")
         @GetMapping("/ubicacionPC")
         public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByUbicacion(
                         @RequestParam Integer ubicacionId) throws LocationNotFoundException {
@@ -90,6 +90,16 @@ public class ComputadorController {
                         throws UserNotFoundException {
                 List<ComputadoresResponse> computadoresResponses = computadorService
                                 .listarComputadoresByUsuario(usuarioId);
+
+                return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
+        }
+
+        @PreAuthorize("isAuthenticated()")
+        @GetMapping("/usuarioE/{usuarioId}")
+        public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByEmail(@PathVariable String usuarioId)
+                        throws UserNotFoundException {
+                List<ComputadoresResponse> computadoresResponses = computadorService
+                                .listarComputadoresByEmail(usuarioId);
 
                 return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
         }

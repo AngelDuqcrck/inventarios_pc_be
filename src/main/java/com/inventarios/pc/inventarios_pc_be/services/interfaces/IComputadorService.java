@@ -44,6 +44,7 @@ public interface IComputadorService {
      public List<ComputadoresResponse> listarComputadoresByUbicacion(Integer ubicacionId)
                throws LocationNotFoundException;
 
-     public List<ComputadoresResponse> listarComputadoresByUsuario(Integer usuarioId) throws UserNotFoundException;    
+     public List<ComputadoresResponse> listarComputadoresByUsuario(Integer usuarioId) throws UserNotFoundException; 
+     public List<ComputadoresResponse> listarComputadoresByEmail(String usuarioEmail) throws UserNotFoundException;       
 
 }

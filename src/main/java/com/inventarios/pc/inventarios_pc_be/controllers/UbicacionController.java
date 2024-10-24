@@ -74,7 +74,7 @@ public class UbicacionController {
                                 }).collect(Collectors.toList()));
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')") //ACA VA TAMBIÉN ROL ASISTENCIAL, ADMINISTRATIVO, ETC
+        @PreAuthorize("isAuthenticated()") //ACA VA TAMBIÉN ROL ASISTENCIAL, ADMINISTRATIVO, ETC
         @GetMapping("/area")
         public ResponseEntity<List<UbicacionResponse>> listarUbicByArea(@RequestParam Integer areaId) throws LocationNotFoundException, SelectNotAllowedException {
                 return ResponseEntity.ok(

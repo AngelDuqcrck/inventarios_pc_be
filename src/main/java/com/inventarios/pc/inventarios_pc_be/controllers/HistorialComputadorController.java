@@ -81,7 +81,7 @@ public class HistorialComputadorController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/dispositivos-pc/{computadorId}")
     public ResponseEntity<DispositivosXPcResponse> listarDispositivosXPc(@PathVariable Integer computadorId)
             throws ComputerNotFoundException {

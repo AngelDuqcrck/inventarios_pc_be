@@ -134,7 +134,7 @@ public class AreaController {
                 return new ResponseEntity<>(areaResponse, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')") //ACA VA TAMBIÉN ROL ASISTENCIAL, ADMINISTRATIVO, ETC
+        @PreAuthorize("isAuthenticated()") //ACA VA TAMBIÉN ROL ASISTENCIAL, ADMINISTRATIVO, ETC
         @GetMapping("/sede")
         public ResponseEntity<List<AreaResponse>> listarAreaBySede(@RequestParam Integer sedeId) throws LocationNotFoundException, SelectNotAllowedException {
                 return ResponseEntity.ok(

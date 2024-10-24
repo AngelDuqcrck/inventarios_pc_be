@@ -58,7 +58,7 @@ public class SedeController {
      *
      * @return Lista de sedes en formato DTO.
      */
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<List<SedeDTO>> listarSedes() {
         return ResponseEntity.ok(

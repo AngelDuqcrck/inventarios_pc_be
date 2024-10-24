@@ -97,7 +97,7 @@ public class DispositivoController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("isAuthenticated()")
         @GetMapping("/{dispositivoId}")
         public ResponseEntity<DispositivoResponse> listarDispositivoById(@PathVariable Integer dispositivoId)
                         throws DeviceNotFoundException {

@@ -269,6 +269,34 @@ public class ComputadorServiceImplementation implements IComputadorService {
     }
 
     @Override
+    public List<ComputadoresResponse> listarComputadoresByEmail(String usuarioEmail) throws UserNotFoundException {
+        Usuario usuario = usuarioRepository.findByCorreo(usuarioEmail).orElse(null);
+
+        if (usuario == null) {
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+        }
+
+        List<Computador> computadores = computadorRepository.findByResponsable(usuario);
+        List<ComputadoresResponse> computadoresResponses = new ArrayList<>();
+
+        for (Computador computador : computadores) {
+            ComputadoresResponse computadorResponse = new ComputadoresResponse();
+            BeanUtils.copyProperties(computador, computadorResponse);
+            computadorResponse.setResponsable(
+                computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre() + " " 
+                + computador.getResponsable().getPrimerApellido() + " " + computador.getResponsable().getSegundoApellido()
+            );
+            computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+            computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
+            computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+    
+            computadoresResponses.add(computadorResponse);
+        }
+    
+        return computadoresResponses;
+    }
+
+    @Override
     public List<ComputadoresResponse> listarComputadoresByUbicacion(Integer ubicacionId)
             throws LocationNotFoundException {
                 Ubicacion ubicacion = ubicacionRepository.findById(ubicacionId).orElse(null);
@@ -344,6 +372,9 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorIdResponse.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
         computadorIdResponse.setTipoRam(computador.getTipoRam().getNombre());
         computadorIdResponse.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
+        computadorIdResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
+        computadorIdResponse.setArea(computador.getUbicacion().getArea().getNombre());
+
 
         return computadorIdResponse;
     }

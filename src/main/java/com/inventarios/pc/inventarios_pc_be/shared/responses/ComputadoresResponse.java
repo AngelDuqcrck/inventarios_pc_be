@@ -18,7 +18,6 @@ public class ComputadoresResponse {
 
     
     private String ubicacion;
-
    
     private String nombre;
 
