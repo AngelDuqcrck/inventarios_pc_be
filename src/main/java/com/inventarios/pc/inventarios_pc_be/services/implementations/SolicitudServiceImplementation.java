@@ -198,9 +198,53 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
     }
 
+    @Override
+    public void rechazarSolicitud(Integer solicitudId) throws RequestNotFoundException, SelectNotAllowedException, StateNotFoundException{
+        Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
+        if (solicitud == null) {
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+        }
 
+        if(!solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")){
+            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
+        }
 
+        EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Rechazada").orElse(null);
+
+        if(estadoSolicitudes == null){
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+        }
+
+        solicitud.setEstadoSolicitudes(estadoSolicitudes);
+
+        solicitudRepository.save(solicitud);
+    }
+
+    @Override
+    public void cancelarSolicitud(Integer solicitudId)throws RequestNotFoundException, SelectNotAllowedException, StateNotFoundException{
+
+        Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
+
+        if (solicitud == null) {
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+        }
+
+        if(!solicitud.getEstadoSolicitudes().getNombre().equals("Pendiente")){
+            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
+        }
+
+        EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Cancelada").orElse(null);
+
+        if(estadoSolicitudes == null){
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+        }
+
+        solicitud.setEstadoSolicitudes(estadoSolicitudes);
+
+        solicitudRepository.save(solicitud);
+
+    }
 
     private Solicitudes crearSolicitud(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
             throws StateNotFoundException, SelectNotAllowedException, UserNotFoundException, LocationNotFoundException,

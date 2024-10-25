@@ -82,6 +82,31 @@ public class SolicitudController {
         return new ResponseEntity<>(solicitudesResponses, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL', 'EMPLEADO_ADMINISTRATIVO')")
+    @PostMapping("/cancelar-solicitud/{solicitudId}")
+    public ResponseEntity<HttpResponse> cancelarSolicitud(@PathVariable Integer solicitudId)throws StateNotFoundException, RequestNotFoundException, SelectNotAllowedException{
+        
+        solicitudService.cancelarSolicitud(solicitudId);
+
+        return new ResponseEntity<>(
+            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                    "Solicitud cancelada exitosamente"),
+            HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping("/rechazar-solicitud/{solicitudId}")
+    public ResponseEntity<HttpResponse> rechazarSolicitud(@PathVariable Integer solicitudId)throws StateNotFoundException, RequestNotFoundException, SelectNotAllowedException{
+        
+        solicitudService.rechazarSolicitud(solicitudId);
+
+        return new ResponseEntity<>(
+            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                    "Solicitud rechazada exitosamente"),
+            HttpStatus.OK);
+    }
+
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{solicitudId}")
     public ResponseEntity<SolicitudIdResponse> listarSolicitudesById(@PathVariable Integer solicitudId)
@@ -91,5 +116,7 @@ public class SolicitudController {
 
         return new ResponseEntity<>(solicitudIdResponse, HttpStatus.OK);
     }
+
+
 
 }

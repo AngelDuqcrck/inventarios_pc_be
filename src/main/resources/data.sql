@@ -298,4 +298,5 @@ INSERT IGNORE INTO estado_solicitudes (id, nombre, delete_flag) VALUES
     (1, 'Pendiente', 0),
     (2, 'En Proceso', 0),
     (3, 'Completada', 0),
-    (4, 'Cancelada', 0);
+    (4, 'Cancelada', 0),
+    (5, 'Rechazada', 0);
