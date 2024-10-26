@@ -28,4 +28,13 @@ public class DashboardResponse {
 
     private String nombre6;
     private int cantidad6;
+
+    private String nombre7;
+    private int cantidad7;
+
+    private String nombre8;
+    private int cantidad8;
+
+    private String nombre9;
+    private int cantidad9;
 }
