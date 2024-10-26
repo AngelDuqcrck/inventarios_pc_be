@@ -145,6 +145,11 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
+    @ExceptionHandler(TicketNotFoundException.class)
+    public ResponseEntity<HttpResponse> ticketNotFoundException(TicketNotFoundException exception){
+        return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
+    }
+
     @ExceptionHandler(DeleteNotAllowedException.class)
     public ResponseEntity<HttpResponse> deleteNotAllowedException(DeleteNotAllowedException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());

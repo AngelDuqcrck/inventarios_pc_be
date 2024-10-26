@@ -299,4 +299,19 @@ INSERT IGNORE INTO estado_solicitudes (id, nombre, delete_flag) VALUES
     (2, 'En Proceso', 0),
     (3, 'Completada', 0),
     (4, 'Cancelada', 0),
-    (5, 'Rechazada', 0);
+    (5, 'Rechazada', 0),
+    (6, 'En Revision', 0);
+
+-- Crear la tabla estado_tickets si no existe
+CREATE TABLE IF NOT EXISTS estado_tickets (
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+INSERT IGNORE INTO estado_tickets (id, nombre, delete_flag) VALUES
+    (1, 'En Proceso', 0),
+    (2, 'Finalizado', 0),
+    (3, 'Cancelado', 0);
