@@ -39,6 +39,8 @@ public class SolicitudIdResponse {
 
     private String ubicacionOrigen;
 
+    private Integer ubicacionOrigenId;
+
     
     private String areaDestino;
 

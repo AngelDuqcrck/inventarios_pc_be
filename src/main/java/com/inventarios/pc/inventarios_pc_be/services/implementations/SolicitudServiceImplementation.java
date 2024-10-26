@@ -184,6 +184,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudIdResponse.setTipoSolicitudes(solicitud.getTipoSolicitudes().getNombre());
         solicitudIdResponse.setEstadoSolicitudes(solicitud.getEstadoSolicitudes().getNombre());
         solicitudIdResponse.setUbicacionOrigen(solicitud.getUbicacionOrigen().getNombre());
+        solicitudIdResponse.setUbicacionOrigenId(solicitud.getUbicacionOrigen().getId());
         solicitudIdResponse.setAreaOrigen(solicitud.getUbicacionOrigen().getArea().getNombre());
         solicitudIdResponse.setSedeOrigen(solicitud.getUbicacionOrigen().getArea().getSede().getNombre());
 
