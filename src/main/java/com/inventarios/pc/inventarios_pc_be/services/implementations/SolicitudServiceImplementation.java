@@ -24,6 +24,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.RequestNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeRequestNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.repositories.ComputadorRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
@@ -36,6 +37,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISolicitudService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SolicitudDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarSolicitudRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudesResponse;
 
@@ -199,20 +201,22 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     }
 
     @Override
-    public void rechazarSolicitud(Integer solicitudId) throws RequestNotFoundException, SelectNotAllowedException, StateNotFoundException{
+    public void rechazarSolicitud(Integer solicitudId)
+            throws RequestNotFoundException, SelectNotAllowedException, StateNotFoundException {
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
         if (solicitud == null) {
             throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
         }
 
-        if(!solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")){
-            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
+        if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")) {
+            throw new SelectNotAllowedException(
+                    String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
         }
 
         EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Rechazada").orElse(null);
 
-        if(estadoSolicitudes == null){
+        if (estadoSolicitudes == null) {
             throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
         }
 
@@ -222,7 +226,8 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     }
 
     @Override
-    public void cancelarSolicitud(Integer solicitudId)throws RequestNotFoundException, SelectNotAllowedException, StateNotFoundException{
+    public void cancelarSolicitud(Integer solicitudId)
+            throws RequestNotFoundException, SelectNotAllowedException, StateNotFoundException {
 
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
@@ -230,19 +235,253 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
         }
 
-        if(!solicitud.getEstadoSolicitudes().getNombre().equals("Pendiente")){
-            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
+        if (!solicitud.getEstadoSolicitudes().getNombre().equals("Pendiente")) {
+            throw new SelectNotAllowedException(
+                    String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
         }
 
         EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Cancelada").orElse(null);
 
-        if(estadoSolicitudes == null){
+        if (estadoSolicitudes == null) {
             throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
         }
 
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
 
         solicitudRepository.save(solicitud);
+
+    }
+
+    @Override
+    public SolicitudDTO editarSolicitud(Integer solicitudId, ActualizarSolicitudRequest solicitudRequest)
+            throws RequestNotFoundException, SelectNotAllowedException, UpdateNotAllowedException,
+            ComputerNotFoundException, StateNotFoundException, LocationNotFoundException, DeviceNotFoundException {
+        Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
+
+        if (solicitud == null) {
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+        }
+
+        if (!solicitud.getEstadoSolicitudes().getNombre().equals("Pendiente")) {
+            throw new UpdateNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SOLICITUD").toUpperCase());
+        }
+
+        BeanUtils.copyProperties(solicitudRequest, solicitud);
+
+        String rol = solicitud.getUsuario().getRolId().getNombre();
+        TipoSolicitudes tipoSolicitud = solicitud.getTipoSolicitudes();
+        SolicitudDTO solicitudActualizada = new SolicitudDTO();
+
+        if (tipoSolicitud.getNombre().equalsIgnoreCase("Cambio de ubicacion")) {
+            if (solicitudRequest.getUbicacionDestino() != null) {
+                Ubicacion ubicacionDestino = ubicacionRepository.findById(solicitudRequest.getUbicacionDestino())
+                        .orElse(null);
+                if (ubicacionDestino == null) {
+                    throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACIÓN DESTINO").toUpperCase());
+                }
+
+                if (ubicacionDestino.getDeleteFlag() == true) {
+                    throw new SelectNotAllowedException(
+                            String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+                }
+                solicitud.setUbicacionDestino(ubicacionDestino);
+                solicitud.setDispositivoPC(null);
+            } else {
+                solicitud.setUbicacionDestino(solicitud.getUbicacionDestino());
+                solicitud.setDispositivoPC(null);
+            }
+
+            if (solicitudRequest.getComputador() != null) {
+                Computador computador = computadorRepository.findById(solicitudRequest.getComputador())
+                        .orElse(null);
+                if (computador == null) {
+                    throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+                }
+
+                if (!computador.getEstadoDispositivo().getNombre().equals("En uso") && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
+                    throw new SelectNotAllowedException(
+                            String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
+                }
+                EstadoDispositivo estadoComputador = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
+                if(estadoComputador == null){
+                    throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO").toUpperCase());
+                }
+                computador.setEstadoDispositivo(estadoComputador);
+                computadorRepository.save(computador);
+                solicitud.setComputador(computador);
+
+            } else{
+                solicitud.setComputador(solicitud.getComputador());
+            }
+
+        }
+
+        switch (rol) {
+            case "EMPLEADO_ASISTENCIAL":
+                if (solicitudRequest.getDispositivoPC() != null) {
+                    Computador computador = new Computador();
+                    if (solicitudRequest.getComputador() != null) {
+                        computador = computadorRepository.findById(solicitudRequest.getComputador())
+                                .orElse(null);
+                        if (computador == null) {
+                            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+                        }
+
+                        if (!computador.getEstadoDispositivo().getNombre().equals("En uso") && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
+                            throw new SelectNotAllowedException(
+                                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
+                        }
+                    } else {
+                        computador = solicitud.getComputador();
+                    }
+
+                    DispositivoPC dispositivo = dispositivoRepository.findById(solicitudRequest.getDispositivoPC())
+                            .orElse(null);
+
+                    Boolean existeDispositivoVinculado = historialDispositivoRepository
+                            .existsByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivo);
+
+                    if (dispositivo == null) {
+
+                        throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+
+                    }
+                    if (existeDispositivoVinculado == false) {
+                        throw new SelectNotAllowedException(
+                                String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
+                    }
+
+                    EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findByNombre("Averiado")
+                            .orElse(null);
+                    if (nuevoEstadoDispositivo == null) {
+                        throw new StateNotFoundException(
+                                String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
+                    }
+
+                    EstadoDispositivo nuevoEstadoDispositivoAntiguo = estadoDispositivoRepository
+                            .findByNombre("Disponible")
+                            .orElse(null);
+                    if (nuevoEstadoDispositivoAntiguo == null) {
+                        throw new StateNotFoundException(
+                                String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
+                    }
+                    EstadoDispositivo estadoComputador = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
+                    if(estadoComputador == null){
+                        throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO").toUpperCase());
+                    }
+                    computador.setEstadoDispositivo(estadoComputador);
+                    computadorRepository.save(computador);
+                    DispositivoPC dispositivoAntiguo = solicitud.getDispositivoPC();
+                    dispositivoAntiguo.setEstadoDispositivo(nuevoEstadoDispositivoAntiguo);
+                    dispositivoRepository.save(dispositivoAntiguo);
+                    solicitud.setDispositivoPC(dispositivo);
+                    solicitud.setComputador(computador);
+                    dispositivo.setEstadoDispositivo(nuevoEstadoDispositivo);
+                    dispositivoRepository.save(dispositivo);
+
+                }
+
+                if (solicitudRequest.getUbicacionOrigen() != null) {
+
+                    Ubicacion ubicacionOrigen = ubicacionRepository.findById(solicitudRequest.getUbicacionOrigen())
+                            .orElse(null);
+                    if (ubicacionOrigen == null) {
+                        throw new LocationNotFoundException(
+                                String.format(IS_NOT_FOUND, "UBICACIÓN DE ORIGEN").toUpperCase());
+                    }
+
+                    if (ubicacionOrigen.getDeleteFlag() == true) {
+                        throw new SelectNotAllowedException(
+                                String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+                    }
+
+                    solicitud.setUbicacionOrigen(ubicacionOrigen);
+
+                } else {
+                    solicitud.setUbicacionOrigen(solicitud.getUbicacionOrigen());
+                }
+                break;
+
+            case "EMPLEADO_ADMINISTRATIVO":
+                if (solicitudRequest.getDispositivoPC() != null) {
+                    Computador computador = new Computador();
+                    if (solicitudRequest.getComputador() != null) {
+                        computador = computadorRepository.findById(solicitudRequest.getComputador())
+                                .orElse(null);
+                        if (computador == null) {
+                            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+                        }
+
+                        if (!computador.getEstadoDispositivo().getNombre().equals("En uso") && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
+                            throw new SelectNotAllowedException(
+                                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
+                        }
+                    } else {
+                        computador = solicitud.getComputador();
+                    }
+
+                    DispositivoPC dispositivo = dispositivoRepository.findById(solicitudRequest.getDispositivoPC())
+                            .orElse(null);
+
+                    Boolean existeDispositivoVinculado = historialDispositivoRepository
+                            .existsByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivo);
+
+                    if (dispositivo == null) {
+
+                        throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+
+                    }
+                    if (existeDispositivoVinculado == false) {
+                        throw new SelectNotAllowedException(
+                                String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
+                    }
+
+                    EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findByNombre("Averiado")
+                            .orElse(null);
+                    if (nuevoEstadoDispositivo == null) {
+                        throw new StateNotFoundException(
+                                String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
+                    }
+
+                    EstadoDispositivo nuevoEstadoDispositivoAntiguo = estadoDispositivoRepository
+                            .findByNombre("Disponible")
+                            .orElse(null);
+                    if (nuevoEstadoDispositivoAntiguo == null) {
+                        throw new StateNotFoundException(
+                                String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
+                    }
+
+                    EstadoDispositivo estadoComputador = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
+                    if(estadoComputador == null){
+                        throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO").toUpperCase());
+                    }
+                    computador.setEstadoDispositivo(estadoComputador);
+                    computadorRepository.save(computador);
+                    DispositivoPC dispositivoAntiguo = solicitud.getDispositivoPC();
+                    dispositivoAntiguo.setEstadoDispositivo(nuevoEstadoDispositivoAntiguo);
+                    dispositivoRepository.save(dispositivoAntiguo);
+                    solicitud.setDispositivoPC(dispositivo);
+                    solicitud.setComputador(computador);
+                    dispositivo.setEstadoDispositivo(nuevoEstadoDispositivo);
+                    dispositivoRepository.save(dispositivo);
+
+                    Ubicacion ubicacionOrigen = solicitud.getComputador().getUbicacion();
+
+                    solicitud.setUbicacionOrigen(ubicacionOrigen);
+
+                }
+                break;
+            default:
+                throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ROL").toUpperCase());
+        }
+
+        solicitudRepository.save(solicitud);
+
+        
+        BeanUtils.copyProperties(tipoSolicitud, solicitudActualizada);
+
+        return solicitudActualizada;
 
     }
 
@@ -285,7 +524,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         if (tipoSolicitud.getNombre().equalsIgnoreCase("Cambio de ubicacion")) {
             Ubicacion ubicacionDestino = ubicacionRepository.findById(solicitudDTO.getUbicacionDestino()).orElse(null);
             if (ubicacionDestino == null) {
-                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACIÓN DE DESTINO").toUpperCase());
+                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACIÓN DESTINO").toUpperCase());
             }
 
             if (ubicacionDestino.getDeleteFlag() == true) {
