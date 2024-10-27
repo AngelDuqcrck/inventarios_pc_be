@@ -21,7 +21,6 @@ public class Tickets {
     private Integer id;
 
     @NotEmpty
-    @UniqueElements
     @Column(nullable = false, unique = false)
     private String nombre;
 

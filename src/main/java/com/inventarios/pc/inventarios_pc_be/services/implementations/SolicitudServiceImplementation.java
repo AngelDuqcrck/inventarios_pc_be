@@ -204,7 +204,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         String rol = usuario.getRolId().getNombre();
 
-        if(rol == "ADMIN"){
+        if(rol.equals("ADMIN")){
             EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("En Revision").orElse(null);
 
             if(estadoSolicitudes == null){
