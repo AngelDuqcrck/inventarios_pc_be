@@ -20,6 +20,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TicketNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.repositories.CambioEstTicketRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoSolicitudesRepository;
@@ -86,7 +87,7 @@ public class TicketServiceImplementation implements ITicketService {
         ticket.setSolicitudes(solicitud);
 
         asignarTecnicoATicket(ticketDTO.getUsuario(), ticket);
-
+        ticket.setFecha_asig(new Date());
         EstadoTickets estadoTickets = estadoTicketsRepository.findByNombre("En Proceso").orElse(null);
 
         if (estadoTickets == null) {
@@ -123,13 +124,13 @@ public class TicketServiceImplementation implements ITicketService {
         for (Tickets ticket : tickets) {
 
             TicketsResponse ticketResponse = new TicketsResponse().builder()
-            .id(ticket.getId())
-            .nombre(ticket.getNombre())
-            .fechaCierre(ticket.getFechaCierre())
-            .fecha_asig(ticket.getFecha_asig())
-            .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
-            .build();
-           
+                    .id(ticket.getId())
+                    .nombre(ticket.getNombre())
+                    .fechaCierre(ticket.getFechaCierre())
+                    .fecha_asig(ticket.getFecha_asig())
+                    .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
+                    .build();
+
             ticketsResponses.add(ticketResponse);
 
         }
@@ -159,9 +160,9 @@ public class TicketServiceImplementation implements ITicketService {
         return ticketIdResponse;
     }
 
-
     @Override
-    public List<TicketsResponse> listarTicketsByUsuario(String correo) throws  RolNotFoundException, UserNotFoundException{
+    public List<TicketsResponse> listarTicketsByUsuario(String correo)
+            throws RolNotFoundException, UserNotFoundException {
         Rol rol = rolRepository.findByNombre("TECNICO_SISTEMAS").orElse(null);
 
         if (rol == null) {
@@ -170,7 +171,7 @@ public class TicketServiceImplementation implements ITicketService {
 
         Usuario usuario = usuarioRepository.findByCorreoAndRolId(correo, rol).orElse(null);
 
-        if(usuario == null){
+        if (usuario == null) {
             throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
         }
 
@@ -181,13 +182,13 @@ public class TicketServiceImplementation implements ITicketService {
         for (Tickets ticket : tickets) {
 
             TicketsResponse ticketResponse = new TicketsResponse().builder()
-            .id(ticket.getId())
-            .nombre(ticket.getNombre())
-            .fechaCierre(ticket.getFechaCierre())
-            .fecha_asig(ticket.getFecha_asig())
-            .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
-            .build();
-           
+                    .id(ticket.getId())
+                    .nombre(ticket.getNombre())
+                    .fechaCierre(ticket.getFechaCierre())
+                    .fecha_asig(ticket.getFecha_asig())
+                    .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
+                    .build();
+
             ticketsResponses.add(ticketResponse);
 
         }
@@ -195,6 +196,71 @@ public class TicketServiceImplementation implements ITicketService {
         return ticketsResponses;
 
     }
+
+    @Override
+    public TicketDTO editarTicket(Integer ticketId, TicketDTO ticketDTO)
+            throws RequestNotFoundException, StateNotFoundException,
+            SelectNotAllowedException, RolNotFoundException, UserNotFoundException, TicketNotFoundException,
+            UpdateNotAllowedException {
+        Tickets ticket = ticketRepository.findById(ticketId).orElse(null);
+
+        if (ticket == null) {
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "TICKET").toUpperCase());
+
+        }
+
+        if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
+            throw new UpdateNotAllowedException(String.format(IS_NOT_FOUND, "ACTUALIZAR ESTE TICKET").toUpperCase());
+        }
+
+        BeanUtils.copyProperties(ticketDTO, ticket);
+        ticket.setId(ticketId);
+
+        if (ticketDTO.getUsuario() != null) {
+
+            asignarTecnicoATicket(ticketDTO.getUsuario(), ticket);
+
+        } else {
+            ticket.setUsuario(ticket.getUsuario());
+        }
+
+        if (ticketDTO.getSolicitudes() != null) {
+
+            Solicitudes solicitud = solicitudRepository.findById(ticketDTO.getSolicitudes()).orElse(null);
+
+            if (solicitud == null) {
+                throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+            }
+
+            if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision")) {
+                throw new SelectNotAllowedException(
+                        String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
+            }
+
+            EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("En Proceso").orElse(null);
+            if (estadoSolicitudes == null) {
+                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+            }
+
+            solicitud.setEstadoSolicitudes(estadoSolicitudes);
+            solicitudRepository.save(solicitud);
+
+            ticket.setSolicitudes(solicitud);
+
+        } else {
+            ticket.setSolicitudes(ticket.getSolicitudes());
+        }
+
+        Tickets ticketEditado = ticketRepository.save(ticket);
+        TicketDTO ticketEditadoDTO = new TicketDTO();
+        BeanUtils.copyProperties(ticketEditado, ticketEditadoDTO);
+        ticketDTO.setSolicitudes(ticketEditado.getSolicitudes().getId());
+        ticketDTO.setUsuario(ticketEditado.getUsuario().getId());
+
+        return ticketEditadoDTO;
+
+    }
+
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
     private void asignarTecnicoATicket(Integer tecnicoId, Tickets ticket)
@@ -214,7 +280,6 @@ public class TicketServiceImplementation implements ITicketService {
 
         ticket.setUsuario(usuario);
 
-        ticket.setFecha_asig(new Date());
     }
 
     private void crearCambioEstado(Tickets tickets, EstadoTickets estadoTickets) {

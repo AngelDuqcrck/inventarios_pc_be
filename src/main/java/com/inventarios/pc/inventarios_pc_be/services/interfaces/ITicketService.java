@@ -7,6 +7,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TicketNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TicketDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketIdResponse;
@@ -22,5 +23,8 @@ public interface ITicketService {
 
      public List<TicketsResponse> listarTicketsByUsuario(String correo) throws  RolNotFoundException, UserNotFoundException;
 
-
+    public TicketDTO editarTicket(Integer ticketId, TicketDTO ticketDTO)
+            throws RequestNotFoundException, StateNotFoundException,
+            SelectNotAllowedException, RolNotFoundException, UserNotFoundException, TicketNotFoundException,
+            UpdateNotAllowedException;
 } 
