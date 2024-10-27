@@ -35,12 +35,42 @@ public class CustomUserDetailsService implements UserDetailsService {
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(usuario.getRolId().getNombre()));
 
-        return new org.springframework.security.core.userdetails.User(usuario.getCorreo(),
-                usuario.getPassword(), true,
-                true,
-                true,
-                true,
-                authorities);
+        // Creamos un CustomUserDetails que extiende User para incluir información adicional
+        return new CustomUserDetails(
+            usuario.getCorreo(),
+            usuario.getPassword(),
+            true,
+            true,
+            true,
+            true,
+            authorities,
+            usuario.getPrimerNombre(),
+            usuario.getPrimerApellido()
+        );
+    }
+
+    // Nueva clase CustomUserDetails
+    public class CustomUserDetails extends User {
+        private final String primerNombre;
+        private final String primerApellido;
+
+        public CustomUserDetails(String username, String password, boolean enabled,
+                            boolean accountNonExpired, boolean credentialsNonExpired,
+                            boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities,
+                            String primerNombre, String primerApellido) {
+            super(username, password, enabled, accountNonExpired, 
+                credentialsNonExpired, accountNonLocked, authorities);
+            this.primerNombre = primerNombre;
+            this.primerApellido = primerApellido;
+        }
+
+        public String getPrimerNombre() {
+            return primerNombre;
+        }
+
+        public String getPrimerApellido() {
+            return primerApellido;
+        }
     }
 
 }

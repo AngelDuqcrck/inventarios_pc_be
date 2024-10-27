@@ -5,6 +5,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Component;
+
+import com.inventarios.pc.inventarios_pc_be.security.CustomUserDetailsService.CustomUserDetails;
+
 import org.springframework.security.core.Authentication;
 
 import java.util.Date;
@@ -14,15 +17,18 @@ public class JwtGenerador {
 
     // Metodo para crear un token por medio de la autenticación
     public String generarToken(Authentication authentication) {
-        String correo = authentication.getName();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String correo = userDetails.getUsername();
         String role = authentication.getAuthorities().stream().findFirst().get().getAuthority();
         Date tiempoActual = new Date();
         Date expiracionToken = new Date(tiempoActual.getTime() + ConstantesSeguridad.JWT_EXPIRATION_TIME_TOKEN);
 
-        // Aqui generamos el token
+        // Aqui generamos el token con la información adicional
         String token = Jwts.builder()
                 .setSubject(correo)
                 .claim("role", role)
+                .claim("primerNombre", userDetails.getPrimerNombre())
+                .claim("primerApellido", userDetails.getPrimerApellido())
                 .setIssuedAt(new Date())
                 .setExpiration(expiracionToken)
                 .signWith(SignatureAlgorithm.HS512, ConstantesSeguridad.JWT_FIRMA)
