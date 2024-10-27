@@ -179,7 +179,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         BeanUtils.copyProperties(solicitud, solicitudIdResponse);
 
         solicitudIdResponse.setUsuario(
-                solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
+        solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
         solicitudIdResponse.setComputador(solicitud.getComputador().getNombre());
         solicitudIdResponse.setTipoSolicitudes(solicitud.getTipoSolicitudes().getNombre());
         solicitudIdResponse.setEstadoSolicitudes(solicitud.getEstadoSolicitudes().getNombre());
@@ -203,10 +203,10 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
         }
 
-        String rol = usuario.getRolId().getNombre();
+        Integer rol = usuario.getRolId().getId();
 
-        if(rol == "ADMIN"){
-            EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("En Revision").orElse(null);
+        if(rol == 1){
+            EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findById(6).orElse(null);
 
             if(estadoSolicitudes == null){
                 throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
