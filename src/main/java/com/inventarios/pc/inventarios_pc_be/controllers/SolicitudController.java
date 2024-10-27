@@ -129,11 +129,11 @@ public class SolicitudController {
         }
 
         @PreAuthorize("isAuthenticated()")
-        @GetMapping("/{solicitudId}")
-        public ResponseEntity<SolicitudIdResponse> listarSolicitudesById(@PathVariable Integer solicitudId)
-                        throws RequestNotFoundException {
+        @GetMapping("/{solicitudId}/{correo}")
+        public ResponseEntity<SolicitudIdResponse> listarSolicitudesById(@PathVariable Integer solicitudId, @PathVariable String correo)
+                        throws RequestNotFoundException, StateNotFoundException, UserNotFoundException {
 
-                SolicitudIdResponse solicitudIdResponse = solicitudService.listarSolicitudById(solicitudId);
+                SolicitudIdResponse solicitudIdResponse = solicitudService.listarSolicitudById(solicitudId, correo);
 
                 return new ResponseEntity<>(solicitudIdResponse, HttpStatus.OK);
         }

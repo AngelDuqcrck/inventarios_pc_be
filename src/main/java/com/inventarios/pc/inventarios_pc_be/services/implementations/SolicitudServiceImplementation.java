@@ -166,7 +166,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     }
 
     @Override
-    public SolicitudIdResponse listarSolicitudById(Integer solicitudId) throws RequestNotFoundException {
+    public SolicitudIdResponse listarSolicitudById(Integer solicitudId, String correo) throws RequestNotFoundException, UserNotFoundException, StateNotFoundException {
 
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
@@ -197,6 +197,25 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             solicitudIdResponse.setSedeDestino(solicitud.getUbicacionDestino().getArea().getSede().getNombre());
         }
 
+        Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
+
+        if(usuario == null){
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+        }
+
+        String rol = usuario.getRolId().getNombre();
+
+        if(rol == "ADMIN"){
+            EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("En Revision").orElse(null);
+
+            if(estadoSolicitudes == null){
+                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+            }
+
+            solicitud.setEstadoSolicitudes(estadoSolicitudes);
+            solicitudRepository.save(solicitud);
+        }
+        
         return solicitudIdResponse;
 
     }
@@ -210,7 +229,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
         }
 
-        if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")) {
+        if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision")) {
             throw new SelectNotAllowedException(
                     String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
         }
