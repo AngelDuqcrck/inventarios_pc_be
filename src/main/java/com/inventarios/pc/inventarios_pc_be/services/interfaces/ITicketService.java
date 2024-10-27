@@ -20,5 +20,7 @@ public interface ITicketService {
 
      public TicketIdResponse listarTicketById(Integer ticketId)throws TicketNotFoundException;
 
+     public List<TicketsResponse> listarTicketsByUsuario(String correo) throws  RolNotFoundException, UserNotFoundException;
+
 
 } 

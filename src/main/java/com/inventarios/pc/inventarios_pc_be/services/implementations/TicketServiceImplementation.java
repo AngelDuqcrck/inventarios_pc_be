@@ -159,6 +159,42 @@ public class TicketServiceImplementation implements ITicketService {
         return ticketIdResponse;
     }
 
+
+    @Override
+    public List<TicketsResponse> listarTicketsByUsuario(String correo) throws  RolNotFoundException, UserNotFoundException{
+        Rol rol = rolRepository.findByNombre("TECNICO_SISTEMAS").orElse(null);
+
+        if (rol == null) {
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+        }
+
+        Usuario usuario = usuarioRepository.findByCorreoAndRolId(correo, rol).orElse(null);
+
+        if(usuario == null){
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+        }
+
+        List<Tickets> tickets = ticketRepository.findByUsuario(usuario);
+
+        List<TicketsResponse> ticketsResponses = new ArrayList<>();
+
+        for (Tickets ticket : tickets) {
+
+            TicketsResponse ticketResponse = new TicketsResponse().builder()
+            .id(ticket.getId())
+            .nombre(ticket.getNombre())
+            .fechaCierre(ticket.getFechaCierre())
+            .fecha_asig(ticket.getFecha_asig())
+            .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
+            .build();
+           
+            ticketsResponses.add(ticketResponse);
+
+        }
+
+        return ticketsResponses;
+
+    }
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
     private void asignarTecnicoATicket(Integer tecnicoId, Tickets ticket)
@@ -167,7 +203,7 @@ public class TicketServiceImplementation implements ITicketService {
         Rol rol = rolRepository.findByNombre("TECNICO_SISTEMAS").orElse(null);
 
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
         }
 
         Usuario usuario = usuarioRepository.findByIdAndRolId(tecnicoId, rol).orElse(null);

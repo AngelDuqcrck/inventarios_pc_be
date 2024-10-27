@@ -59,5 +59,11 @@ public class TicketController {
         return new ResponseEntity<>(ticketIdResponse, HttpStatus.OK);
     }
     
+    @GetMapping("/usuario/{correo}")
+    public ResponseEntity<List<TicketsResponse>> listarTicketByUsuario(@PathVariable String correo) throws  RolNotFoundException, UserNotFoundException {
+        List<TicketsResponse> ticketsResponses = ticketService.listarTicketsByUsuario(correo);
+
+        return new ResponseEntity<>(ticketsResponses, HttpStatus.OK);
+    }
     
 }
