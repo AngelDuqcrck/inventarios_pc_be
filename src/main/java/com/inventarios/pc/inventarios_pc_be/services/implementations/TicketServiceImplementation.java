@@ -69,7 +69,7 @@ public class TicketServiceImplementation implements ITicketService {
 
     @Override
     public TicketDTO crearTicket(TicketDTO ticketDTO) throws RequestNotFoundException, StateNotFoundException,
-            SelectNotAllowedException, RolNotFoundException, UserNotFoundException {
+             RolNotFoundException, UserNotFoundException, SelectNotAllowedException {
 
         Solicitudes solicitud = solicitudRepository.findById(ticketDTO.getSolicitudes()).orElse(null);
 
@@ -77,10 +77,18 @@ public class TicketServiceImplementation implements ITicketService {
             throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
         }
 
-        if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision")) {
+        if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision") && !solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")  ) {
             throw new SelectNotAllowedException(
                     String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
         }
+
+        ticketRepository.findBySolicitudesAndEstadoTicketsNombreNot(solicitud, "Cancelado").ifPresent(existingTicket -> {
+            try {
+                throw new SelectNotAllowedException("Ya existe un ticket asociado a esta solicitud que no está cancelado");
+            } catch (SelectNotAllowedException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         Tickets ticket = new Tickets();
         BeanUtils.copyProperties(ticketDTO, ticket);

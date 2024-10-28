@@ -16,7 +16,8 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketsResponse;
 
 public interface ITicketService {
 
-    public TicketDTO crearTicket(TicketDTO ticketDTO )throws RequestNotFoundException, StateNotFoundException, SelectNotAllowedException, RolNotFoundException, UserNotFoundException;
+        public TicketDTO crearTicket(TicketDTO ticketDTO) throws RequestNotFoundException, StateNotFoundException,
+             RolNotFoundException, UserNotFoundException, SelectNotAllowedException;
 
      public List<TicketsResponse> listarTickets ();
 
