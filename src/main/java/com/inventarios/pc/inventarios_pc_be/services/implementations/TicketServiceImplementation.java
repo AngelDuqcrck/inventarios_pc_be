@@ -69,7 +69,7 @@ public class TicketServiceImplementation implements ITicketService {
 
     @Override
     public TicketDTO crearTicket(TicketDTO ticketDTO) throws RequestNotFoundException, StateNotFoundException,
-             RolNotFoundException, UserNotFoundException, SelectNotAllowedException {
+            RolNotFoundException, UserNotFoundException, SelectNotAllowedException {
 
         Solicitudes solicitud = solicitudRepository.findById(ticketDTO.getSolicitudes()).orElse(null);
 
@@ -77,18 +77,21 @@ public class TicketServiceImplementation implements ITicketService {
             throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
         }
 
-        if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision") && !solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")  ) {
+        if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision")
+                && !solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")) {
             throw new SelectNotAllowedException(
                     String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
         }
 
-        ticketRepository.findBySolicitudesAndEstadoTicketsNombreNot(solicitud, "Cancelado").ifPresent(existingTicket -> {
-            try {
-                throw new SelectNotAllowedException("Ya existe un ticket asociado a esta solicitud que no está cancelado");
-            } catch (SelectNotAllowedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        ticketRepository.findBySolicitudesAndEstadoTicketsNombreNot(solicitud, "Cancelado")
+                .ifPresent(existingTicket -> {
+                    try {
+                        throw new SelectNotAllowedException(
+                                "Ya existe un ticket asociado a esta solicitud que no está cancelado");
+                    } catch (SelectNotAllowedException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
 
         Tickets ticket = new Tickets();
         BeanUtils.copyProperties(ticketDTO, ticket);
@@ -281,6 +284,8 @@ public class TicketServiceImplementation implements ITicketService {
             throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DEL TICKET").toUpperCase());
         }
 
+        Solicitudes solicitud = ticket.getSolicitudes();
+
         switch (nuevoEstadoTicketId) {
             case 2: // Finalizado
                 if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
@@ -289,6 +294,17 @@ public class TicketServiceImplementation implements ITicketService {
                 }
 
                 ticket.setFechaCierre(new Date());
+
+                
+                EstadoSolicitudes estadoSolicitudFinalizada = estadoSolicitudesRepository.findById(3).orElse(null);
+                if (estadoSolicitudFinalizada == null) {
+                    throw new StateNotFoundException(
+                            String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+                }
+
+                solicitud.setEstadoSolicitudes(estadoSolicitudFinalizada);
+                solicitudRepository.save(solicitud);
+                
                 break;
 
             case 3: // Cancelado
@@ -296,10 +312,18 @@ public class TicketServiceImplementation implements ITicketService {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET").toUpperCase());
 
-                            
                 }
 
                 ticket.setFechaCierre(new Date());
+
+                EstadoSolicitudes estadoSolicitudCancelada = estadoSolicitudesRepository.findById(4).orElse(null);
+                if (estadoSolicitudCancelada == null) {
+                    throw new StateNotFoundException(
+                            String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+                }
+
+                solicitud.setEstadoSolicitudes(estadoSolicitudCancelada);
+                solicitudRepository.save(solicitud);
                 break;
             default:
                 throw new SelectNotAllowedException(
