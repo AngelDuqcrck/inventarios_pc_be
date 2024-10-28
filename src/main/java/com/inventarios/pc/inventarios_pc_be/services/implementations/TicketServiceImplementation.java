@@ -227,7 +227,6 @@ public class TicketServiceImplementation implements ITicketService {
             ticket.setUsuario(ticket.getUsuario());
         }
 
-
         Tickets ticketEditado = ticketRepository.save(ticket);
         TicketDTO ticketEditadoDTO = new TicketDTO();
         BeanUtils.copyProperties(ticketEditado, ticketEditadoDTO);
@@ -239,7 +238,8 @@ public class TicketServiceImplementation implements ITicketService {
     }
 
     @Override
-    public void registrarObservacion(ObservacionRequest observacionRequest)throws TicketNotFoundException, SelectNotAllowedException{
+    public void registrarObservacion(ObservacionRequest observacionRequest)
+            throws TicketNotFoundException, SelectNotAllowedException {
 
         Tickets ticket = ticketRepository.findById(observacionRequest.getTicketId()).orElse(null);
 
@@ -257,6 +257,51 @@ public class TicketServiceImplementation implements ITicketService {
         ticketRepository.save(ticket);
     }
 
+    public void cambiarEstadoTickets(Integer ticketId, Integer nuevoEstadoTicketId)
+            throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException {
+
+        Tickets ticket = ticketRepository.findById(ticketId).orElse(null);
+
+        if (ticket == null) {
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "TICKET").toUpperCase());
+
+        }
+
+        EstadoTickets estadoTickets = estadoTicketsRepository.findById(nuevoEstadoTicketId).orElse(null);
+
+        if (estadoTickets == null) {
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DEL TICKET").toUpperCase());
+        }
+
+        switch (nuevoEstadoTicketId) {
+            case 2: // Finalizado
+                if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
+                    throw new SelectNotAllowedException(
+                            String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET").toUpperCase());
+                }
+
+                ticket.setFechaCierre(new Date());
+                break;
+
+            case 3: // Cancelado
+                if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
+                    throw new SelectNotAllowedException(
+                            String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET").toUpperCase());
+
+                            
+                }
+
+                ticket.setFechaCierre(new Date());
+                break;
+            default:
+                throw new SelectNotAllowedException(
+                        String.format(IS_NOT_ALLOWED, "UTILIZAR ESTE ESTADO DE TICKET").toUpperCase());
+        }
+
+        ticket.setEstadoTickets(estadoTickets);
+        ticketRepository.save(ticket);
+        crearCambioEstado(ticket, estadoTickets);
+    }
 
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 

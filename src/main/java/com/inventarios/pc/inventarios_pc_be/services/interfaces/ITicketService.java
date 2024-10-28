@@ -30,4 +30,7 @@ public interface ITicketService {
             UpdateNotAllowedException;
 
     public void registrarObservacion(ObservacionRequest observacionRequest)throws TicketNotFoundException, SelectNotAllowedException;
+
+    public void cambiarEstadoTickets(Integer ticketId, Integer nuevoEstadoTicketId)
+            throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException;
 } 

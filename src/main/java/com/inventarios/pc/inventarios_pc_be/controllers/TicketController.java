@@ -34,71 +34,95 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/ticket")
 public class TicketController {
 
-    @Autowired
-    private ITicketService ticketService;
+        @Autowired
+        private ITicketService ticketService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearTicket(@RequestBody TicketDTO ticketDTO) throws RequestNotFoundException,
-            StateNotFoundException, SelectNotAllowedException, RolNotFoundException, UserNotFoundException {
-        ticketService.crearTicket(ticketDTO);
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/crear")
+        public ResponseEntity<HttpResponse> crearTicket(@RequestBody TicketDTO ticketDTO)
+                        throws RequestNotFoundException,
+                        StateNotFoundException, SelectNotAllowedException, RolNotFoundException, UserNotFoundException {
+                ticketService.crearTicket(ticketDTO);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Ticket creado exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Ticket creado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/editar/{ticketId}")
-    public ResponseEntity<HttpResponse> editarTicket(@PathVariable Integer ticketId, @RequestBody TicketDTO ticketDTO)
-            throws RequestNotFoundException, StateNotFoundException,
-            SelectNotAllowedException, RolNotFoundException, UserNotFoundException, TicketNotFoundException,
-            UpdateNotAllowedException {
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PutMapping("/editar/{ticketId}")
+        public ResponseEntity<HttpResponse> editarTicket(@PathVariable Integer ticketId,
+                        @RequestBody TicketDTO ticketDTO)
+                        throws RequestNotFoundException, StateNotFoundException,
+                        SelectNotAllowedException, RolNotFoundException, UserNotFoundException, TicketNotFoundException,
+                        UpdateNotAllowedException {
 
-        ticketService.editarTicket(ticketId, ticketDTO);
+                ticketService.editarTicket(ticketId, ticketDTO);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Ticket editado exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Ticket editado exitosamente"),
+                                HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping
-    public ResponseEntity<List<TicketsResponse>> listarTickets() {
-        List<TicketsResponse> ticketsResponses = ticketService.listarTickets();
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping
+        public ResponseEntity<List<TicketsResponse>> listarTickets() {
+                List<TicketsResponse> ticketsResponses = ticketService.listarTickets();
 
-        return new ResponseEntity<>(ticketsResponses, HttpStatus.OK);
-    }
+                return new ResponseEntity<>(ticketsResponses, HttpStatus.OK);
+        }
 
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{ticketId}")
-    public ResponseEntity<TicketIdResponse> listarTicketById(@PathVariable Integer ticketId)
-            throws TicketNotFoundException {
-        TicketIdResponse ticketIdResponse = ticketService.listarTicketById(ticketId);
+        @PreAuthorize("isAuthenticated()")
+        @GetMapping("/{ticketId}")
+        public ResponseEntity<TicketIdResponse> listarTicketById(@PathVariable Integer ticketId)
+                        throws TicketNotFoundException {
+                TicketIdResponse ticketIdResponse = ticketService.listarTicketById(ticketId);
 
-        return new ResponseEntity<>(ticketIdResponse, HttpStatus.OK);
-    }
+                return new ResponseEntity<>(ticketIdResponse, HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
-    @GetMapping("/usuario/{correo}")
-    public ResponseEntity<List<TicketsResponse>> listarTicketByUsuario(@PathVariable String correo)
-            throws RolNotFoundException, UserNotFoundException {
-        List<TicketsResponse> ticketsResponses = ticketService.listarTicketsByUsuario(correo);
+        @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
+        @GetMapping("/usuario/{correo}")
+        public ResponseEntity<List<TicketsResponse>> listarTicketByUsuario(@PathVariable String correo)
+                        throws RolNotFoundException, UserNotFoundException {
+                List<TicketsResponse> ticketsResponses = ticketService.listarTicketsByUsuario(correo);
 
-        return new ResponseEntity<>(ticketsResponses, HttpStatus.OK);
-    }
+                return new ResponseEntity<>(ticketsResponses, HttpStatus.OK);
+        }
 
-    @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
-    @PostMapping("/observacion")
-    public ResponseEntity<HttpResponse> registrarObservacion(@RequestBody ObservacionRequest observacionRequest)
-            throws TicketNotFoundException, SelectNotAllowedException {
-        ticketService.registrarObservacion(observacionRequest);
+        @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
+        @PostMapping("/observacion")
+        public ResponseEntity<HttpResponse> registrarObservacion(@RequestBody ObservacionRequest observacionRequest)
+                        throws TicketNotFoundException, SelectNotAllowedException {
+                ticketService.registrarObservacion(observacionRequest);
 
-        return new ResponseEntity<>(
-                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                        "Observacion registrada exitosamente"),
-                HttpStatus.OK);
-    }
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Observacion registrada exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        @PostMapping("/finalizar/{ticketId}")
+        public ResponseEntity<HttpResponse> finalizarTicket(@PathVariable Integer ticketId)
+                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException {
+                ticketService.cambiarEstadoTickets(ticketId, 2); //Estado 2 finalizado
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Ticket finalizado exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        @PostMapping("/cancelar/{ticketId}")
+        public ResponseEntity<HttpResponse> cancelarTicket(@PathVariable Integer ticketId)
+                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException {
+                ticketService.cambiarEstadoTickets(ticketId, 3); //Estado 3 cancelado
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Ticket cancelado exitosamente"),
+                                HttpStatus.OK);
+        }
 }
