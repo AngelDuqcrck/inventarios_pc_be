@@ -31,6 +31,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.TicketRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITicketService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TicketDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.ObservacionRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketsResponse;
 
@@ -212,7 +213,7 @@ public class TicketServiceImplementation implements ITicketService {
         }
 
         if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_FOUND, "ACTUALIZAR ESTE TICKET").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TICKET").toUpperCase());
         }
 
         BeanUtils.copyProperties(ticketDTO, ticket);
@@ -226,32 +227,6 @@ public class TicketServiceImplementation implements ITicketService {
             ticket.setUsuario(ticket.getUsuario());
         }
 
-        if (ticketDTO.getSolicitudes() != null) {
-
-            Solicitudes solicitud = solicitudRepository.findById(ticketDTO.getSolicitudes()).orElse(null);
-
-            if (solicitud == null) {
-                throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
-            }
-
-            if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")) {
-                throw new SelectNotAllowedException(
-                        String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
-            }
-
-            EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("En Proceso").orElse(null);
-            if (estadoSolicitudes == null) {
-                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
-            }
-
-            solicitud.setEstadoSolicitudes(estadoSolicitudes);
-            solicitudRepository.save(solicitud);
-
-            ticket.setSolicitudes(solicitud);
-
-        } else {
-            ticket.setSolicitudes(ticket.getSolicitudes());
-        }
 
         Tickets ticketEditado = ticketRepository.save(ticket);
         TicketDTO ticketEditadoDTO = new TicketDTO();
@@ -262,6 +237,26 @@ public class TicketServiceImplementation implements ITicketService {
         return ticketEditadoDTO;
 
     }
+
+    @Override
+    public void registrarObservacion(ObservacionRequest observacionRequest)throws TicketNotFoundException, SelectNotAllowedException{
+
+        Tickets ticket = ticketRepository.findById(observacionRequest.getTicketId()).orElse(null);
+
+        if (ticket == null) {
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "TICKET").toUpperCase());
+
+        }
+
+        if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET").toUpperCase());
+        }
+
+        ticket.setObservacion(observacionRequest.getObservacion());
+
+        ticketRepository.save(ticket);
+    }
+
 
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 

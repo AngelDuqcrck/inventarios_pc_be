@@ -20,6 +20,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITicketService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TicketDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.ObservacionRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketsResponse;
@@ -29,38 +30,38 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
 @RestController
 @RequestMapping("/ticket")
 public class TicketController {
-    
+
     @Autowired
     private ITicketService ticketService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearTicket (@RequestBody TicketDTO ticketDTO)throws RequestNotFoundException, StateNotFoundException, SelectNotAllowedException, RolNotFoundException, UserNotFoundException{
+    public ResponseEntity<HttpResponse> crearTicket(@RequestBody TicketDTO ticketDTO) throws RequestNotFoundException,
+            StateNotFoundException, SelectNotAllowedException, RolNotFoundException, UserNotFoundException {
         ticketService.crearTicket(ticketDTO);
 
         return new ResponseEntity<>(
-                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                                                "Ticket creado exitosamente"),
-                                HttpStatus.OK);
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Ticket creado exitosamente"),
+                HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/editar/{ticketId}")
-    public ResponseEntity<HttpResponse> editarTicket(@PathVariable Integer ticketId, @RequestBody TicketDTO ticketDTO) throws RequestNotFoundException, StateNotFoundException,
+    public ResponseEntity<HttpResponse> editarTicket(@PathVariable Integer ticketId, @RequestBody TicketDTO ticketDTO)
+            throws RequestNotFoundException, StateNotFoundException,
             SelectNotAllowedException, RolNotFoundException, UserNotFoundException, TicketNotFoundException,
-            UpdateNotAllowedException{
-        
+            UpdateNotAllowedException {
+
         ticketService.editarTicket(ticketId, ticketDTO);
-        
+
         return new ResponseEntity<>(
-            new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                            "Ticket editado exitosamente"),
-            HttpStatus.OK);
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Ticket editado exitosamente"),
+                HttpStatus.OK);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -73,19 +74,31 @@ public class TicketController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{ticketId}")
-    public ResponseEntity<TicketIdResponse> listarTicketById(@PathVariable Integer ticketId) throws TicketNotFoundException {
+    public ResponseEntity<TicketIdResponse> listarTicketById(@PathVariable Integer ticketId)
+            throws TicketNotFoundException {
         TicketIdResponse ticketIdResponse = ticketService.listarTicketById(ticketId);
 
         return new ResponseEntity<>(ticketIdResponse, HttpStatus.OK);
     }
-    
 
     @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
     @GetMapping("/usuario/{correo}")
-    public ResponseEntity<List<TicketsResponse>> listarTicketByUsuario(@PathVariable String correo) throws  RolNotFoundException, UserNotFoundException {
+    public ResponseEntity<List<TicketsResponse>> listarTicketByUsuario(@PathVariable String correo)
+            throws RolNotFoundException, UserNotFoundException {
         List<TicketsResponse> ticketsResponses = ticketService.listarTicketsByUsuario(correo);
 
         return new ResponseEntity<>(ticketsResponses, HttpStatus.OK);
     }
-    
+
+    @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
+    @PostMapping("/observacion")
+    public ResponseEntity<HttpResponse> registrarObservacion(@RequestBody ObservacionRequest observacionRequest)
+            throws TicketNotFoundException, SelectNotAllowedException {
+        ticketService.registrarObservacion(observacionRequest);
+
+        return new ResponseEntity<>(
+                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                        "Observacion registrada exitosamente"),
+                HttpStatus.OK);
+    }
 }
