@@ -51,6 +51,7 @@ public class TipoPcController {
                 return ResponseEntity.ok(
                                 tipoPcService.listarTiposPc().stream().map(tipoPc -> {
                                         TipoComputadorDTO tipoComputadorDTO = new TipoComputadorDTO();
+                                        tipoComputadorDTO.setTipoMisc("TPC");
                                         BeanUtils.copyProperties(tipoPc, tipoComputadorDTO);
                                         return tipoComputadorDTO;
                                 }).collect(Collectors.toList()));

@@ -49,6 +49,7 @@ public class TipoDispositivoController {
                 return ResponseEntity.ok(
                                 tipoDispositivoService.listarTipos().stream().map(tipoDispositivo -> {
                                         TipoDispositivoDTO tipoDispositivoDTO = new TipoDispositivoDTO();
+                                        tipoDispositivoDTO.setTipoMisc("TDP");
                                         BeanUtils.copyProperties(tipoDispositivo, tipoDispositivoDTO);
                                         return tipoDispositivoDTO;
                                 }).collect(Collectors.toList()));

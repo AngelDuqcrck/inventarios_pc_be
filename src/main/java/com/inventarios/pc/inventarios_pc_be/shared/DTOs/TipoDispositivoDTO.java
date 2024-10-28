@@ -9,5 +9,7 @@ public class TipoDispositivoDTO {
 
     private String nombre;
 
+    private String tipoMisc;
+
     private Boolean deleteFlag;
 }

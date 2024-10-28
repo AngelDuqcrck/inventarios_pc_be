@@ -11,5 +11,7 @@ public class MarcaDTO {
 
     private String nombre;
 
+    private String tipoMisc;
+
     private Boolean deleteFlag;
 }

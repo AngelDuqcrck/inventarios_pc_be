@@ -49,6 +49,7 @@ public class MarcaController {
                 return ResponseEntity.ok(
                                 marcaService.listarMarcas().stream().map(marca -> {
                                         MarcaDTO marcaDTO = new MarcaDTO();
+                                        marcaDTO.setTipoMisc("Marca");
                                         BeanUtils.copyProperties(marca, marcaDTO);
                                         return marcaDTO;
                                 }).collect(Collectors.toList()));
@@ -59,7 +60,7 @@ public class MarcaController {
         @GetMapping("/{id}")
         public ResponseEntity<MarcaDTO> listarMarcaById(@PathVariable Integer id) throws MarcaNotFoundException {
                 MarcaDTO marcaDTO = marcaService.listarMarcaById(id);
-
+                marcaDTO.setTipoMisc("Marca");
                 return new ResponseEntity<>(marcaDTO, HttpStatus.OK);
         }
 

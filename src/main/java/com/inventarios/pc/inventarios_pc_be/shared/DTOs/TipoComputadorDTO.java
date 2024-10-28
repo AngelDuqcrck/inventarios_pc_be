@@ -12,5 +12,7 @@ public class TipoComputadorDTO {
 
     private String nombre;
 
+    private String tipoMisc;
+
     private Boolean deleteFlag;
 }
