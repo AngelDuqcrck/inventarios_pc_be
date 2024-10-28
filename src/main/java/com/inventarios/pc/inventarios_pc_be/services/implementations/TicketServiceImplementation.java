@@ -97,9 +97,9 @@ public class TicketServiceImplementation implements ITicketService {
         ticket.setEstadoTickets(estadoTickets);
 
         Tickets ticketCreado = ticketRepository.save(ticket);
-        crearCambioEstado(ticket, estadoTickets);
+        crearCambioEstado(ticketCreado, estadoTickets);
 
-        EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("En Proceso").orElse(null);
+        EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findById(2).orElse(null);
         if (estadoSolicitudes == null) {
             throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
         }
@@ -129,6 +129,7 @@ public class TicketServiceImplementation implements ITicketService {
                     .fechaCierre(ticket.getFechaCierre())
                     .fecha_asig(ticket.getFecha_asig())
                     .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
+                    .estadoTicket(ticket.getEstadoTickets().getNombre())
                     .build();
 
             ticketsResponses.add(ticketResponse);
@@ -187,6 +188,7 @@ public class TicketServiceImplementation implements ITicketService {
                     .fechaCierre(ticket.getFechaCierre())
                     .fecha_asig(ticket.getFecha_asig())
                     .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
+                    .estadoTicket(ticket.getEstadoTickets().getNombre())
                     .build();
 
             ticketsResponses.add(ticketResponse);
@@ -232,7 +234,7 @@ public class TicketServiceImplementation implements ITicketService {
                 throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
             }
 
-            if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision")) {
+            if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")) {
                 throw new SelectNotAllowedException(
                         String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
             }

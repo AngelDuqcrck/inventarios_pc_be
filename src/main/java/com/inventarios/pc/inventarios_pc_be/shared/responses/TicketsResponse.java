@@ -19,7 +19,9 @@ public class TicketsResponse {
 
     private String usuario;
 
-     private Date fechaCierre;
+    private Date fechaCierre;
 
     private Date fecha_asig;
+
+    private String estadoTicket;
 }

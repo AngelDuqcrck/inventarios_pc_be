@@ -19,6 +19,8 @@ public class TicketDTO {
 
     private Integer solicitudes;
 
+    private String requestTitle;
+
     private String observacion;
 
     
