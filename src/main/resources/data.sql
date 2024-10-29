@@ -315,3 +315,23 @@ INSERT IGNORE INTO estado_tickets (id, nombre, delete_flag) VALUES
     (1, 'En Proceso', 0),
     (2, 'Finalizado', 0),
     (3, 'Cancelado', 0);
+
+-- Creamos la tabla marcas si no existe
+CREATE TABLE IF NOT EXISTS marcas (
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos las marcas si no existen en el sistema
+INSERT IGNORE INTO marcas (id, nombre, delete_flag) VALUES
+    (1, 'Hewlett-Packard', 0),
+    (2, 'LG', 0),
+    (3, 'Lenovo', 0),
+    (4, 'Dell', 0),
+    (5, 'Asus', 0),
+    (6, 'Apple', 0),
+    (7, 'Samsung', 0),
+    (8, 'Toshiba', 0);

@@ -166,7 +166,8 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     }
 
     @Override
-    public SolicitudIdResponse listarSolicitudById(Integer solicitudId, String correo) throws RequestNotFoundException, UserNotFoundException, StateNotFoundException {
+    public SolicitudIdResponse listarSolicitudById(Integer solicitudId, String correo)
+            throws RequestNotFoundException, UserNotFoundException, StateNotFoundException {
 
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
@@ -179,7 +180,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         BeanUtils.copyProperties(solicitud, solicitudIdResponse);
 
         solicitudIdResponse.setUsuario(
-        solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
+                solicitud.getUsuario().getPrimerNombre() + " " + solicitud.getUsuario().getPrimerApellido());
         solicitudIdResponse.setComputador(solicitud.getComputador().getNombre());
         solicitudIdResponse.setTipoSolicitudes(solicitud.getTipoSolicitudes().getNombre());
         solicitudIdResponse.setEstadoSolicitudes(solicitud.getEstadoSolicitudes().getNombre());
@@ -199,23 +200,29 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
 
-        if(usuario == null){
+        if (usuario == null) {
             throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
         }
 
         Integer rol = usuario.getRolId().getId();
 
+        if (rol == 1) {
 
-        if(rol == 1){
-            EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findById(6).orElse(null);
-            if(estadoSolicitudes == null){
-                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+            Integer estadoSolicitudActual = solicitud.getEstadoSolicitudes().getId();
+
+            if (estadoSolicitudActual == 1 || estadoSolicitudActual == 6) {
+                EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findById(6).orElse(null);
+                if (estadoSolicitudes == null) {
+                    throw new StateNotFoundException(
+                            String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+                }
+
+                solicitud.setEstadoSolicitudes(estadoSolicitudes);
+                solicitudRepository.save(solicitud);
             }
 
-            solicitud.setEstadoSolicitudes(estadoSolicitudes);
-            solicitudRepository.save(solicitud);
         }
-        
+
         return solicitudIdResponse;
 
     }
