@@ -88,6 +88,7 @@ public class UserController {
                                         UsuarioResponse usuarioResponse = new UsuarioResponse();
                                         BeanUtils.copyProperties(usuario, usuarioResponse);
                                         usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
+
                                         usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
                                         usuarioResponse.setRol(usuario.getRolId().getNombre());
                                         usuarioResponse.setDelete_flag(usuario.getDeleteFlag());

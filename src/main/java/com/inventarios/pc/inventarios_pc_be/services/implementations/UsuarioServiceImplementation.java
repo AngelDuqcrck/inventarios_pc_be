@@ -373,6 +373,8 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         BeanUtils.copyProperties(usuario, usuarioResponse);
         usuarioResponse.setRol(usuario.getRolId().getNombre());
         usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
+        usuarioResponse.setSede(usuario.getUbicacionId().getArea().getSede().getNombre());
+        usuarioResponse.setArea(usuario.getUbicacionId().getArea().getNombre());
         usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
         return usuarioResponse;
     }
