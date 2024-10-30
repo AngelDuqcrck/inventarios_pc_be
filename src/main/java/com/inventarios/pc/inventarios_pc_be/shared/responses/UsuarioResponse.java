@@ -32,5 +32,9 @@ public class UsuarioResponse {
 
     private String ubicacion;
 
+    private String sede;
+
+    private String area;
+
     private Boolean delete_flag;
 }
