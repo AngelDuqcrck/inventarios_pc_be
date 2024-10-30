@@ -249,9 +249,33 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
 
-        if(solicitud.getTipoSolicitudes().getId() == 1)//Solicitud de Reparacion
+        if (solicitud.getTipoSolicitudes().getId() == 1)// Solicitud de Reparacion
         {
-            
+
+            if (solicitud.getDispositivoPC() != null) {
+                EstadoDispositivo estadoEnUso = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
+                if (estadoEnUso == null) {
+                    throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO EN USO").toUpperCase());
+                }
+                DispositivoPC dispositivo = solicitud.getDispositivoPC();
+                dispositivo.setEstadoDispositivo(estadoEnUso);
+
+                Computador computadorAnterior = solicitud.getComputador();
+                HistorialDispositivo historial = historialDispositivoRepository
+                        .findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(computadorAnterior,
+                                dispositivo);
+                if (dispositivo.getTipoDispositivo().getId() != 8)// Tipo de dispositivo diferente a
+                                                                  // torre
+                {
+                    if (historial != null) {
+                        historial.setFechaDesvinculacion(null);
+                        historialDispositivoRepository.save(historial);
+                    }
+                }
+
+                dispositivoRepository.save(dispositivo);
+            }
+
         }
         solicitudRepository.save(solicitud);
     }
@@ -279,6 +303,35 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
 
+        if (solicitud.getTipoSolicitudes().getId() == 1)// Solicitud de Reparacion
+        {
+
+            if (solicitud.getDispositivoPC() != null) {
+                EstadoDispositivo estadoEnUso = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
+                if (estadoEnUso == null) {
+                    throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO EN USO").toUpperCase());
+                }
+                DispositivoPC dispositivo = solicitud.getDispositivoPC();
+                dispositivo.setEstadoDispositivo(estadoEnUso);
+
+                Computador computadorAnterior = solicitud.getComputador();
+                HistorialDispositivo historial = historialDispositivoRepository
+                        .findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(computadorAnterior,
+                                dispositivo);
+
+                if (dispositivo.getTipoDispositivo().getId() != 8)// Tipo de dispositivo diferente a torre
+
+                {
+                    if (historial != null) {
+                        historial.setFechaDesvinculacion(null);
+                        historialDispositivoRepository.save(historial);
+                    }
+                }
+
+                dispositivoRepository.save(dispositivo);
+            }
+
+        }
         solicitudRepository.save(solicitud);
 
     }
@@ -371,22 +424,15 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             computador = solicitud.getComputador();
                         }
 
-                        DispositivoPC dispositivo = dispositivoRepository.findById(solicitudRequest.getDispositivoPC())
+                        DispositivoPC dispositivoNuevo = dispositivoRepository
+                                .findById(solicitudRequest.getDispositivoPC())
                                 .orElse(null);
 
-                        Boolean existeDispositivoVinculado = historialDispositivoRepository
-                                .existsByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador,
-                                        dispositivo);
-
-                        if (dispositivo == null) {
+                        if (dispositivoNuevo == null) {
 
                             throw new SelectNotAllowedException(
                                     String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
 
-                        }
-                        if (existeDispositivoVinculado == false) {
-                            throw new SelectNotAllowedException(
-                                    String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
                         }
 
                         EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findByNombre("Averiado")
@@ -396,8 +442,17 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                                     String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
                         }
 
+                        HistorialDispositivo dispositivoVinculado = historialDispositivoRepository
+                                .findByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador,
+                                        dispositivoNuevo);
+
+                        if (dispositivoVinculado == null) {
+                            throw new SelectNotAllowedException(
+                                    String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
+                        }
+
                         EstadoDispositivo nuevoEstadoDispositivoAntiguo = estadoDispositivoRepository
-                                .findByNombre("Disponible")
+                                .findByNombre("En uso")
                                 .orElse(null);
                         if (nuevoEstadoDispositivoAntiguo == null) {
                             throw new StateNotFoundException(
@@ -412,11 +467,28 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         computadorRepository.save(computador);
                         DispositivoPC dispositivoAntiguo = solicitud.getDispositivoPC();
                         dispositivoAntiguo.setEstadoDispositivo(nuevoEstadoDispositivoAntiguo);
+
+                        HistorialDispositivo historial = historialDispositivoRepository
+                                .findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(computador,
+                                        dispositivoAntiguo);
+
+                        if (dispositivoAntiguo.getTipoDispositivo().getId() != 8) {
+
+                            if (historial != null) {
+                                historial.setFechaDesvinculacion(null);
+                                historialDispositivoRepository.save(historial);
+                            }
+
+                        }
                         dispositivoRepository.save(dispositivoAntiguo);
-                        solicitud.setDispositivoPC(dispositivo);
+                        solicitud.setDispositivoPC(dispositivoNuevo);
                         solicitud.setComputador(computador);
-                        dispositivo.setEstadoDispositivo(nuevoEstadoDispositivo);
-                        dispositivoRepository.save(dispositivo);
+                        if (dispositivoNuevo.getTipoDispositivo().getId() != 8) {
+                            dispositivoVinculado.setFechaDesvinculacion(new Date());
+                            historialDispositivoRepository.save(dispositivoVinculado);
+                        }
+                        dispositivoNuevo.setEstadoDispositivo(nuevoEstadoDispositivo);
+                        dispositivoRepository.save(dispositivoNuevo);
 
                     }
 
@@ -461,22 +533,15 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             computador = solicitud.getComputador();
                         }
 
-                        DispositivoPC dispositivo = dispositivoRepository.findById(solicitudRequest.getDispositivoPC())
+                        DispositivoPC dispositivoNuevo = dispositivoRepository
+                                .findById(solicitudRequest.getDispositivoPC())
                                 .orElse(null);
 
-                        Boolean existeDispositivoVinculado = historialDispositivoRepository
-                                .existsByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador,
-                                        dispositivo);
-
-                        if (dispositivo == null) {
+                        if (dispositivoNuevo == null) {
 
                             throw new SelectNotAllowedException(
                                     String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
 
-                        }
-                        if (existeDispositivoVinculado == false) {
-                            throw new SelectNotAllowedException(
-                                    String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
                         }
 
                         EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findByNombre("Averiado")
@@ -486,14 +551,22 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                                     String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
                         }
 
+                        HistorialDispositivo dispositivoVinculado = historialDispositivoRepository
+                                .findByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador,
+                                        dispositivoNuevo);
+
+                        if (dispositivoVinculado == null) {
+                            throw new SelectNotAllowedException(
+                                    String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
+                        }
+
                         EstadoDispositivo nuevoEstadoDispositivoAntiguo = estadoDispositivoRepository
-                                .findByNombre("Disponible")
+                                .findByNombre("En uso")
                                 .orElse(null);
                         if (nuevoEstadoDispositivoAntiguo == null) {
                             throw new StateNotFoundException(
                                     String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
                         }
-
                         EstadoDispositivo estadoComputador = estadoDispositivoRepository.findByNombre("En uso")
                                 .orElse(null);
                         if (estadoComputador == null) {
@@ -503,12 +576,31 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         computadorRepository.save(computador);
                         DispositivoPC dispositivoAntiguo = solicitud.getDispositivoPC();
                         dispositivoAntiguo.setEstadoDispositivo(nuevoEstadoDispositivoAntiguo);
-                        dispositivoRepository.save(dispositivoAntiguo);
-                        solicitud.setDispositivoPC(dispositivo);
-                        solicitud.setComputador(computador);
-                        dispositivo.setEstadoDispositivo(nuevoEstadoDispositivo);
-                        dispositivoRepository.save(dispositivo);
 
+                        HistorialDispositivo historial = historialDispositivoRepository
+                                .findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(computador,
+                                        dispositivoAntiguo);
+
+                        if (dispositivoAntiguo.getTipoDispositivo().getId() != 8) {
+
+                            if (historial != null) {
+                                historial.setFechaDesvinculacion(null);
+                                historialDispositivoRepository.save(historial);
+                            }
+
+                        }
+                        dispositivoRepository.save(dispositivoAntiguo);
+                        solicitud.setDispositivoPC(dispositivoNuevo);
+                        solicitud.setComputador(computador);
+                        
+                        if (dispositivoNuevo.getTipoDispositivo().getId() != 8) {
+                            dispositivoVinculado.setFechaDesvinculacion(new Date());
+                            historialDispositivoRepository.save(dispositivoVinculado);
+                        }
+                        dispositivoNuevo.setEstadoDispositivo(nuevoEstadoDispositivo);
+                        dispositivoRepository.save(dispositivoNuevo);
+
+                        
                         Ubicacion ubicacionOrigen = solicitud.getComputador().getUbicacion();
 
                         solicitud.setUbicacionOrigen(ubicacionOrigen);
@@ -592,14 +684,14 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 DispositivoPC dispositivo = dispositivoRepository.findById(solicitudDTO.getDispositivoPC())
                         .orElse(null);
 
-                HistorialDispositivo dispositivoVinculado = historialDispositivoRepository
-                        .findByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivo);
-
                 if (dispositivo == null) {
 
                     throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
 
                 }
+                HistorialDispositivo dispositivoVinculado = historialDispositivoRepository
+                        .findByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivo);
+
                 if (dispositivoVinculado == null) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
@@ -615,7 +707,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 solicitudes.setDispositivoPC(dispositivo);
                 dispositivo.setEstadoDispositivo(nuevoEstadoDispositivo);
 
-                if(dispositivo.getTipoDispositivo().getId() != 8) //Diferente a dispositivo tipo torre
+                if (dispositivo.getTipoDispositivo().getId() != 8) // Diferente a dispositivo tipo torre
                 {
                     dispositivoVinculado.setFechaDesvinculacion(new Date());
                     historialDispositivoRepository.save(dispositivoVinculado);
