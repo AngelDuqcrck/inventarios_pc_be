@@ -249,6 +249,10 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
 
+        if(solicitud.getTipoSolicitudes().getId() == 1)//Solicitud de Reparacion
+        {
+            
+        }
         solicitudRepository.save(solicitud);
     }
 
@@ -588,15 +592,15 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 DispositivoPC dispositivo = dispositivoRepository.findById(solicitudDTO.getDispositivoPC())
                         .orElse(null);
 
-                Boolean existeDispositivoVinculado = historialDispositivoRepository
-                        .existsByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivo);
+                HistorialDispositivo dispositivoVinculado = historialDispositivoRepository
+                        .findByComputadorAndDispositivoPCAndFechaDesvinculacionIsNull(computador, dispositivo);
 
                 if (dispositivo == null) {
 
                     throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
 
                 }
-                if (existeDispositivoVinculado == false) {
+                if (dispositivoVinculado == null) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
                 }
@@ -607,8 +611,15 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                     throw new StateNotFoundException(
                             String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
                 }
+
                 solicitudes.setDispositivoPC(dispositivo);
                 dispositivo.setEstadoDispositivo(nuevoEstadoDispositivo);
+
+                if(dispositivo.getTipoDispositivo().getId() != 8) //Diferente a dispositivo tipo torre
+                {
+                    dispositivoVinculado.setFechaDesvinculacion(new Date());
+                    historialDispositivoRepository.save(dispositivoVinculado);
+                }
                 dispositivoRepository.save(dispositivo);
             }
         }

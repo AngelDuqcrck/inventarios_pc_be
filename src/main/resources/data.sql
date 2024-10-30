@@ -179,7 +179,8 @@ INSERT IGNORE INTO tipo_dispositivos (id, nombre, delete_flag) VALUES
     (4, "Impresora", 0),
     (5, "Audifonos", 0),
     (6, "Unidad de fuente de alimentacion (PSU)", 0),
-    (7, "Parlantes", 0);
+    (7, "Parlantes", 0),
+    (8, "Torre", 0);
 
 -- Creamos la tabla tipo_almacenamiento_ram si no existe
 CREATE TABLE IF NOT EXISTS tipo_almacenamiento_ram
