@@ -12,6 +12,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
@@ -24,7 +25,7 @@ public interface IComputadorService {
      public ComputadorDTO crearComputador(ComputadorDTO computadorDTO)
                throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
                LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-               StateNotFoundException, MarcaNotFoundException;
+               StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException;
 
      public List<ComputadoresResponse> listarComputadores();
 
@@ -39,7 +40,7 @@ public interface IComputadorService {
                throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
                LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
                StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
-               ChangeNotAllowedException;
+               ChangeNotAllowedException, TypeDeviceNotFoundException;
 
      public List<ComputadoresResponse> listarComputadoresByUbicacion(Integer ubicacionId)
                throws LocationNotFoundException;

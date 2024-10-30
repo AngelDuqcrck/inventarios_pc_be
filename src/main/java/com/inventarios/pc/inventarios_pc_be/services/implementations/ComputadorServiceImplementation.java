@@ -12,26 +12,35 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Componente;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
+import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
+import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Marca;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoAlmacenamientoRam;
+import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.repositories.ComponenteRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.ComputadorRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.HistorialDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.MarcaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoAlmacenamientoRamRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.TipoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoPcRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
@@ -49,6 +58,14 @@ public class ComputadorServiceImplementation implements IComputadorService {
     public static final String IS_NOT_VALID = "%s no es valido";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
+
+    @Autowired
+    private HistorialDispositivoRepository historialDispositivoRepository;
+
+    @Autowired
+    private DispositivoRepository dispositivoRepository;
+    @Autowired
+    private TipoDispositivoRepository tipoDispositivoRepository;
 
     @Autowired
     private ComputadorRepository computadorRepository;
@@ -78,7 +95,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
     public ComputadorDTO crearComputador(ComputadorDTO computadorDTO)
             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-            StateNotFoundException, MarcaNotFoundException {
+            StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException {
         Computador computador = new Computador();
         BeanUtils.copyProperties(computadorDTO, computador);
 
@@ -221,7 +238,48 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computador.setTipoRam(tipoRam);
 
         Computador computadorCreado = computadorRepository.save(computador);
+        DispositivoPC dispositivoPc = new DispositivoPC();
 
+        EstadoDispositivo estadoTorre = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
+        if (estadoTorre == null) {
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE PC").toUpperCase());
+        }
+
+        TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(8).orElse(null);
+
+        if (tipoDispositivo == null) {
+            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE PC").toUpperCase());
+        }
+
+
+        dispositivoPc.setEstadoDispositivo(estadoTorre);
+        dispositivoPc.setTipoDispositivo(tipoDispositivo);
+        dispositivoPc.setMarca(computadorCreado.getMarca());
+        dispositivoPc.setModelo(computadorCreado.getModelo());
+        dispositivoPc.setNombre(computadorCreado.getNombre());
+        dispositivoPc.setPlaca(computadorCreado.getPlaca());
+        dispositivoPc.setSerial(computadorCreado.getSerial());
+        dispositivoRepository.save(dispositivoPc);
+
+        HistorialDispositivo historialDispositivo = new HistorialDispositivo();
+        historialDispositivo.setComputador(computadorCreado);
+        boolean existeDispositivoMismoTipo = historialDispositivoRepository
+                .existsByComputadorAndDispositivoPC_TipoDispositivoAndFechaDesvinculacionIsNull(
+                        computador, dispositivoPc.getTipoDispositivo());
+
+        if (existeDispositivoMismoTipo) {
+            throw new SelectNotAllowedException(
+                    String.format(IS_ALREADY_USE,
+                            "EN ESTE COMPUTADOR UN " + dispositivoPc.getTipoDispositivo().getNombre())
+                            .toUpperCase());
+        }
+
+        historialDispositivo.setDispositivoPC(dispositivoPc);
+
+        historialDispositivo.setFechaCambio(new Date());
+
+        historialDispositivoRepository.save(historialDispositivo);
+        
         ComputadorDTO computadorCreadoDto = new ComputadorDTO();
 
         BeanUtils.copyProperties(computadorCreado, computadorCreadoDto);
@@ -255,16 +313,17 @@ public class ComputadorServiceImplementation implements IComputadorService {
             ComputadoresResponse computadorResponse = new ComputadoresResponse();
             BeanUtils.copyProperties(computador, computadorResponse);
             computadorResponse.setResponsable(
-                computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre() + " " 
-                + computador.getResponsable().getPrimerApellido() + " " + computador.getResponsable().getSegundoApellido()
-            );
+                    computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
+                            + " "
+                            + computador.getResponsable().getPrimerApellido() + " "
+                            + computador.getResponsable().getSegundoApellido());
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
-    
+
             computadoresResponses.add(computadorResponse);
         }
-    
+
         return computadoresResponses;
     }
 
@@ -283,46 +342,48 @@ public class ComputadorServiceImplementation implements IComputadorService {
             ComputadoresResponse computadorResponse = new ComputadoresResponse();
             BeanUtils.copyProperties(computador, computadorResponse);
             computadorResponse.setResponsable(
-                computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre() + " " 
-                + computador.getResponsable().getPrimerApellido() + " " + computador.getResponsable().getSegundoApellido()
-            );
+                    computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
+                            + " "
+                            + computador.getResponsable().getPrimerApellido() + " "
+                            + computador.getResponsable().getSegundoApellido());
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
-    
+
             computadoresResponses.add(computadorResponse);
         }
-    
+
         return computadoresResponses;
     }
 
     @Override
     public List<ComputadoresResponse> listarComputadoresByUbicacion(Integer ubicacionId)
             throws LocationNotFoundException {
-                Ubicacion ubicacion = ubicacionRepository.findById(ubicacionId).orElse(null);
-    
-                if (ubicacion == null) {
-                    throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
-                }
-                
-                List<Computador> computadores = computadorRepository.findByUbicacion(ubicacion);
-                List<ComputadoresResponse> computadoresResponses = new ArrayList<>();
-                
-                for (Computador computador : computadores) {
-                    ComputadoresResponse computadorResponse = new ComputadoresResponse();
-                    BeanUtils.copyProperties(computador, computadorResponse);
-                    computadorResponse.setResponsable(
-                        computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre() + " " 
-                        + computador.getResponsable().getPrimerApellido() + " " + computador.getResponsable().getSegundoApellido()
-                    );
-                    computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
-                    computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
-                    computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
-            
-                    computadoresResponses.add(computadorResponse);
-                }
-            
-                return computadoresResponses;
+        Ubicacion ubicacion = ubicacionRepository.findById(ubicacionId).orElse(null);
+
+        if (ubicacion == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+        }
+
+        List<Computador> computadores = computadorRepository.findByUbicacion(ubicacion);
+        List<ComputadoresResponse> computadoresResponses = new ArrayList<>();
+
+        for (Computador computador : computadores) {
+            ComputadoresResponse computadorResponse = new ComputadoresResponse();
+            BeanUtils.copyProperties(computador, computadorResponse);
+            computadorResponse.setResponsable(
+                    computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
+                            + " "
+                            + computador.getResponsable().getPrimerApellido() + " "
+                            + computador.getResponsable().getSegundoApellido());
+            computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+            computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
+            computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+
+            computadoresResponses.add(computadorResponse);
+        }
+
+        return computadoresResponses;
     }
 
     @Override
@@ -374,7 +435,6 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorIdResponse.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
         computadorIdResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
         computadorIdResponse.setArea(computador.getUbicacion().getArea().getNombre());
-
 
         return computadorIdResponse;
     }
@@ -466,7 +526,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
             StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
-            ChangeNotAllowedException {
+            ChangeNotAllowedException, TypeDeviceNotFoundException {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
 
@@ -657,9 +717,12 @@ public class ComputadorServiceImplementation implements IComputadorService {
             computador.setTipoRam(computador.getTipoRam());
         }
 
+        
+
         computador.setEstadoDispositivo(computador.getEstadoDispositivo());
 
         Computador computadorActualizado = computadorRepository.save(computador);
+        
         ComputadorDTO computadorActualizadoDTO = new ComputadorDTO();
         BeanUtils.copyProperties(computadorActualizado, computadorActualizadoDTO);
         computadorActualizadoDTO.setTipoPC(computadorActualizado.getTipoPC().getId());
@@ -673,6 +736,26 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorActualizadoDTO.setTipoAlmacenamiento(computadorActualizado.getTipoAlmacenamiento().getId());
         computadorActualizadoDTO.setTipoRam(computadorActualizado.getTipoRam().getId());
 
+
+        TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(8).orElse(null);
+
+        if(tipoDispositivo == null){
+            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DISPOSITIVO").toUpperCase());
+        }
+
+        HistorialDispositivo historialDispositivo = historialDispositivoRepository.findFirstByComputadorAndDispositivoPC_TipoDispositivoAndFechaDesvinculacionIsNull(computador, tipoDispositivo);
+        if(historialDispositivo != null){
+
+            DispositivoPC torre = historialDispositivo.getDispositivoPC();
+
+            torre.setMarca(computadorActualizado.getMarca());
+            torre.setModelo(computadorActualizado.getModelo());
+            torre.setNombre(computadorActualizado.getNombre());
+            torre.setPlaca(computadorActualizado.getPlaca());
+            torre.setSerial(computadorActualizado.getPlaca());
+
+            dispositivoRepository.save(torre);
+        }
         return computadorActualizadoDTO;
     }
 

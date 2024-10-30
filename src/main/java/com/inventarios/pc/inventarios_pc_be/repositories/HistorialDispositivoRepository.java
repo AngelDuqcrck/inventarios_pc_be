@@ -6,6 +6,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
+import java.util.List;
+
 
 public interface HistorialDispositivoRepository extends JpaRepository<HistorialDispositivo, Integer> {
     
@@ -20,5 +22,7 @@ public interface HistorialDispositivoRepository extends JpaRepository<HistorialD
 
     List<HistorialDispositivo> findByComputador(Computador computador);
 
-    
+    HistorialDispositivo findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(Computador computador, DispositivoPC dispositivoPC);
+
+
 }

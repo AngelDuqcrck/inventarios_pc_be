@@ -117,6 +117,11 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         if (dispositivoPC.getEstadoDispositivo().getNombre().equals("Baja")) {
             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE DISPOSITIVO").toUpperCase());
         }
+
+        if(dispositivoPC.getTipoDispositivo().getId() == 8){
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TIPO DE DISPOSITIVO").toUpperCase());
+        }
+
         BeanUtils.copyProperties(dispositivoRequest, dispositivoPC);
 
         if (dispositivoRequest.getEstadoDispositivo() != null) {
@@ -194,6 +199,10 @@ public class DispositivoServiceImplementation implements IDispositivoService {
 
         if (dispositivoPC == null) {
             throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+        }
+
+        if(dispositivoPC.getTipoDispositivo().getId() == 8){
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE TIPO DE DISPOSITIVO").toUpperCase());
         }
 
         if (dispositivoPC.getEstadoDispositivo().getNombre().equals("Baja")) {

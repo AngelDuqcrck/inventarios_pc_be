@@ -104,6 +104,7 @@ public class TicketController {
                                 HttpStatus.OK);
         }
 
+        @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
         @PostMapping("/finalizar/{ticketId}")
         public ResponseEntity<HttpResponse> finalizarTicket(@PathVariable Integer ticketId)
                         throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException {
@@ -115,6 +116,7 @@ public class TicketController {
                                 HttpStatus.OK);
         }
 
+        @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/cancelar/{ticketId}")
         public ResponseEntity<HttpResponse> cancelarTicket(@PathVariable Integer ticketId)
                         throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException {

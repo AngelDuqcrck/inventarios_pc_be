@@ -303,6 +303,7 @@ public class TicketServiceImplementation implements ITicketService {
                 }
 
                 solicitud.setEstadoSolicitudes(estadoSolicitudFinalizada);
+                solicitud.setFechaCierre(new Date());
                 solicitudRepository.save(solicitud);
                 
                 break;
@@ -323,6 +324,7 @@ public class TicketServiceImplementation implements ITicketService {
                 }
 
                 solicitud.setEstadoSolicitudes(estadoSolicitudCancelada);
+                solicitud.setFechaCierre(new Date());
                 solicitudRepository.save(solicitud);
                 break;
             default:
