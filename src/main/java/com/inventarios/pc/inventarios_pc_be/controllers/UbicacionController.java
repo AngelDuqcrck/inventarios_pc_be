@@ -70,6 +70,7 @@ public class UbicacionController {
                                         UbicacionResponse ubicacionR = new UbicacionResponse();
                                         BeanUtils.copyProperties(ubicacion, ubicacionR);
                                         ubicacionR.setArea(ubicacion.getArea().getNombre());
+                                        ubicacionR.setSede(ubicacion.getArea().getSede().getNombre());
                                         return ubicacionR;
                                 }).collect(Collectors.toList()));
         }

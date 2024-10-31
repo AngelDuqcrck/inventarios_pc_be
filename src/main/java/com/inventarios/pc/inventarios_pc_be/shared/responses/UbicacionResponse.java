@@ -14,5 +14,7 @@ public class UbicacionResponse {
 
     private String area;
 
+    private String sede;
+
     private Boolean deleteFlag;
 }
