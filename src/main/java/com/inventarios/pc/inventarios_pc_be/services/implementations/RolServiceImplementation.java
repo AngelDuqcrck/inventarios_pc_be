@@ -23,7 +23,8 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.RolDTO;
 public class RolServiceImplementation implements IRolService {
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
-    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
+    public static final String IS_NOT_ALLOWED = "no esta permitido %s ";
 
     @Autowired
     RolRepository rolRepository;
@@ -67,11 +68,11 @@ public class RolServiceImplementation implements IRolService {
     public RolDTO actualizarRol(RolDTO rolDTO) throws RolNotFoundException, UpdateNotAllowedException {
         Rol rol = rolRepository.findById(rolDTO.getId()).orElse(null);
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
         }
 
         if (rol.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE ROL").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL ROL "+rol.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
         BeanUtils.copyProperties(rolDTO, rol);
         Rol rolActualizado = rolRepository.save(rol);
@@ -89,12 +90,12 @@ public class RolServiceImplementation implements IRolService {
     public void deshabilitarRol(Integer rolId) throws RolNotFoundException, DeleteNotAllowedException {
         Rol rol = rolRepository.findById(rolId).orElse(null);
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
 
         }
 
         if (rol.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE ROL").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR EL ROL "+rol.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
 
         }
 
@@ -106,12 +107,12 @@ public class RolServiceImplementation implements IRolService {
     public void activarRol(Integer rolId) throws RolNotFoundException, ActivateNotAllowedException {
         Rol rol = rolRepository.findById(rolId).orElse(null);
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
 
         }
 
         if (rol.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE ROL").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR EL ROL "+rol.getNombre()+" PORQUE SE ENCUENTRA ACTIVADO").toUpperCase());
 
         }
 
@@ -123,7 +124,7 @@ public class RolServiceImplementation implements IRolService {
     public RolDTO listarRolById(Integer rolId) throws RolNotFoundException {
         Rol rol = rolRepository.findById(rolId).orElse(null);
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
         }
         RolDTO rolDTO = new RolDTO();
         BeanUtils.copyProperties(rol, rolDTO);

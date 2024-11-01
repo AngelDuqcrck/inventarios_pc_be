@@ -19,7 +19,8 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.MarcaDTO;
 public class MarcaServiceImplementation implements IMarcaService {
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
-    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
+    public static final String IS_NOT_ALLOWED = "no esta permitido %s ";
     @Autowired
     private MarcaRepository marcaRepository;
 
@@ -44,10 +45,10 @@ public class MarcaServiceImplementation implements IMarcaService {
             throws MarcaNotFoundException, UpdateNotAllowedException {
         Marca marca = marcaRepository.findById(id).orElse(null);
         if (marca == null) {
-            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
+            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND_F, "LA MARCA").toUpperCase());
         }
         if (marca.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA MARCA").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR LA MARCA "+marca.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
         }
         BeanUtils.copyProperties(marcaDTO, marca);
         marca.setDeleteFlag(false);
@@ -61,10 +62,10 @@ public class MarcaServiceImplementation implements IMarcaService {
     public void eliminarMarca(Integer id) throws MarcaNotFoundException, DeleteNotAllowedException {
         Marca marca = marcaRepository.findById(id).orElse(null);
         if (marca == null) {
-            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
+            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND_F, "LA MARCA").toUpperCase());
         }
         if (marca.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTA MARCA").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR LA MARCA "+marca.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
         }
         marca.setDeleteFlag(true);
         marcaRepository.save(marca);
@@ -73,10 +74,10 @@ public class MarcaServiceImplementation implements IMarcaService {
     public void activarMarca(Integer id) throws MarcaNotFoundException, ActivateNotAllowedException {
         Marca marca = marcaRepository.findById(id).orElse(null);
         if (marca == null) {
-            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
+            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND_F, "LA MARCA").toUpperCase());
         }
         if (marca.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA MARCA").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR LA MARCA"+marca.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
         }
         marca.setDeleteFlag(false);
         marcaRepository.save(marca);
@@ -86,7 +87,7 @@ public class MarcaServiceImplementation implements IMarcaService {
     public MarcaDTO listarMarcaById(Integer id) throws MarcaNotFoundException {
         Marca marca = marcaRepository.findById(id).orElse(null);
         if (marca == null) {
-            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND, "MARCA").toUpperCase());
+            throw new MarcaNotFoundException(String.format(IS_NOT_FOUND_F, "LA MARCA").toUpperCase());
         }
         MarcaDTO marcaDTO = new MarcaDTO();
         BeanUtils.copyProperties(marca, marcaDTO);
