@@ -26,8 +26,8 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
 public class AreaServiceImplementation implements IAreaService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
-    public static final String IS_NOT_FOUND = "%s no fue encontrado";
-    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
+    public static final String IS_NOT_FOUND ="%s no fue encontrada";
+    public static final String IS_NOT_ALLOWED ="no esta permitido %s ";
 
     @Autowired
     AreaRepository areaRepository;
@@ -51,13 +51,13 @@ public class AreaServiceImplementation implements IAreaService {
         SedePC sedePC = sedeRepository.findById(areaDTO.getSede()).orElse(null);
 
         if (sedePC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LA SEDE").toUpperCase());
         }
 
         if (sedePC.getDeleteFlag() == true) {
             throw new
 
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR SEDE").toUpperCase());
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA SEDE "+sedePC.getNombre()+" PORQUE ESTA INACTIVA").toUpperCase());
         }
         areaPC.setSede(sedePC);
         areaPC.setDeleteFlag(false);
@@ -89,17 +89,17 @@ public class AreaServiceImplementation implements IAreaService {
         SedePC sedePC = sedeRepository.findById(sedeId).orElse(null);
 
         if (sedePC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LA SEDE").toUpperCase());
         }
 
         if (sedePC.getDeleteFlag() == true) {
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR SEDE").toUpperCase());
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA SEDE "+sedePC.getNombre()+" PORQUE ESTA INACTIVA").toUpperCase());
         }
 
         List<AreaPC> areas = areaRepository.findBySede(sedePC);
 
         if(areas.isEmpty()){
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL ÁREA").toUpperCase());
         }
         return areas;
     }
@@ -111,7 +111,7 @@ public class AreaServiceImplementation implements IAreaService {
         AreaPC areaPC = areaRepository.findById(id).orElse(null);
 
         if (areaPC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL ÁREA").toUpperCase());
         }
         AreaResponse areaResponse = new AreaResponse();
         BeanUtils.copyProperties(areaPC, areaResponse);
@@ -133,23 +133,23 @@ public class AreaServiceImplementation implements IAreaService {
             throws SelectNotAllowedException, LocationNotFoundException, UpdateNotAllowedException {
         AreaPC areaPC = areaRepository.findById(id).orElse(null);
         if (areaPC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL ÁREA").toUpperCase());
         }
 
         if (areaPC.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR AREA").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL ÁREA "+areaPC.getNombre()+" PORQUE ESTA INACTIVA").toUpperCase());
         }
         BeanUtils.copyProperties(areaDTO, areaPC);
 
         if (areaDTO.getSede() != null) {
             SedePC sedePC = sedeRepository.findById(areaDTO.getSede()).orElse(null);
             if (sedePC == null) {
-                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LA SEDE").toUpperCase());
             }
             if (sedePC.getDeleteFlag() == true) {
                 throw new
 
-                SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR SEDE").toUpperCase());
+                SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA SEDE "+sedePC.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
             }
             areaPC.setSede(sedePC);
         }
@@ -173,11 +173,11 @@ public class AreaServiceImplementation implements IAreaService {
     public void eliminarArea(Integer id) throws LocationNotFoundException, DeleteNotAllowedException {
         AreaPC areaPC = areaRepository.findById(id).orElse(null);
         if (areaPC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL ÁREA").toUpperCase());
         }
 
         if (areaPC.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR AREA").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR EL ÁREA  "+areaPC.getNombre()+" PORQUE YA SE ENCUENTRA INACTIVA").toUpperCase());
         }
         areaPC.setDeleteFlag(true);
         areaRepository.save(areaPC);
@@ -187,11 +187,11 @@ public class AreaServiceImplementation implements IAreaService {
     public void activarArea(Integer id) throws LocationNotFoundException, ActivateNotAllowedException {
         AreaPC areaPC = areaRepository.findById(id).orElse(null);
         if (areaPC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL ÁREA").toUpperCase());
         }
 
         if (areaPC.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR AREA").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR EL ÁREA "+areaPC.getNombre()+" PORQUE YA SE ENCUENTRA ACTIVADA").toUpperCase());
         }
         areaPC.setDeleteFlag(false);
         areaRepository.save(areaPC);
