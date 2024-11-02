@@ -676,7 +676,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                     throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
                 }
 
-                if (!computador.getEstadoDispositivo().getNombre().equals("En uso")) {
+                if (!computador.getEstadoDispositivo().getNombre().equals("En uso") && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
                 }
@@ -732,11 +732,19 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
         }
 
-        if (!computador.getEstadoDispositivo().getNombre().equals("En uso")) {
+        if (!computador.getEstadoDispositivo().getNombre().equals("En uso") && !computador.getEstadoDispositivo().getNombre().equals("Disponible") ) {
             throw new SelectNotAllowedException(
                     String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
         }
 
+        EstadoDispositivo nuevoEstadoComputador = estadoDispositivoRepository.findByNombre("En uso")
+                        .orElse(null);
+                if (nuevoEstadoComputador == null) {
+                    throw new StateNotFoundException(
+                            String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
+                }
+        computador.setEstadoDispositivo(nuevoEstadoComputador);
+        computadorRepository.save(computador);
         solicitudes.setComputador(computador);
 
         return solicitudes;

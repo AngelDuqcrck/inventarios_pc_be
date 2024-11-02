@@ -201,36 +201,6 @@ INSERT IGNORE INTO tipo_almacenamiento_ram (id, nombre, delete_flag) VALUES
     (5, "RAM DDR4", 0),
     (6, "RAM DDR5", 0);
 
--- Crear la tabla computadores si no existe
-CREATE TABLE IF NOT EXISTS computadores (
-    id INT NOT NULL AUTO_INCREMENT,
-    tipo_pc_id INT NOT NULL,
-    responsable_id INT NOT NULL,
-    ubicacion_id INT NOT NULL,
-    nombre VARCHAR(255) NOT NULL UNIQUE,
-    modelo VARCHAR(255),
-    serial VARCHAR(255),
-    marca_id INT NOT NULL,
-    procesador_id INT NOT NULL,
-    ram_id INT NOT NULL,
-    almacenamiento_id INT NOT NULL,
-    tipo_almacenamiento_id INT NOT NULL,
-    tipo_ram_id INT NOT NULL,
-    placa VARCHAR(255) NOT NULL UNIQUE,
-    ip_asignada VARCHAR(15),
-    estado_dispositivo_id INT,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_tipo_pc FOREIGN KEY (tipo_pc_id) REFERENCES tipo_pc(id) ON DELETE SET NULL,
-    CONSTRAINT fk_responsable FOREIGN KEY (responsable_id) REFERENCES usuarios(id) ON DELETE SET NULL,
-    CONSTRAINT fk_ubicacion FOREIGN KEY (ubicacion_id) REFERENCES ubicaciones(id) ON DELETE SET NULL,
-    CONSTRAINT fk_marca FOREIGN KEY (marca_id) REFERENCES marcas(id) ON DELETE SET NULL,
-    CONSTRAINT fk_procesador FOREIGN KEY (procesador_id) REFERENCES componentes(id) ON DELETE SET NULL,
-    CONSTRAINT fk_ram FOREIGN KEY (ram_id) REFERENCES componentes(id) ON DELETE SET NULL,
-    CONSTRAINT fk_almacenamiento FOREIGN KEY (almacenamiento_id) REFERENCES componentes(id) ON DELETE SET NULL,
-    CONSTRAINT fk_tipo_almacenamiento FOREIGN KEY (tipo_almacenamiento_id) REFERENCES tipo_almacenamiento_ram(id) ON DELETE SET NULL,
-    CONSTRAINT fk_tipo_ram FOREIGN KEY (tipo_ram_id) REFERENCES tipo_almacenamiento_ram(id) ON DELETE SET NULL,
-    CONSTRAINT fk_estado_dispositivo FOREIGN KEY (estado_dispositivo_id) REFERENCES estado_dispositivos(id) ON DELETE SET NULL
-);
 
 
 
@@ -301,3 +271,35 @@ INSERT IGNORE INTO marcas (id, nombre, delete_flag) VALUES
     (6, 'Apple', 0),
     (7, 'Samsung', 0),
     (8, 'Toshiba', 0);
+
+
+-- Crear la tabla computadores si no existe
+CREATE TABLE IF NOT EXISTS computadores (
+    id INT NOT NULL AUTO_INCREMENT,
+    tipo_pc_id INT NOT NULL,
+    responsable_id INT NOT NULL,
+    ubicacion_id INT NOT NULL,
+    nombre VARCHAR(255) NOT NULL UNIQUE,
+    modelo VARCHAR(255),
+    serial VARCHAR(255),
+    marca_id INT NOT NULL,
+    procesador_id INT NOT NULL,
+    ram_id INT NOT NULL,
+    almacenamiento_id INT NOT NULL,
+    tipo_almacenamiento_id INT NOT NULL,
+    tipo_ram_id INT NOT NULL,
+    placa VARCHAR(255) NOT NULL UNIQUE,
+    ip_asignada VARCHAR(15),
+    estado_dispositivo_id INT,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_tipo_pc FOREIGN KEY (tipo_pc_id) REFERENCES tipo_pc(id) ON DELETE SET NULL,
+    CONSTRAINT fk_responsable FOREIGN KEY (responsable_id) REFERENCES usuarios(id) ON DELETE SET NULL,
+    CONSTRAINT fk_ubicacion FOREIGN KEY (ubicacion_id) REFERENCES ubicaciones(id) ON DELETE SET NULL,
+    CONSTRAINT fk_marca FOREIGN KEY (marca_id) REFERENCES marcas(id) ON DELETE SET NULL,
+    CONSTRAINT fk_procesador FOREIGN KEY (procesador_id) REFERENCES componentes(id) ON DELETE SET NULL,
+    CONSTRAINT fk_ram FOREIGN KEY (ram_id) REFERENCES componentes(id) ON DELETE SET NULL,
+    CONSTRAINT fk_almacenamiento FOREIGN KEY (almacenamiento_id) REFERENCES componentes(id) ON DELETE SET NULL,
+    CONSTRAINT fk_tipo_almacenamiento FOREIGN KEY (tipo_almacenamiento_id) REFERENCES tipo_almacenamiento_ram(id) ON DELETE SET NULL,
+    CONSTRAINT fk_tipo_ram FOREIGN KEY (tipo_ram_id) REFERENCES tipo_almacenamiento_ram(id) ON DELETE SET NULL,
+    CONSTRAINT fk_estado_dispositivo FOREIGN KEY (estado_dispositivo_id) REFERENCES estado_dispositivos(id) ON DELETE SET NULL
+);
