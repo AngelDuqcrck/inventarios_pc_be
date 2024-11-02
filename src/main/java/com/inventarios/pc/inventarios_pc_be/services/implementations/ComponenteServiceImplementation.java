@@ -24,7 +24,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.ComponenteResponse;
 public class ComponenteServiceImplementation implements IComponenteService {
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
-    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
+    public static final String IS_NOT_ALLOWED = "no esta permitido %s";
 
     @Autowired
     private ComponenteRepository componenteRepository;
@@ -49,7 +49,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
         if (tipoComponente.getDeleteFlag() == true) {
             throw new
 
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TIPO DE COMPONENTE").toUpperCase());
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL TIPO DE COMPONENTE "+tipoComponente.getNombre()+" PORQUE SE ENCUENTRA INACTIVO").toUpperCase());
         }
         componente.setTipoComponente(tipoComponente);
         componente.setDeleteFlag(false);
@@ -71,7 +71,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
     public ComponenteResponse listarComponenteById(Integer id) throws ComponentNotFoundException {
         Componente componente = componenteRepository.findById(id).orElse(null);
         if (componente == null) {
-            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "COMPONENTE").toUpperCase());
+            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "EL COMPONENTE").toUpperCase());
         }
         ComponenteResponse componenteResponse = new ComponenteResponse();
         BeanUtils.copyProperties(componente, componenteResponse);
@@ -88,11 +88,11 @@ public class ComponenteServiceImplementation implements IComponenteService {
             throws SelectNotAllowedException, UpdateNotAllowedException, ComponentNotFoundException {
         Componente componente = componenteRepository.findById(id).orElse(null);
         if (componente == null) {
-            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "COMPONENTE").toUpperCase());
+            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "EL COMPONENTE").toUpperCase());
         }
 
         if (componente.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR COMPONENTE").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL COMPONENTE "+componente.getNombre()+" PORQUE SE ENCUENTRA INACTIVO").toUpperCase());
         }
         BeanUtils.copyProperties(componenteDTO, componente);
         componente.setDeleteFlag(false);
@@ -107,7 +107,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
             }
             if (tipoComponente.getDeleteFlag() == true) {
                 throw new SelectNotAllowedException(
-                        String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TIPO DE COMPONENTE").toUpperCase());
+                        String.format(IS_NOT_ALLOWED, "SELECCIONAR EL TIPO DE COMPONENTE "+componente.getNombre()+" PORQUE SE ENCUENTRA INACTIVO").toUpperCase());
             }
             componente.setTipoComponente(tipoComponente);
         } else {
@@ -125,12 +125,12 @@ public class ComponenteServiceImplementation implements IComponenteService {
     public void eliminarComponente(Integer id) throws ComponentNotFoundException, DeleteNotAllowedException {
         Componente componente = componenteRepository.findById(id).orElse(null);
         if (componente == null) {
-            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "COMPONENTE").toUpperCase());
+            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "EL COMPONENTE").toUpperCase());
         }
 
         if (componente.getDeleteFlag() == true) {
             throw new DeleteNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE COMPONENTE").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "DESACTIVAR EL COMPONENTE "+componente.getNombre()+" PORQUE YA SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
         componente.setDeleteFlag(true);
         componenteRepository.save(componente);
@@ -140,12 +140,12 @@ public class ComponenteServiceImplementation implements IComponenteService {
     public void activarComponente(Integer id) throws ComponentNotFoundException, ActivateNotAllowedException {
         Componente componente = componenteRepository.findById(id).orElse(null);
         if (componente == null) {
-            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "COMPONENTE").toUpperCase());
+            throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "EL COMPONENTE").toUpperCase());
         }
 
         if (componente.getDeleteFlag() == false) {
             throw new ActivateNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE COMPONENTE").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "ACTIVAR EL COMPONENTE "+componente.getNombre()+ " PORQUE YA SE ENCUENTRA ACTIVADO").toUpperCase());
         }
         componente.setDeleteFlag(false);
         componenteRepository.save(componente);

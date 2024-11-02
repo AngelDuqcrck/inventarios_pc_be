@@ -20,7 +20,8 @@ public class SedeServiceImplementation implements ISedeService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
-    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
+    public static final String IS_NOT_ALLOWED = "no esta permitido %s ";
 
     @Autowired
     private SedeRepository sedeRepository;
@@ -56,7 +57,7 @@ public class SedeServiceImplementation implements ISedeService {
     public SedeDTO listarSedePorId(Integer id) throws LocationNotFoundException {
         SedePC sedePC = sedeRepository.findById(id).orElse(null);
         if (sedePC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA SEDE").toUpperCase());
         }
         SedeDTO sedeDTO = new SedeDTO();
         BeanUtils.copyProperties(sedePC, sedeDTO);
@@ -88,10 +89,10 @@ public class SedeServiceImplementation implements ISedeService {
         SedePC sedePC = sedeRepository.findById(id).orElse(null);
 
         if (sedePC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA SEDE").toUpperCase());
         }
         if (sedePC.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SEDE").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SEDE PORQUE ESTA INACTIVA").toUpperCase());
         }
         BeanUtils.copyProperties(sedeDTO, sedePC);
         SedePC sedeActualizada = sedeRepository.save(sedePC);
@@ -114,11 +115,11 @@ public class SedeServiceImplementation implements ISedeService {
         SedePC sedePC = sedeRepository.findById(id).orElse(null);
 
         if (sedePC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA SEDE").toUpperCase());
         }
 
         if (sedePC.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTA SEDE").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR ESTA SEDE PORQUE YA ESTA DESACTIVADA").toUpperCase());
         }
         sedePC.setDeleteFlag(true);
         sedeRepository.save(sedePC);
@@ -129,11 +130,11 @@ public class SedeServiceImplementation implements ISedeService {
         SedePC sedePC = sedeRepository.findById(id).orElse(null);
 
         if (sedePC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "SEDE").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LA SEDE").toUpperCase());
         }
 
         if (sedePC.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA SEDE").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA SEDE PORQUE YA ESTA ACTIVADA").toUpperCase());
         }
         sedePC.setDeleteFlag(false);
         sedeRepository.save(sedePC);

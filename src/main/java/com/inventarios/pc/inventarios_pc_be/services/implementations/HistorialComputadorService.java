@@ -38,10 +38,12 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
-    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
-    public static final String IS_NOT_VALID = "%s no es valido";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
+    public static final String IS_NOT_ALLOWED = "no esta permitido %s ";
+    public static final String IS_NOT_VALID = "no es valido %s";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
+
 
     @Autowired
     private TipoDispositivoRepository tipoDispositivoRepository;
@@ -71,13 +73,13 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
 
         if (computador == null) {
-            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
         if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                 && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTE A DISPONIBLE Y EN USO").toUpperCase());
         }
 
         HistorialDispositivo historialDispositivo = new HistorialDispositivo();
@@ -87,7 +89,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         DispositivoPC dispositivoPC = dispositivoRepository.findById(dispositivoId).orElse(null);
 
         if (dispositivoPC == null) {
-            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "EL DISPOSITIVO").toUpperCase());
         }
 
         boolean existeDispositivoMismoTipo = historialDispositivoRepository
@@ -97,13 +99,13 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         if (existeDispositivoMismoTipo) {
             throw new SelectNotAllowedException(
                     String.format(IS_ALREADY_USE,
-                            "EN ESTE COMPUTADOR UN " + dispositivoPC.getTipoDispositivo().getNombre())
+                            dispositivoPC.getTipoDispositivo().getNombre()+" YA ESTA EN USO EN ESTE COMPUTADOR")
                             .toUpperCase());
         }
 
         if (!dispositivoPC.getEstadoDispositivo().getNombre().equals("Disponible")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE DISPOSITIVO").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL DISPOSITIVO "+dispositivoPC.getNombre()+" PORQUE NO TIENE ESTADO DISPONIBLE").toUpperCase());
         }
 
         historialDispositivo.setDispositivoPC(dispositivoPC);
@@ -114,7 +116,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         if (estadoDispositivo == null) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_FOUND, "ESTADO DEL DISPOSITIVO 'EN USO'").toUpperCase());
+                    String.format(IS_NOT_FOUND, "EL ESTADO EN USO ").toUpperCase());
         }
 
         computador.setEstadoDispositivo(estadoDispositivo);
@@ -134,12 +136,12 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
         if (computador == null) {
-            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
         DispositivoPC dispositivoPC = dispositivoRepository.findById(dispositivoId).orElse(null);
         if (dispositivoPC == null) {
-            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "EL DISPOSITIVO").toUpperCase());
         }
 
         HistorialDispositivo historialDispositivo = historialDispositivoRepository
@@ -147,7 +149,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         if (historialDispositivo == null) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "DESVINCULAR ESTE DISPOSITIVO").toUpperCase());
+                    String.format(IS_NOT_FOUND, "EL DISPOSITIVO "+dispositivoPC.getNombre()+" VINCULADO AL COMPUTADOR "+computador.getNombre()).toUpperCase());
         }
 
         historialDispositivo.setFechaDesvinculacion(new Date());
@@ -155,7 +157,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         EstadoDispositivo estadoDisponible = estadoDispositivoRepository.findByNombre("Disponible").orElse(null);
         if (estadoDisponible == null) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_FOUND, "ESTADO DEL DISPOSITIVO 'DISPONIBLE'").toUpperCase());
+                    String.format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE").toUpperCase());
         }
 
         dispositivoPC.setEstadoDispositivo(estadoDisponible);
@@ -171,31 +173,31 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
         if (computador == null) {
-            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
         if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                 && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTA A EN USO Y DISPONIBLE").toUpperCase());
         }
 
         SoftwarePC softwarePC = softwarePcRepository.findById(softwareId).orElse(null);
 
         if (softwarePC == null) {
-            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL SOFTWARE").toUpperCase());
         }
 
         if (softwarePC.getDeleteFlag() == true) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE SOFTWARE").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL SOFTWARE "+softwarePC.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
 
         boolean softwareYaVinculado = softwareCsaRepository
                 .existsByComputadorAndSoftwarePCAndFechaDesvinculacionIsNull(computador, softwarePC);
         if (softwareYaVinculado) {
             throw new SelectNotAllowedException(
-                    String.format(IS_ALREADY_USE, "ESTE SOFTWARE EN ESTE COMPUTADOR").toUpperCase());
+                    String.format(IS_ALREADY_USE, "EN EL COMPUTADOR "+computador.getNombre()+", EL SOFTWARE "+softwarePC.getNombre()).toUpperCase());
         }
 
         SoftwareCSA softwareCSA = new SoftwareCSA();
@@ -207,7 +209,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         if (estadoDispositivo == null) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_FOUND, "ESTADO DEL DISPOSITIVO 'EN USO'").toUpperCase());
+                    String.format(IS_NOT_FOUND, "ESTADO EN USO").toUpperCase());
         }
         computador.setEstadoDispositivo(estadoDispositivo);
 
@@ -223,19 +225,19 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
         if (computador == null) {
-            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
         SoftwarePC softwarePC = softwarePcRepository.findById(softwareId).orElse(null);
         if (softwarePC == null) {
-            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL SOFTWARE").toUpperCase());
         }
 
         SoftwareCSA softwareCSA = softwareCsaRepository
                 .findByComputadorAndSoftwarePCAndFechaDesvinculacionIsNull(computador, softwarePC);
         if (softwareCSA == null) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "DESVINCULAR ESTE SOFTWARE").toUpperCase());
+                    String.format(IS_NOT_FOUND, "EN EL COMPUTADOR "+computador.getNombre()+" NO SE ENCUENTR ACTUALMENTE VINCULADO EL SOFTWARE "+softwarePC.getNombre()).toUpperCase());
         }
 
         softwareCSA.setFechaDesvinculacion(new Date());
@@ -248,7 +250,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
         if (computador == null) {
-            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
         List<TipoDispositivo> tiposDispositivos = tipoDispositivoRepository.findAllByDeleteFlagFalse();
@@ -288,7 +290,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
     public SoftwareXPcResponse listarSoftwaresXPc(Integer computadorId) throws ComputerNotFoundException {
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
         if (computador == null) {
-            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
         List<SoftwareCSA> softwaresVinculados = softwareCsaRepository
@@ -321,7 +323,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
         if (computador == null) {
-            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
         HojaVidaPcResponse hojadeVidaPc = new HojaVidaPcResponse();
@@ -390,7 +392,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
     public HistorialResponse listarHistorialDispositivosXPc(Integer computadorId) throws ComputerNotFoundException {
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
         if (computador == null) {
-            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "COMPUTADOR").toUpperCase());
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
         List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository.findByComputador(computador);
