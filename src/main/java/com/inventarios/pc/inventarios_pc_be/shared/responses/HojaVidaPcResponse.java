@@ -22,6 +22,10 @@ public class HojaVidaPcResponse {
     
     private String ubicacion;
 
+    private String sede;
+
+    private String area;
+
    
     private String nombre;
 
