@@ -7,9 +7,11 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TicketNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.TypeRequestNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TicketDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarEstadoTicketRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ObservacionRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketsResponse;
@@ -32,6 +34,6 @@ public interface ITicketService {
 
     public void registrarObservacion(ObservacionRequest observacionRequest)throws TicketNotFoundException, SelectNotAllowedException;
 
-    public void cambiarEstadoTickets(Integer ticketId, Integer nuevoEstadoTicketId)
-            throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException;
-} 
+    public void cambiarEstadoTickets(CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
+    throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException;
+}

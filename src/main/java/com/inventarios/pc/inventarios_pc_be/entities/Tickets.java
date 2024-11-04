@@ -44,4 +44,6 @@ public class Tickets {
     @JoinColumn(name = "estado_ticket_id")
     private EstadoTickets estadoTickets;
 
+    private Boolean resuelto;
+
 }

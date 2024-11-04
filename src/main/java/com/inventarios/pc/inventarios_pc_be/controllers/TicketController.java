@@ -16,10 +16,12 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TicketNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.TypeRequestNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITicketService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TicketDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarEstadoTicketRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ObservacionRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketIdResponse;
@@ -106,9 +108,9 @@ public class TicketController {
 
         @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
         @PostMapping("/finalizar/{ticketId}")
-        public ResponseEntity<HttpResponse> finalizarTicket(@PathVariable Integer ticketId)
-                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException {
-                ticketService.cambiarEstadoTickets(ticketId, 2); //Estado 2 finalizado
+        public ResponseEntity<HttpResponse> finalizarTicket(@RequestBody CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
+                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException {
+                ticketService.cambiarEstadoTickets(cambiarEstadoTicketRequest); //Estado 2 finalizado
 
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
@@ -118,9 +120,9 @@ public class TicketController {
 
         @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/cancelar/{ticketId}")
-        public ResponseEntity<HttpResponse> cancelarTicket(@PathVariable Integer ticketId)
-                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException {
-                ticketService.cambiarEstadoTickets(ticketId, 3); //Estado 3 cancelado
+        public ResponseEntity<HttpResponse> cancelarTicket(@RequestBody CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
+                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException {
+                ticketService.cambiarEstadoTickets(cambiarEstadoTicketRequest); //Estado 3 cancelado
 
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),

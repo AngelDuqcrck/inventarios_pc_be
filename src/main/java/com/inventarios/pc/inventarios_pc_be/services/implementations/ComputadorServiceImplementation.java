@@ -310,7 +310,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             UserNotFoundException, LocationNotFoundException, StateNotFoundException {
 
         Computador computador = computadorRepository.findById(ubicarPcRequest.getComputadorId()).orElse(null);
-       
+
         if (computador == null) {
             throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
@@ -375,11 +375,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
         for (Computador computador : computadores) {
             ComputadoresResponse computadorResponse = new ComputadoresResponse();
             BeanUtils.copyProperties(computador, computadorResponse);
-            computadorResponse.setResponsable(
-                    computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
-                            + " "
-                            + computador.getResponsable().getPrimerApellido() + " "
-                            + computador.getResponsable().getSegundoApellido());
+            if (computador.getResponsable() != null) {
+                computadorResponse.setResponsable(
+                        computador.getResponsable().getPrimerNombre() + " "
+                                + computador.getResponsable().getSegundoNombre()
+                                + " " + computador.getResponsable().getPrimerApellido() + " "
+                                + computador.getResponsable().getSegundoApellido());
+            } else {
+                computadorResponse.setResponsable(null);
+            }
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
@@ -404,11 +408,16 @@ public class ComputadorServiceImplementation implements IComputadorService {
         for (Computador computador : computadores) {
             ComputadoresResponse computadorResponse = new ComputadoresResponse();
             BeanUtils.copyProperties(computador, computadorResponse);
-            computadorResponse.setResponsable(
-                    computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
-                            + " "
-                            + computador.getResponsable().getPrimerApellido() + " "
-                            + computador.getResponsable().getSegundoApellido());
+            if (computador.getResponsable() != null) {
+                computadorResponse.setResponsable(
+                        computador.getResponsable().getPrimerNombre() + " "
+                                + computador.getResponsable().getSegundoNombre()
+                                + " " + computador.getResponsable().getPrimerApellido() + " "
+                                + computador.getResponsable().getSegundoApellido());
+            } else {
+                computadorResponse.setResponsable(null);
+            }
+
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
@@ -434,11 +443,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
         for (Computador computador : computadores) {
             ComputadoresResponse computadorResponse = new ComputadoresResponse();
             BeanUtils.copyProperties(computador, computadorResponse);
-            computadorResponse.setResponsable(
-                    computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
-                            + " "
-                            + computador.getResponsable().getPrimerApellido() + " "
-                            + computador.getResponsable().getSegundoApellido());
+            if (computador.getResponsable() != null) {
+                computadorResponse.setResponsable(
+                        computador.getResponsable().getPrimerNombre() + " "
+                                + computador.getResponsable().getSegundoNombre()
+                                + " " + computador.getResponsable().getPrimerApellido() + " "
+                                + computador.getResponsable().getSegundoApellido());
+            } else {
+                computadorResponse.setResponsable(null);
+            }
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
@@ -458,15 +471,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
         for (Computador computador : computadores) {
             ComputadoresResponse computadorResponse = new ComputadoresResponse();
             BeanUtils.copyProperties(computador, computadorResponse);
-            if(computador.getResponsable()!= null){
+            if (computador.getResponsable() != null) {
                 computadorResponse.setResponsable(
-                    computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
-                            + " " + computador.getResponsable().getPrimerApellido() + " "
-                            + computador.getResponsable().getSegundoApellido());
+                        computador.getResponsable().getPrimerNombre() + " "
+                                + computador.getResponsable().getSegundoNombre()
+                                + " " + computador.getResponsable().getPrimerApellido() + " "
+                                + computador.getResponsable().getSegundoApellido());
+            } else {
+                computadorResponse.setResponsable(null);
             }
-          else{
-            computadorResponse.setResponsable(null);
-          }
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
