@@ -1,5 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
+import java.util.Date;
 import java.util.List;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
@@ -8,14 +9,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
+import com.inventarios.pc.inventarios_pc_be.entities.CambioUbicacionPc;
+import com.inventarios.pc.inventarios_pc_be.entities.Computador;
+import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
+import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
+import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
+import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.AreaRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.CambioUbicacionPcRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.ComputadorRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.HistorialDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SedeRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUbicacionService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
@@ -32,13 +46,33 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     public static final String IS_NOT_ALLOWED = "%s no esta permitido";
 
     @Autowired
-    AreaRepository areaRepository;
+    private CambioUbicacionPcRepository cambioUbicacionPcRepository;
 
     @Autowired
-    SedeRepository sedeRepository;
+    private DispositivoRepository dispositivoRepository;
 
     @Autowired
-    UbicacionRepository ubicacionRepository;
+    private SedeRepository sedeRepository;
+
+    @Autowired
+    private AreaRepository areaRepository;
+
+    @Autowired
+    private UbicacionRepository ubicacionRepository;
+
+    @Autowired
+    private ComputadorRepository computadorRepository;
+
+    @Autowired
+    private EstadoDispositivoRepository estadoDispositivoRepository;
+
+    @Autowired
+    private HistorialDispositivoRepository historialDispositivoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+
 
     /**
      * Crea una nueva ubicación en el sistema a partir de los datos proporcionados.
@@ -67,6 +101,15 @@ public class UbicacionServiceImplementation implements IUbicacionService {
             throw new
 
             SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA AREA").toUpperCase());
+        }
+
+        List<Ubicacion> ubicacionesExistentes = ubicacionRepository.findByArea(areaPC);
+
+        for (Ubicacion ubicacionExistente : ubicacionesExistentes) {
+            if(ubicacionExistente.getNombre().equalsIgnoreCase(ubicacionDTO.getNombre())){
+                throw new SelectNotAllowedException(String.format("YA EXISTE UNA UBICACIÓN CON EL NOMBRE '%s' EN EL ÁREA '%s'.",
+                    ubicacionDTO.getNombre().toUpperCase(), areaPC.getNombre().toUpperCase()));
+            }
         }
         ubicacion.setArea(areaPC);
         ubicacion.setDeleteFlag(false);
@@ -143,7 +186,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
      *                                   eliminada.
      */
     @Override
-    public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException {
+    public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException, StateNotFoundException{
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 
         if (ubicacion == null) {
@@ -154,8 +197,77 @@ public class UbicacionServiceImplementation implements IUbicacionService {
             throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTA UBICACION").toUpperCase());
 
         }
-        ubicacion.setDeleteFlag(true);
-        ubicacionRepository.save(ubicacion);
+
+        if(ubicacion.getId() == 4){
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR LA UBICACION "+ubicacion.getNombre()).toUpperCase());
+        }
+
+        List<Usuario> usuarios = usuarioRepository.findByUbicacionId(ubicacion);
+        List<Computador> computadors = computadorRepository.findByUbicacion(ubicacion);
+        List<CambioUbicacionPc> cambioUbicacionPcs = cambioUbicacionPcRepository.findByUbicacion(ubicacion);    
+
+        if(usuarios.isEmpty() && computadors.isEmpty() && cambioUbicacionPcs.isEmpty()){
+            ubicacionRepository.delete(ubicacion);
+        }else{
+            ubicacion.setDeleteFlag(true);
+            ubicacionRepository.save(ubicacion);
+
+            for (Computador computador : computadors) {
+                Ubicacion antiguaUbicacion = computador.getUbicacion();
+
+                        EstadoDispositivo estadoComputador = estadoDispositivoRepository.findById(4).orElse(null); // Estado
+                                                                                                                   // Disponible
+                        if (estadoComputador == null) {
+                            throw new StateNotFoundException(String
+                                    .format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE NO FUE ENCONTRADO").toUpperCase());
+                        }
+
+                        computador.setEstadoDispositivo(estadoComputador);
+
+                        Ubicacion bodegaSistemas = ubicacionRepository.findById(4).orElse(null);
+
+                        if (bodegaSistemas == null) {
+                            throw new StateNotFoundException(String
+                                    .format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
+                        }
+
+                        CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
+                        cambioUbicacionPc.setComputador(computador);
+                        cambioUbicacionPc.setUbicacion(bodegaSistemas);
+                        cambioUbicacionPc.setFechaIngreso(new Date());
+
+                        CambioUbicacionPc ultimaUbicacionPc = cambioUbicacionPcRepository
+                                .findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, antiguaUbicacion);
+                        if (ultimaUbicacionPc != null) {
+                            ultimaUbicacionPc.setFechaCambio(new Date());
+                            cambioUbicacionPcRepository.save(ultimaUbicacionPc);
+
+                        }
+
+                        cambioUbicacionPcRepository.save(cambioUbicacionPc);
+                        
+                        computador.setUbicacion(bodegaSistemas);
+                        computador.setResponsable(null);
+
+                        List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository
+                                .findByComputadorAndFechaDesvinculacionIsNull(computador);
+
+                        for (HistorialDispositivo historialDispositivo : historialDispositivos) {
+
+                            DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
+                            if (dispositivoPC.getTipoDispositivo().getId() != 8) {
+                                historialDispositivo.setFechaDesvinculacion(new Date());
+                                historialDispositivoRepository.save(historialDispositivo);
+
+                            }
+
+                            dispositivoPC.setEstadoDispositivo(estadoComputador);
+                            dispositivoRepository.save(dispositivoPC);
+                        }
+
+                        computadorRepository.save(computador);
+            }
+        }
     }
 
     // Lista la informacion de una ubicacion especifica de acuerdo a su id

@@ -1,20 +1,27 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
+import java.util.Date;
 import java.util.List;
 
+import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
+import com.inventarios.pc.inventarios_pc_be.repositories.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
+import com.inventarios.pc.inventarios_pc_be.entities.CambioUbicacionPc;
+import com.inventarios.pc.inventarios_pc_be.entities.Computador;
+import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
+import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
+import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.SedePC;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.repositories.AreaRepository;
-import com.inventarios.pc.inventarios_pc_be.repositories.SedeRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
@@ -30,10 +37,29 @@ public class AreaServiceImplementation implements IAreaService {
     public static final String IS_NOT_ALLOWED ="no esta permitido %s ";
 
     @Autowired
-    AreaRepository areaRepository;
+    private CambioUbicacionPcRepository cambioUbicacionPcRepository;
 
     @Autowired
-    SedeRepository sedeRepository;
+    private DispositivoRepository dispositivoRepository;
+
+    @Autowired
+    private SedeRepository sedeRepository;
+
+    @Autowired
+    private AreaRepository areaRepository;
+
+    @Autowired
+    private UbicacionRepository ubicacionRepository;
+
+    @Autowired
+    private ComputadorRepository computadorRepository;
+
+    @Autowired
+    private EstadoDispositivoRepository estadoDispositivoRepository;
+
+    @Autowired
+    private HistorialDispositivoRepository historialDispositivoRepository;
+
 
     /**
      * Crea una nueva área en el sistema.
@@ -55,10 +81,17 @@ public class AreaServiceImplementation implements IAreaService {
         }
 
         if (sedePC.getDeleteFlag() == true) {
-            throw new
-
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA SEDE "+sedePC.getNombre()+" PORQUE ESTA INACTIVA").toUpperCase());
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA SEDE "+sedePC.getNombre()+" PORQUE ESTA INACTIVA").toUpperCase());
         }
+
+        List<AreaPC> areasExistentes = areaRepository.findBySede(sedePC);
+        for (AreaPC areaExistente : areasExistentes) {
+            if (areaExistente.getNombre().equalsIgnoreCase(areaDTO.getNombre())) {
+                throw new SelectNotAllowedException(String.format("YA EXISTE UN ÁREA CON EL NOMBRE '%s' EN LA SEDE '%s'.",
+                    areaDTO.getNombre().toUpperCase(), sedePC.getNombre().toUpperCase()));
+            }
+        }
+        
         areaPC.setSede(sedePC);
         areaPC.setDeleteFlag(false);
 
@@ -170,17 +203,92 @@ public class AreaServiceImplementation implements IAreaService {
      *                                   permitida.
      */
     @Override
-    public void eliminarArea(Integer id) throws LocationNotFoundException, DeleteNotAllowedException {
+    public void eliminarArea(Integer id) throws LocationNotFoundException, DeleteNotAllowedException, StateNotFoundException {
         AreaPC areaPC = areaRepository.findById(id).orElse(null);
         if (areaPC == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL ÁREA").toUpperCase());
         }
 
+        if(areaPC.getId() == 4){
+            throw  new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR EL ÁREA  "+areaPC.getNombre()).toUpperCase());
+        }
+
         if (areaPC.getDeleteFlag() == true) {
             throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR EL ÁREA  "+areaPC.getNombre()+" PORQUE YA SE ENCUENTRA INACTIVA").toUpperCase());
         }
-        areaPC.setDeleteFlag(true);
-        areaRepository.save(areaPC);
+
+        List<Ubicacion> ubicaciones = ubicacionRepository.findByArea(areaPC);
+
+        if (ubicaciones.isEmpty()) {
+            areaRepository.delete(areaPC);
+        } else {
+            areaPC.setDeleteFlag(true);
+            areaRepository.save(areaPC);
+
+            for (Ubicacion ubicacion : ubicaciones) {
+                ubicacion.setDeleteFlag(true);
+                ubicacionRepository.save(ubicacion);
+
+                 List<Computador> computadores = computadorRepository.findByUbicacion(ubicacion);
+
+                 for (Computador computador : computadores) {
+
+                     Ubicacion antiguaUbicacion = computador.getUbicacion();
+
+                        EstadoDispositivo estadoComputador = estadoDispositivoRepository.findById(4).orElse(null); // Estado
+                                                                                                                   // Disponible
+                        if (estadoComputador == null) {
+                            throw new StateNotFoundException(String
+                                    .format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE NO FUE ENCONTRADO").toUpperCase());
+                        }
+
+                        computador.setEstadoDispositivo(estadoComputador);
+
+                        Ubicacion bodegaSistemas = ubicacionRepository.findById(4).orElse(null);
+
+                        if (bodegaSistemas == null) {
+                            throw new StateNotFoundException(String
+                                    .format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
+                        }
+
+                        CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
+                        cambioUbicacionPc.setComputador(computador);
+                        cambioUbicacionPc.setUbicacion(bodegaSistemas);
+                        cambioUbicacionPc.setFechaIngreso(new Date());
+
+                        CambioUbicacionPc ultimaUbicacionPc = cambioUbicacionPcRepository
+                                .findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, antiguaUbicacion);
+                        if (ultimaUbicacionPc != null) {
+                            ultimaUbicacionPc.setFechaCambio(new Date());
+                            cambioUbicacionPcRepository.save(ultimaUbicacionPc);
+
+                        }
+
+                        cambioUbicacionPcRepository.save(cambioUbicacionPc);
+                        
+                        computador.setUbicacion(bodegaSistemas);
+                        computador.setResponsable(null);
+
+                        List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository
+                                .findByComputadorAndFechaDesvinculacionIsNull(computador);
+
+                        for (HistorialDispositivo historialDispositivo : historialDispositivos) {
+
+                            DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
+                            if (dispositivoPC.getTipoDispositivo().getId() != 8) {
+                                historialDispositivo.setFechaDesvinculacion(new Date());
+                                historialDispositivoRepository.save(historialDispositivo);
+
+                            }
+
+                            dispositivoPC.setEstadoDispositivo(estadoComputador);
+                            dispositivoRepository.save(dispositivoPC);
+                        }
+
+                        computadorRepository.save(computador);
+                 }
+            }
+        }
     }
 
     @Override
@@ -195,5 +303,13 @@ public class AreaServiceImplementation implements IAreaService {
         }
         areaPC.setDeleteFlag(false);
         areaRepository.save(areaPC);
+
+        List<Ubicacion> ubicaciones = ubicacionRepository.findByArea(areaPC);
+
+        for (Ubicacion ubicacion : ubicaciones) {
+            ubicacion.setDeleteFlag(false);
+            ubicacionRepository.save(ubicacion);
+        }
+
     }
 }

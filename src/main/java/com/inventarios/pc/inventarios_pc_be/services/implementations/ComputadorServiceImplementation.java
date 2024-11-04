@@ -287,7 +287,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         historialDispositivoRepository.save(historialDispositivo);
 
-        crearCambioUbicacionPc(computadorCreado, bodegaSistemas);
+        crearCambioUbicacionPc(computadorCreado, bodegaSistemas, null);
         ComputadorDTO computadorCreadoDto = new ComputadorDTO();
 
         BeanUtils.copyProperties(computadorCreado, computadorCreadoDto);
@@ -310,7 +310,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             UserNotFoundException, LocationNotFoundException, StateNotFoundException {
 
         Computador computador = computadorRepository.findById(ubicarPcRequest.getComputadorId()).orElse(null);
-
+       
         if (computador == null) {
             throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
@@ -320,6 +320,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
                     .format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR PORQUE SU ESTADO ES DIFERENTE A DISPONIBLE")
                     .toUpperCase());
         }
+        Ubicacion ubicacionActual = computador.getUbicacion();
 
         Usuario usuario = usuarioRepository.findById(ubicarPcRequest.getUsuarioId()).orElse(null);
 
@@ -348,6 +349,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         }
 
         computador.setUbicacion(ubicacion);
+        crearCambioUbicacionPc(computador, ubicacion, ubicacionActual);
 
         EstadoDispositivo estadoDispositivo = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
         if (estadoDispositivo == null) {
@@ -611,6 +613,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
                             .toUpperCase());
         }
 
+        Ubicacion ubicacionActual = computador.getUbicacion();
         BeanUtils.copyProperties(computadorDTO, computador);
         computador.setId(computadorId);
 
@@ -665,6 +668,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
             }
 
             computador.setUbicacion(ubicacion);
+
+            crearCambioUbicacionPc(computador, ubicacion, ubicacionActual);
         } else {
             computador.setUbicacion(computador.getUbicacion());
         }
@@ -813,7 +818,6 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computador.setEstadoDispositivo(computador.getEstadoDispositivo());
 
         Computador computadorActualizado = computadorRepository.save(computador);
-
         ComputadorDTO computadorActualizadoDTO = new ComputadorDTO();
         BeanUtils.copyProperties(computadorActualizado, computadorActualizadoDTO);
         computadorActualizadoDTO.setTipoPC(computadorActualizado.getTipoPC().getId());
@@ -863,20 +867,23 @@ public class ComputadorServiceImplementation implements IComputadorService {
      * }
      */
 
-    public void crearCambioUbicacionPc(Computador computador, Ubicacion ubicacion) {
+    public void crearCambioUbicacionPc(Computador computador, Ubicacion ubicacionNueva, Ubicacion ubicacionActual) {
+
         CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
         cambioUbicacionPc.setComputador(computador);
-        cambioUbicacionPc.setUbicacion(ubicacion);
+        cambioUbicacionPc.setUbicacion(ubicacionNueva);
         cambioUbicacionPc.setFechaIngreso(new Date());
 
-        CambioUbicacionPc ultimauUbicacionPc = cambioUbicacionPcRepository
-                .findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, ubicacion);
-        if (ultimauUbicacionPc != null) {
-            ultimauUbicacionPc.setFechaCambio(new Date());
-            cambioUbicacionPcRepository.save(ultimauUbicacionPc);
+        if (ubicacionNueva != null) {
+            CambioUbicacionPc ultimauUbicacionPc = cambioUbicacionPcRepository
+                    .findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, ubicacionActual);
+            if (ultimauUbicacionPc != null) {
+                ultimauUbicacionPc.setFechaCambio(new Date());
+                cambioUbicacionPcRepository.save(ultimauUbicacionPc);
+
+            }
 
         }
-
         cambioUbicacionPcRepository.save(cambioUbicacionPc);
     }
 }
