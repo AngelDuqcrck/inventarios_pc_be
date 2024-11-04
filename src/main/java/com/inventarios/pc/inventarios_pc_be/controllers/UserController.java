@@ -163,6 +163,13 @@ public class UserController {
                 return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
         }
 
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/ubicacion")
+        public ResponseEntity<List<UsuarioResponse>> getUsuarioByUbicacion(@RequestParam Integer ubicId) throws LocationNotFoundException {
+                List<UsuarioResponse> usuariosResponse = usuarioServiceImplementation.listarUsuarioByUbic(ubicId);
+                return new ResponseEntity<>(usuariosResponse, HttpStatus.OK);
+        }
+
         @PreAuthorize("isAuthenticated()")
         @GetMapping("/validar")
         public ResponseEntity<Boolean> validarToken(@RequestHeader("Authorization") String token) {

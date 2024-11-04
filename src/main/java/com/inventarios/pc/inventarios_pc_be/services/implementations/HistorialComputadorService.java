@@ -330,9 +330,15 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         BeanUtils.copyProperties(computador, hojadeVidaPc);
         hojadeVidaPc.setTipoPC(computador.getTipoPC().getNombre());
-        hojadeVidaPc.setResponsable(computador.getResponsable().getPrimerNombre() + " "
-                + computador.getResponsable().getSegundoNombre() + " " + computador.getResponsable().getPrimerApellido()
-                + " " + computador.getResponsable().getSegundoApellido());
+        if(computador.getResponsable()!= null){
+            hojadeVidaPc.setResponsable(
+                computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
+                        + " " + computador.getResponsable().getPrimerApellido() + " "
+                        + computador.getResponsable().getSegundoApellido());
+        }
+      else{
+        hojadeVidaPc.setResponsable(null);
+      }
         hojadeVidaPc.setUbicacion(computador.getUbicacion().getNombre());
         hojadeVidaPc.setSede(computador.getUbicacion().getArea().getSede().getNombre());
         hojadeVidaPc.setArea(computador.getUbicacion().getArea().getNombre());

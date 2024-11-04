@@ -489,9 +489,18 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         BeanUtils.copyProperties(computador, computadorIdResponse);
         computadorIdResponse.setTipoPC(computador.getTipoPC().getNombre());
-        computadorIdResponse.setResponsable(computador.getResponsable().getPrimerNombre() + " "
-                + computador.getResponsable().getSegundoNombre() + " " + computador.getResponsable().getPrimerApellido()
-                + " " + computador.getResponsable().getSegundoApellido());
+        if (computador != null && computador.getResponsable() != null) {
+            computadorIdResponse.setResponsable(
+                computador.getResponsable().getPrimerNombre() + " " +
+                computador.getResponsable().getSegundoNombre() + " " +
+                computador.getResponsable().getPrimerApellido() + " " +
+                computador.getResponsable().getSegundoApellido()
+            );
+            computadorIdResponse.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
+        } else {
+            computadorIdResponse.setResponsable(null);
+            computadorIdResponse.setResPrimerNombre(null);
+        }
         computadorIdResponse.setUbicacion(computador.getUbicacion().getNombre());
         computadorIdResponse.setMarca(computador.getMarca().getNombre());
         computadorIdResponse.setProcesador(computador.getProcesador().getNombre());
@@ -500,7 +509,6 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorIdResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
         computadorIdResponse.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
         computadorIdResponse.setTipoRam(computador.getTipoRam().getNombre());
-        computadorIdResponse.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
         computadorIdResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
         computadorIdResponse.setArea(computador.getUbicacion().getArea().getNombre());
 

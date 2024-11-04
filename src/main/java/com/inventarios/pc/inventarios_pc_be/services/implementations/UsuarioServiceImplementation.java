@@ -6,6 +6,7 @@ import java.util.List;
 import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.parsing.Location;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -377,5 +378,25 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         usuarioResponse.setArea(usuario.getUbicacionId().getArea().getNombre());
         usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
         return usuarioResponse;
+    }
+
+    @Override
+    public List<UsuarioResponse> listarUsuarioByUbic(Integer ubicacionId) throws LocationNotFoundException {
+        List<UsuarioResponse> usuariosResponse = new ArrayList<>();
+        Ubicacion ubicacion = ubicacionRepository.findById(ubicacionId).orElse(null);
+        List<Usuario> usuario = usuarioRepository.findByUbicacionId(ubicacion);
+
+        for (Usuario u : usuario) {
+            UsuarioResponse usuarioResponse = new UsuarioResponse();
+            BeanUtils.copyProperties(u, usuarioResponse);
+            usuarioResponse.setDelete_flag(u.getDeleteFlag());
+            usuarioResponse.setSede(u.getUbicacionId().getArea().getSede().getNombre());
+            usuarioResponse.setUbicacion(u.getUbicacionId().getNombre());
+            usuarioResponse.setRol(u.getRolId().getNombre());
+            usuarioResponse.setTipoDocumento(u.getTipoDocumento().getNombre());
+            usuarioResponse.setArea(u.getUbicacionId().getArea().getNombre());
+            usuariosResponse.add(usuarioResponse);
+        }
+        return usuariosResponse;
     }
 }
