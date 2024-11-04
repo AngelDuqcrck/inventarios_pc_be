@@ -72,8 +72,6 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-
-
     /**
      * Crea una nueva ubicación en el sistema a partir de los datos proporcionados.
      * 
@@ -106,9 +104,10 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         List<Ubicacion> ubicacionesExistentes = ubicacionRepository.findByArea(areaPC);
 
         for (Ubicacion ubicacionExistente : ubicacionesExistentes) {
-            if(ubicacionExistente.getNombre().equalsIgnoreCase(ubicacionDTO.getNombre())){
-                throw new SelectNotAllowedException(String.format("YA EXISTE UNA UBICACIÓN CON EL NOMBRE '%s' EN EL ÁREA '%s'.",
-                    ubicacionDTO.getNombre().toUpperCase(), areaPC.getNombre().toUpperCase()));
+            if (ubicacionExistente.getNombre().equalsIgnoreCase(ubicacionDTO.getNombre())) {
+                throw new SelectNotAllowedException(
+                        String.format("YA EXISTE UNA UBICACIÓN CON EL NOMBRE '%s' EN EL ÁREA '%s'.",
+                                ubicacionDTO.getNombre().toUpperCase(), areaPC.getNombre().toUpperCase()));
             }
         }
         ubicacion.setArea(areaPC);
@@ -152,9 +151,9 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         }
 
         if (ubicacion.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA UBICACION").toUpperCase());
+            throw new UpdateNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA UBICACION").toUpperCase());
         }
-        BeanUtils.copyProperties(ubicacionDTO, ubicacion);
 
         if (ubicacionDTO.getArea() != null) {
             AreaPC areaPC = areaRepository.findById(ubicacionDTO.getArea()).orElse(null);
@@ -169,6 +168,19 @@ public class UbicacionServiceImplementation implements IUbicacionService {
             ubicacion.setArea(areaPC);
         }
 
+        if (ubicacionDTO.getNombre() != null) {
+            List<Ubicacion> ubicacionesExistentes = ubicacionRepository.findByArea(ubicacion.getArea());
+
+            for (Ubicacion ubicacionExistente : ubicacionesExistentes) {
+                if (ubicacionExistente.getNombre().equalsIgnoreCase(ubicacionDTO.getNombre())) {
+                    throw new SelectNotAllowedException(String.format(
+                            "YA EXISTE UNA UBICACIÓN CON EL NOMBRE '%s' EN EL ÁREA '%s'.",
+                            ubicacionDTO.getNombre().toUpperCase(), ubicacion.getArea().getNombre().toUpperCase()));
+                }
+            }
+        }
+
+        BeanUtils.copyProperties(ubicacionDTO, ubicacion);
         Ubicacion ubicacionActualizada = ubicacionRepository.save(ubicacion);
         UbicacionDTO ubicacionActualizadaDTO = new UbicacionDTO();
         BeanUtils.copyProperties(ubicacionActualizada, ubicacionActualizadaDTO);
@@ -186,7 +198,8 @@ public class UbicacionServiceImplementation implements IUbicacionService {
      *                                   eliminada.
      */
     @Override
-    public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException, StateNotFoundException{
+    public void eliminarUbicacion(Integer id)
+            throws LocationNotFoundException, DeleteNotAllowedException, StateNotFoundException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 
         if (ubicacion == null) {
@@ -198,74 +211,75 @@ public class UbicacionServiceImplementation implements IUbicacionService {
 
         }
 
-        if(ubicacion.getId() == 4){
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR LA UBICACION "+ubicacion.getNombre()).toUpperCase());
+        if (ubicacion.getId() == 4) {
+            throw new DeleteNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "ELIMINAR LA UBICACION " + ubicacion.getNombre()).toUpperCase());
         }
 
         List<Usuario> usuarios = usuarioRepository.findByUbicacionId(ubicacion);
         List<Computador> computadors = computadorRepository.findByUbicacion(ubicacion);
-        List<CambioUbicacionPc> cambioUbicacionPcs = cambioUbicacionPcRepository.findByUbicacion(ubicacion);    
+        List<CambioUbicacionPc> cambioUbicacionPcs = cambioUbicacionPcRepository.findByUbicacion(ubicacion);
 
-        if(usuarios.isEmpty() && computadors.isEmpty() && cambioUbicacionPcs.isEmpty()){
+        if (usuarios.isEmpty() && computadors.isEmpty() && cambioUbicacionPcs.isEmpty()) {
             ubicacionRepository.delete(ubicacion);
-        }else{
+        } else {
             ubicacion.setDeleteFlag(true);
             ubicacionRepository.save(ubicacion);
 
             for (Computador computador : computadors) {
                 Ubicacion antiguaUbicacion = computador.getUbicacion();
 
-                        EstadoDispositivo estadoComputador = estadoDispositivoRepository.findById(4).orElse(null); // Estado
-                                                                                                                   // Disponible
-                        if (estadoComputador == null) {
-                            throw new StateNotFoundException(String
-                                    .format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE NO FUE ENCONTRADO").toUpperCase());
-                        }
+                EstadoDispositivo estadoComputador = estadoDispositivoRepository.findById(4).orElse(null); // Estado
+                                                                                                           // Disponible
+                if (estadoComputador == null) {
+                    throw new StateNotFoundException(String
+                            .format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE NO FUE ENCONTRADO").toUpperCase());
+                }
 
-                        computador.setEstadoDispositivo(estadoComputador);
+                computador.setEstadoDispositivo(estadoComputador);
 
-                        Ubicacion bodegaSistemas = ubicacionRepository.findById(4).orElse(null);
+                Ubicacion bodegaSistemas = ubicacionRepository.findById(4).orElse(null);
 
-                        if (bodegaSistemas == null) {
-                            throw new StateNotFoundException(String
-                                    .format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
-                        }
+                if (bodegaSistemas == null) {
+                    throw new StateNotFoundException(String
+                            .format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
+                }
 
-                        CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
-                        cambioUbicacionPc.setComputador(computador);
-                        cambioUbicacionPc.setUbicacion(bodegaSistemas);
-                        cambioUbicacionPc.setFechaIngreso(new Date());
+                CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
+                cambioUbicacionPc.setComputador(computador);
+                cambioUbicacionPc.setUbicacion(bodegaSistemas);
+                cambioUbicacionPc.setFechaIngreso(new Date());
 
-                        CambioUbicacionPc ultimaUbicacionPc = cambioUbicacionPcRepository
-                                .findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, antiguaUbicacion);
-                        if (ultimaUbicacionPc != null) {
-                            ultimaUbicacionPc.setFechaCambio(new Date());
-                            cambioUbicacionPcRepository.save(ultimaUbicacionPc);
+                CambioUbicacionPc ultimaUbicacionPc = cambioUbicacionPcRepository
+                        .findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, antiguaUbicacion);
+                if (ultimaUbicacionPc != null) {
+                    ultimaUbicacionPc.setFechaCambio(new Date());
+                    cambioUbicacionPcRepository.save(ultimaUbicacionPc);
 
-                        }
+                }
 
-                        cambioUbicacionPcRepository.save(cambioUbicacionPc);
-                        
-                        computador.setUbicacion(bodegaSistemas);
-                        computador.setResponsable(null);
+                cambioUbicacionPcRepository.save(cambioUbicacionPc);
 
-                        List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository
-                                .findByComputadorAndFechaDesvinculacionIsNull(computador);
+                computador.setUbicacion(bodegaSistemas);
+                computador.setResponsable(null);
 
-                        for (HistorialDispositivo historialDispositivo : historialDispositivos) {
+                List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository
+                        .findByComputadorAndFechaDesvinculacionIsNull(computador);
 
-                            DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
-                            if (dispositivoPC.getTipoDispositivo().getId() != 8) {
-                                historialDispositivo.setFechaDesvinculacion(new Date());
-                                historialDispositivoRepository.save(historialDispositivo);
+                for (HistorialDispositivo historialDispositivo : historialDispositivos) {
 
-                            }
+                    DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
+                    if (dispositivoPC.getTipoDispositivo().getId() != 8) {
+                        historialDispositivo.setFechaDesvinculacion(new Date());
+                        historialDispositivoRepository.save(historialDispositivo);
 
-                            dispositivoPC.setEstadoDispositivo(estadoComputador);
-                            dispositivoRepository.save(dispositivoPC);
-                        }
+                    }
 
-                        computadorRepository.save(computador);
+                    dispositivoPC.setEstadoDispositivo(estadoComputador);
+                    dispositivoRepository.save(dispositivoPC);
+                }
+
+                computadorRepository.save(computador);
             }
         }
     }
@@ -283,7 +297,8 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     }
 
     @Override
-    public List<Ubicacion> listarUbicacionesPorArea(Integer areaId) throws LocationNotFoundException, SelectNotAllowedException {
+    public List<Ubicacion> listarUbicacionesPorArea(Integer areaId)
+            throws LocationNotFoundException, SelectNotAllowedException {
         AreaPC areaPC = areaRepository.findById(areaId).orElse(null);
 
         if (areaPC == null) {
@@ -296,7 +311,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
 
         List<Ubicacion> ubicaciones = ubicacionRepository.findByArea(areaPC);
 
-        if(ubicaciones.isEmpty()){
+        if (ubicaciones.isEmpty()) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
         }
         return ubicaciones;
@@ -311,7 +326,8 @@ public class UbicacionServiceImplementation implements IUbicacionService {
 
         }
         if (ubicacion.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA UBICACION").toUpperCase());
+            throw new ActivateNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA UBICACION").toUpperCase());
 
         }
         ubicacion.setDeleteFlag(false);
