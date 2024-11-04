@@ -18,6 +18,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComputadorService;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialUbicacionesXPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareXPcResponse;
@@ -118,5 +119,11 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(historialResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/ubicacion-computador/{computadorId}")
+    public ResponseEntity<HistorialUbicacionesXPcResponse> listarUbicacionesXPc(@PathVariable Integer computadorId)throws ComputerNotFoundException{
+        HistorialUbicacionesXPcResponse historialUbicacionesXPcResponse = historialComputadorService.listarHistorialUbicacionesXPc(computadorId);
 
+        return new ResponseEntity<>(historialUbicacionesXPcResponse, HttpStatus.OK);
+    }
 }

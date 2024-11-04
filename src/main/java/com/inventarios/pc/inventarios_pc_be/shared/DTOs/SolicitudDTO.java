@@ -15,8 +15,6 @@ public class SolicitudDTO {
     
     private String descripcion;
     
-    
-    private String titulo;
 
     private Date fechaCreacion;
 

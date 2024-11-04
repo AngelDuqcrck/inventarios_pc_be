@@ -725,8 +725,10 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         BeanUtils.copyProperties(solicitudDTO, solicitudes);
         solicitudes.setUsuario(usuario);
         solicitudes.setTipoSolicitudes(tipoSolicitud);
+        solicitudes.setTitulo(tipoSolicitud.getNombre());
         solicitudes.setEstadoSolicitudes(estadoSolicitudes);
         solicitudes.setFechaCreacion(new Date());
+        solicitudes.setTitulo(tipoSolicitud.getNombre());
         Computador computador = computadorRepository.findById(solicitudDTO.getComputador()).orElse(null);
         if (computador == null) {
             throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());

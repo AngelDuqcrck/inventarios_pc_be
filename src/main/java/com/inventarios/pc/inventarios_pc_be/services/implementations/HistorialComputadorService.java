@@ -5,6 +5,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.entities.CambioUbicacionPc;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
@@ -16,6 +17,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.repositories.CambioUbicacionPcRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.ComputadorRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
@@ -29,6 +31,8 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosVincula
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialDispositivosResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialUbicaciones;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialUbicacionesXPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareVinculadosResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareXPcResponse;
@@ -44,6 +48,8 @@ public class HistorialComputadorService implements IHistorialComputadorService {
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
 
+    @Autowired
+    private CambioUbicacionPcRepository cambioUbicacionPcRepository;
 
     @Autowired
     private TipoDispositivoRepository tipoDispositivoRepository;
@@ -79,7 +85,8 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                 && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTE A DISPONIBLE Y EN USO").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL COMPUTADOR " + computador.getNombre()
+                            + " PORQUE TIENE UN ESTADO DIFERENTE A DISPONIBLE Y EN USO").toUpperCase());
         }
 
         HistorialDispositivo historialDispositivo = new HistorialDispositivo();
@@ -99,13 +106,14 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         if (existeDispositivoMismoTipo) {
             throw new SelectNotAllowedException(
                     String.format(IS_ALREADY_USE,
-                            dispositivoPC.getTipoDispositivo().getNombre()+" YA ESTA EN USO EN ESTE COMPUTADOR")
+                            dispositivoPC.getTipoDispositivo().getNombre() + " YA ESTA EN USO EN ESTE COMPUTADOR")
                             .toUpperCase());
         }
 
         if (!dispositivoPC.getEstadoDispositivo().getNombre().equals("Disponible")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL DISPOSITIVO "+dispositivoPC.getNombre()+" PORQUE NO TIENE ESTADO DISPONIBLE").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL DISPOSITIVO " + dispositivoPC.getNombre()
+                            + " PORQUE NO TIENE ESTADO DISPONIBLE").toUpperCase());
         }
 
         historialDispositivo.setDispositivoPC(dispositivoPC);
@@ -149,7 +157,8 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         if (historialDispositivo == null) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_FOUND, "EL DISPOSITIVO "+dispositivoPC.getNombre()+" VINCULADO AL COMPUTADOR "+computador.getNombre()).toUpperCase());
+                    String.format(IS_NOT_FOUND, "EL DISPOSITIVO " + dispositivoPC.getNombre()
+                            + " VINCULADO AL COMPUTADOR " + computador.getNombre()).toUpperCase());
         }
 
         historialDispositivo.setFechaDesvinculacion(new Date());
@@ -179,7 +188,8 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                 && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTA A EN USO Y DISPONIBLE").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL COMPUTADOR " + computador.getNombre()
+                            + " PORQUE TIENE UN ESTADO DIFERENTA A EN USO Y DISPONIBLE").toUpperCase());
         }
 
         SoftwarePC softwarePC = softwarePcRepository.findById(softwareId).orElse(null);
@@ -190,14 +200,18 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         if (softwarePC.getDeleteFlag() == true) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL SOFTWARE "+softwarePC.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
+                    String.format(IS_NOT_ALLOWED,
+                            "SELECCIONAR EL SOFTWARE " + softwarePC.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADO")
+                            .toUpperCase());
         }
 
         boolean softwareYaVinculado = softwareCsaRepository
                 .existsByComputadorAndSoftwarePCAndFechaDesvinculacionIsNull(computador, softwarePC);
         if (softwareYaVinculado) {
             throw new SelectNotAllowedException(
-                    String.format(IS_ALREADY_USE, "EN EL COMPUTADOR "+computador.getNombre()+", EL SOFTWARE "+softwarePC.getNombre()).toUpperCase());
+                    String.format(IS_ALREADY_USE,
+                            "EN EL COMPUTADOR " + computador.getNombre() + ", EL SOFTWARE " + softwarePC.getNombre())
+                            .toUpperCase());
         }
 
         SoftwareCSA softwareCSA = new SoftwareCSA();
@@ -237,7 +251,10 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                 .findByComputadorAndSoftwarePCAndFechaDesvinculacionIsNull(computador, softwarePC);
         if (softwareCSA == null) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_FOUND, "EN EL COMPUTADOR "+computador.getNombre()+" NO SE ENCUENTR ACTUALMENTE VINCULADO EL SOFTWARE "+softwarePC.getNombre()).toUpperCase());
+                    String.format(IS_NOT_FOUND,
+                            "EN EL COMPUTADOR " + computador.getNombre()
+                                    + " NO SE ENCUENTR ACTUALMENTE VINCULADO EL SOFTWARE " + softwarePC.getNombre())
+                            .toUpperCase());
         }
 
         softwareCSA.setFechaDesvinculacion(new Date());
@@ -308,7 +325,6 @@ public class HistorialComputadorService implements IHistorialComputadorService {
             softwareVinculadosResponses.add(softwareResponse);
         }
 
-
         SoftwareXPcResponse softwareXPcResponse = SoftwareXPcResponse.builder()
                 .id(computador.getId())
                 .nombre(computador.getNombre())
@@ -330,15 +346,14 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         BeanUtils.copyProperties(computador, hojadeVidaPc);
         hojadeVidaPc.setTipoPC(computador.getTipoPC().getNombre());
-        if(computador.getResponsable()!= null){
+        if (computador.getResponsable() != null) {
             hojadeVidaPc.setResponsable(
-                computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
-                        + " " + computador.getResponsable().getPrimerApellido() + " "
-                        + computador.getResponsable().getSegundoApellido());
+                    computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
+                            + " " + computador.getResponsable().getPrimerApellido() + " "
+                            + computador.getResponsable().getSegundoApellido());
+        } else {
+            hojadeVidaPc.setResponsable(null);
         }
-      else{
-        hojadeVidaPc.setResponsable(null);
-      }
         hojadeVidaPc.setUbicacion(computador.getUbicacion().getNombre());
         hojadeVidaPc.setSede(computador.getUbicacion().getArea().getSede().getNombre());
         hojadeVidaPc.setArea(computador.getUbicacion().getArea().getNombre());
@@ -392,6 +407,40 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         hojadeVidaPc.setSoftwareVinculados(softwareVinculadosList);
 
         return hojadeVidaPc;
+    }
+
+    @Override
+    public HistorialUbicacionesXPcResponse listarHistorialUbicacionesXPc(Integer computadorId)
+            throws ComputerNotFoundException {
+        Computador computador = computadorRepository.findById(computadorId).orElse(null);
+        if (computador == null) {
+            throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
+        }
+
+        List<CambioUbicacionPc> cambioUbicacionPcs = cambioUbicacionPcRepository.findByComputador(computador);
+
+        List<HistorialUbicaciones> historialUbicaciones = new ArrayList<>();
+
+        for (CambioUbicacionPc cambioUbicacionPc : cambioUbicacionPcs) {
+            HistorialUbicaciones historialUbicacion = HistorialUbicaciones.builder()
+                    .id(cambioUbicacionPc.getId())
+                    .nombre(cambioUbicacionPc.getUbicacion().getNombre())
+                    .sede(cambioUbicacionPc.getUbicacion().getArea().getSede().getNombre())
+                    .area(cambioUbicacionPc.getUbicacion().getArea().getNombre())
+                    .fechaIngreso(cambioUbicacionPc.getFechaIngreso())
+                    .fechaCambio(cambioUbicacionPc.getFechaCambio())
+                    .build();
+
+            historialUbicaciones.add(historialUbicacion);
+        }
+
+        HistorialUbicacionesXPcResponse historialUbicacionesXPcResponse = HistorialUbicacionesXPcResponse.builder()
+                .id(computador.getId())
+                .nombre(computador.getNombre())
+                .historialUbicaciones(historialUbicaciones)
+                .build();
+
+        return historialUbicacionesXPcResponse;
     }
 
     @Override

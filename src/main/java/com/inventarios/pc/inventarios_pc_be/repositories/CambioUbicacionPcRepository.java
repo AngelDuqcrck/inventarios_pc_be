@@ -17,4 +17,6 @@ public interface CambioUbicacionPcRepository extends JpaRepository<CambioUbicaci
     CambioUbicacionPc findFirstByComputadorAndUbicacionAndFechaCambioIsNull(Computador computador, Ubicacion ubicacion);
 
     List<CambioUbicacionPc> findByUbicacion(Ubicacion ubicacion);
+
+    List<CambioUbicacionPc> findByComputador(Computador computador);
 }
