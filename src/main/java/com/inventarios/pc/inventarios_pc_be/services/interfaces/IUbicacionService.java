@@ -8,6 +8,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedExcepti
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UbicacionDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.UbicacionResponse;
@@ -69,7 +70,7 @@ public interface IUbicacionService {
      * @throws DeleteNotAllowedException Si la ubicación ya está marcada como
      *                                   eliminada.
      */
-    public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException;
+    public void eliminarUbicacion(Integer id) throws LocationNotFoundException, DeleteNotAllowedException, StateNotFoundException;
 
     // Lista la informacion de una ubicacion por su id
     public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException;

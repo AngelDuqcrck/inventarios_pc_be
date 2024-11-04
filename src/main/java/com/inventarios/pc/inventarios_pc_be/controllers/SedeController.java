@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.SedeServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISedeService;
@@ -108,7 +109,7 @@ public class SedeController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/eliminar/{sedeId}")
-    public ResponseEntity<HttpResponse> eliminarSede(@PathVariable Integer sedeId) throws LocationNotFoundException, DeleteNotAllowedException {
+    public ResponseEntity<HttpResponse> eliminarSede(@PathVariable Integer sedeId) throws StateNotFoundException ,LocationNotFoundException, DeleteNotAllowedException {
         sedeServiceImplementation.eliminarSede(sedeId);
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),

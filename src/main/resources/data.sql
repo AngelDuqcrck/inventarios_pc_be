@@ -56,7 +56,10 @@ CREATE TABLE IF NOT EXISTS areas_PC
 INSERT IGNORE INTO areas_PC (id, sede_id, nombre, descripcion, delete_flag) VALUES
     (1, 1, 'Urgencias', 'Zona urgente', 0),
     (2, 1, 'Talento Humano', 'Zona empleados', 0),
-    (3, 2, 'Gerencia', 'Zona Jefe', 0);
+    (3, 2, 'Gerencia', 'Zona Jefe', 0),
+    (4, 1, 'Sistemas', 'Zona de Sistemas de la sede principal', 0),
+    (5, 2, 'Sistemas SC', 'Zona de Sistemas de la sede Colsag', 0),
+    (6, 3, 'Sistemas SCE', 'Zona de Sistemas del Centro de Especialistas', 0);
 
 -- Creamos la tabla ubicaciones si no existe
 CREATE TABLE IF NOT EXISTS ubicaciones
@@ -74,7 +77,10 @@ CREATE TABLE IF NOT EXISTS ubicaciones
 INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion, delete_flag) VALUES
     (1,1, 'Consultorio 101', 'Consultorios el primero', 0),
     (2,2, 'Tesoreria', 'Finanzas csa', 0),
-    (2,3, 'Seguridad y Salud en el Trabajo', 'SGST', 0);
+    (2,3, 'Seguridad y Salud en el Trabajo', 'SGST', 0),
+    (4, 4, 'Bodega de Sistemas', 'Bodega de Sistemas de la sede principal', 0),
+    (5, 5, 'Bodega de Sistemas SC', 'Bodega de Sistemas de la sede Colsag', 0),
+    (6, 6, 'Bodega de Sistemas SCE', 'Bodega de Sistemas del Centro de Especialistas', 0);
     
 
 -- Creamos la tabla tipo_documento si no existe

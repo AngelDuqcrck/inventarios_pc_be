@@ -22,6 +22,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedExcepti
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
@@ -108,7 +109,7 @@ public class AreaController {
         @PreAuthorize("hasAuthority('ADMIN')")
         @DeleteMapping("/eliminar/{areaId}")
         public ResponseEntity<HttpResponse> eliminarArea(@PathVariable Integer areaId)
-                        throws LocationNotFoundException, DeleteNotAllowedException {
+                        throws LocationNotFoundException, DeleteNotAllowedException, StateNotFoundException {
                 areaServiceImplementation.eliminarArea(areaId);
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),

@@ -25,6 +25,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IComputadorService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComputadorDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.UbicarPcRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
@@ -55,6 +56,19 @@ public class ComputadorController {
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                                                 "Equipo PC creado exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/ubicar")
+        public ResponseEntity<HttpResponse> ubicarComputador(@RequestBody UbicarPcRequest ubicarPcRequest)
+                        throws ComputerNotFoundException, SelectNotAllowedException,
+                        UserNotFoundException, LocationNotFoundException, StateNotFoundException {
+                computadorService.ubicarPc(ubicarPcRequest);
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Equipo PC ubicado exitosamente"),
                                 HttpStatus.OK);
         }
 

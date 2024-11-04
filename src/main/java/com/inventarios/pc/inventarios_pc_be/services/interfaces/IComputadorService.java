@@ -17,6 +17,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComputadorDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.UbicarPcRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
 
@@ -47,5 +48,8 @@ public interface IComputadorService {
 
      public List<ComputadoresResponse> listarComputadoresByUsuario(Integer usuarioId) throws UserNotFoundException; 
      public List<ComputadoresResponse> listarComputadoresByEmail(String usuarioEmail) throws UserNotFoundException;       
+
+      public void ubicarPc(UbicarPcRequest ubicarPcRequest) throws ComputerNotFoundException, SelectNotAllowedException,
+            UserNotFoundException, LocationNotFoundException, StateNotFoundException ;
 
 }

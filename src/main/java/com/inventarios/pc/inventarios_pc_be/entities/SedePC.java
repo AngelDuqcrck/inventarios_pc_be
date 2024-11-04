@@ -28,7 +28,7 @@ public class SedePC {
     private Integer id;
 
     @NotEmpty
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nombre;
 
     @NotEmpty

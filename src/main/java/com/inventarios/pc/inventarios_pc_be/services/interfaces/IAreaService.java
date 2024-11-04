@@ -7,6 +7,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedExcepti
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
@@ -70,7 +71,7 @@ public interface IAreaService {
      * @throws DeleteNotAllowedException Si la eliminación del área no está
      *                                   permitida.
      */
-    public void eliminarArea(Integer id) throws LocationNotFoundException, DeleteNotAllowedException;
+    public void eliminarArea(Integer id) throws LocationNotFoundException, DeleteNotAllowedException, StateNotFoundException;
 
     public void activarArea(Integer id) throws LocationNotFoundException, ActivateNotAllowedException;
 }

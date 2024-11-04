@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 /*
@@ -35,7 +36,9 @@ public class DispositivoPC {
     @JoinColumn(name = "estado_dispositivo_id")
     private EstadoDispositivo estadoDispositivo;
 
-    
+    @Column(nullable = false, unique = true)
+    @NotEmpty
+    @Size(max = 15, message = "La placa debe tener como máximo 15 caracteres")
     private String placa;
 
     @ManyToOne
