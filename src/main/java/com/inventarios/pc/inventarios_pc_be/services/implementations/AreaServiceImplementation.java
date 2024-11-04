@@ -187,6 +187,15 @@ public class AreaServiceImplementation implements IAreaService {
             areaPC.setSede(sedePC);
         }
 
+        if(areaDTO.getNombre()!= null){
+            List<AreaPC> areasExistentes = areaRepository.findBySede(areaPC.getSede());
+            for (AreaPC areaExistente : areasExistentes) {
+                if (areaExistente.getNombre().equalsIgnoreCase(areaDTO.getNombre())) {
+                    throw new SelectNotAllowedException(String.format("YA EXISTE UN ÁREA CON EL NOMBRE '%s' EN LA SEDE '%s'.",
+                        areaDTO.getNombre().toUpperCase(), areaPC.getSede().getNombre().toUpperCase()));
+                }
+            }
+        }
         AreaPC areaActualizada = areaRepository.save(areaPC);
         AreaDTO areaActualizadaDTO = new AreaDTO();
         BeanUtils.copyProperties(areaActualizada, areaActualizadaDTO);

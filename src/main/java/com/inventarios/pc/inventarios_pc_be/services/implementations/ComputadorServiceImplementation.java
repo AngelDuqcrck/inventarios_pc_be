@@ -458,10 +458,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
         for (Computador computador : computadores) {
             ComputadoresResponse computadorResponse = new ComputadoresResponse();
             BeanUtils.copyProperties(computador, computadorResponse);
-            computadorResponse.setResponsable(
+            if(computador.getResponsable()!= null){
+                computadorResponse.setResponsable(
                     computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
                             + " " + computador.getResponsable().getPrimerApellido() + " "
                             + computador.getResponsable().getSegundoApellido());
+            }
+          else{
+            computadorResponse.setResponsable(null);
+          }
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
