@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 //Esta es la entidad que crea en la base de datos la tabla computador, aqui se almacena toda la informacion de un equipo de computo
@@ -64,10 +65,12 @@ public class Computador {
     @JoinColumn(name = "tipo_ram_id")
     private TipoAlmacenamientoRam tipoRam;
 
-    @NotEmpty
     @Column(nullable = false, unique = true)
+    @NotEmpty
+    @Size(max = 15, message = "La placa debe tener como máximo 15 caracteres")
     private String placa;
 
+    @Column(unique = true)
     private String ipAsignada;
 
     @ManyToOne

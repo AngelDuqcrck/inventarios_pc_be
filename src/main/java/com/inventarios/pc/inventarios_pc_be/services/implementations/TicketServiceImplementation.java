@@ -358,7 +358,7 @@ public class TicketServiceImplementation implements ITicketService {
 
     }
 
-    private void crearCambioEstado(Tickets tickets, EstadoTickets estadoTickets) {
+    public void crearCambioEstado(Tickets tickets, EstadoTickets estadoTickets) {
         CambioEstadoTickets cambioEstadoTickets = new CambioEstadoTickets();
         cambioEstadoTickets.setTickets(tickets);
         cambioEstadoTickets.setEstadoTickets(estadoTickets);

@@ -24,5 +24,6 @@ public interface HistorialDispositivoRepository extends JpaRepository<HistorialD
 
     HistorialDispositivo findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(Computador computador, DispositivoPC dispositivoPC);
 
-
+    List<HistorialDispositivo> findByComputadorAndFechaDesvinculacionIsNull(Computador computador);
+    
 }
