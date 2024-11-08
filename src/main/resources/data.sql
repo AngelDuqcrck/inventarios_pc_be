@@ -198,16 +198,6 @@ CREATE TABLE IF NOT EXISTS tipo_almacenamiento_ram
     UNIQUE KEY (nombre)
 );
 
--- Insertamos los tipos de almacenamiento y RAM si no existen en el sistema
-INSERT IGNORE INTO tipo_almacenamiento_ram (id, nombre, delete_flag) VALUES
-    (1, "HDD", 0),
-    (2, "SSD", 0),
-    (3, "NVMe", 0),
-    (4, "RAM DDR3", 0),
-    (5, "RAM DDR4", 0),
-    (6, "RAM DDR5", 0);
-
-
 
 
 -- Creamos la tabla tipo_solicitudes si no existe
@@ -223,7 +213,9 @@ CREATE TABLE IF NOT EXISTS tipo_solicitudes
 -- Insertamos los tipos de solicitudes si no existen en el sistema
 INSERT IGNORE INTO tipo_solicitudes (id, nombre, delete_flag) VALUES
     (1, 'Reparacion', 0),
-    (2, 'Cambio de ubicacion', 0);
+    (2, 'Mantenimiento Correctivo', 0),
+    (3, 'Mantenimiento Preventivo', 0),
+    (4, 'General', 0);
 
 -- Creamos la tabla estado_solicitudes si no existe
 CREATE TABLE IF NOT EXISTS estado_solicitudes
@@ -256,7 +248,8 @@ CREATE TABLE IF NOT EXISTS estado_tickets (
 INSERT IGNORE INTO estado_tickets (id, nombre, delete_flag) VALUES
     (1, 'En Proceso', 0),
     (2, 'Finalizado', 0),
-    (3, 'Cancelado', 0);
+    (3, 'Cancelado', 0),
+    (4, 'Reasignado', 0);
 
 -- Creamos la tabla marcas si no existe
 CREATE TABLE IF NOT EXISTS marcas (

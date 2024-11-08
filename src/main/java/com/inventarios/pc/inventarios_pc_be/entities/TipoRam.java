@@ -13,16 +13,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//Esta es la entidad que genera la tabla de tipos de dispositivos en la base de datos que es para clasificar los tipos de perifericos que puede tener conectado un equipo
 @Entity
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Table(name = "tipo_dispositivos")
-public class TipoDispositivo {
-
-    @Id
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "tipo_ram")
+public class TipoRam {
+         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 

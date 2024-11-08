@@ -26,4 +26,6 @@ public class HistorialDispositivo {
     private Date fechaCambio;
 
     private Date fechaDesvinculacion;
+
+    private String justificacion;
 }

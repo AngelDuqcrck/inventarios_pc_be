@@ -49,7 +49,6 @@ public class DispositivoPC {
     private String serial;
 
     @NotEmpty
-    //@UniqueElements(message = "el nombre del dispositivo  debe ser unico y este nombre ya existe")
     @Column(nullable = false)
     private String nombre;
 }

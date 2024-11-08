@@ -107,7 +107,7 @@ public class TicketController {
         }
 
         @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
-        @PostMapping("/finalizar/{ticketId}")
+        @PostMapping("/finalizar")
         public ResponseEntity<HttpResponse> finalizarTicket(@RequestBody CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
                         throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException {
                 ticketService.cambiarEstadoTickets(cambiarEstadoTicketRequest); //Estado 2 finalizado
@@ -119,7 +119,7 @@ public class TicketController {
         }
 
         @PreAuthorize("hasAuthority('ADMIN')")
-        @PostMapping("/cancelar/{ticketId}")
+        @PostMapping("/cancelar")
         public ResponseEntity<HttpResponse> cancelarTicket(@RequestBody CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
                         throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException {
                 ticketService.cambiarEstadoTickets(cambiarEstadoTicketRequest); //Estado 3 cancelado

@@ -20,10 +20,6 @@ public class Tickets {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty
-    @Column(nullable = false, unique = false)
-    private String nombre;
-
     private Date fechaCierre;
 
     @ManyToOne
