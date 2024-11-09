@@ -10,6 +10,8 @@ public class TipoRamDTO {
     private Integer id;
 
     private String nombre;
+    
+    private String tipoComponente;
 
     private Boolean deleteFlag;
 }

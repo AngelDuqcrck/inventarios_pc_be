@@ -6,6 +6,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ComponenteResponse {
+
+    private Integer id;
     
     private String nombre;
 

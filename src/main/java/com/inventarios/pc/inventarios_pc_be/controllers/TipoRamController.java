@@ -52,6 +52,7 @@ public class TipoRamController {
                 tipoRamService.listarTiposRam().stream().map(tipoRam -> {
                     TipoRamDTO tipoRamDTO = new TipoRamDTO();
                     BeanUtils.copyProperties(tipoRam, tipoRamDTO);
+                    tipoRamDTO.setTipoComponente("Tipo de RAM");
                     return tipoRamDTO;
                 }).collect(Collectors.toList()));
     }

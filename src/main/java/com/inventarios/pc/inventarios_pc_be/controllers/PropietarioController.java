@@ -52,6 +52,7 @@ public class PropietarioController {
             propietarioService.listarPropietarios().stream().map( propietario ->{
                 PropietarioDTO propietarioDTO = new PropietarioDTO();
                 BeanUtils.copyProperties(propietario, propietarioDTO);
+                propietarioDTO.setTipoMisc("PropietarioPC");
                 return propietarioDTO;
             }).collect(Collectors.toList())
         );

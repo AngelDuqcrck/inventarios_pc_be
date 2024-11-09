@@ -15,5 +15,5 @@ public class ComponenteDTO {
 
     private Boolean deleteFlag;
 
-    private TipoComponente tipoComponente;
+    private Integer tipoComponente;
 }

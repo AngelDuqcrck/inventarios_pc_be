@@ -11,5 +11,7 @@ public class TipoAlmacenamientoDTO {
 
     private String nombre;
 
+    private String tipoComponente;
+
     private Boolean deleteFlag;
 }

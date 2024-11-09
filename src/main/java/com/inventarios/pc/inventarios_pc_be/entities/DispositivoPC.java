@@ -48,7 +48,7 @@ public class DispositivoPC {
     
     private String serial;
 
-    @NotEmpty
-    @Column(nullable = false)
+    
+    @Column(nullable = true)
     private String nombre;
 }
