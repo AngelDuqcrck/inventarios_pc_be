@@ -271,4 +271,47 @@ INSERT IGNORE INTO marcas (id, nombre, delete_flag) VALUES
     (7, 'Samsung', 0),
     (8, 'Toshiba', 0);
 
+-- Creamos la tabla tipo_almacenamiento si no existe
+CREATE TABLE IF NOT EXISTS tipo_almacenamiento (
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
 
+-- Insertamos tipos de almacenamiento si no existen en el sistema
+INSERT IGNORE INTO tipo_almacenamiento (id, nombre, delete_flag) VALUES
+    (1, 'SSD', 0),
+    (2, 'HDD', 0),
+    (3, 'NVMe', 0),
+    (4, 'SATA', 0);
+
+-- Creamos la tabla tipo_ram si no existe
+CREATE TABLE IF NOT EXISTS tipo_ram (
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos tipos de RAM si no existen en el sistema
+INSERT IGNORE INTO tipo_ram (id, nombre, delete_flag) VALUES
+    (1, 'DDR3', 0),
+    (2, 'DDR4', 0),
+    (3, 'DDR5', 0),
+    (4, 'LPDDR4', 0);
+
+CREATE TABLE IF NOT EXISTS propietario (
+    id INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    delete_flag BOOLEAN NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY (nombre)
+);
+
+-- Insertamos propietarios si no existen en el sistema
+INSERT IGNORE INTO propietario (id, nombre, delete_flag) VALUES
+    (1, 'OFICANON', 0),
+    (2, 'CSA', 0);
