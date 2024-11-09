@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IUsuarioService;
+import com.inventarios.pc.inventarios_pc_be.shared.DTOs.UsuarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ActualizarUsuarioRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarPasswordRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
@@ -113,15 +114,12 @@ public class UserController {
          */
         @PreAuthorize("hasAuthority('ADMIN')")
         @PutMapping("/actualizar/{usuarioId}")
-        public ResponseEntity<HttpResponse> actualizarUsuario(@PathVariable Integer usuarioId,
+        public ResponseEntity<UsuarioDTO> actualizarUsuario(@PathVariable Integer usuarioId,
                         @RequestBody ActualizarUsuarioRequest actualizarUsuarioRequest)
                         throws SelectNotAllowedException, UpdateNotAllowedException, RolNotFoundException,
                         LocationNotFoundException, DocumentNotFoundException, UserNotFoundException {
-                usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
-                return new ResponseEntity<>(
-                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                                                " Usuario actializado con exito"),
-                                HttpStatus.OK);
+                UsuarioDTO usuarioDTO = usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
+                return new ResponseEntity<>( usuarioDTO, HttpStatus.OK);
         }
 
         /**

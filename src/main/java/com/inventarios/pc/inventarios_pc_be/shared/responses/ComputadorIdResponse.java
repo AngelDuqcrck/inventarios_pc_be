@@ -56,5 +56,7 @@ public class ComputadorIdResponse {
 
     
     private String estadoDispositivo;
+
+    private String propietario;
 }
 

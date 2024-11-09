@@ -8,9 +8,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.parsing.Location;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
@@ -100,7 +103,10 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         if (ubicacion.getDeleteFlag() == true) {
             throw new
 
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA UBICACION "+ubicacion.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
+            SelectNotAllowedException(String
+                    .format(IS_NOT_ALLOWED,
+                            "SELECCIONAR LA UBICACION " + ubicacion.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADA")
+                    .toUpperCase());
         }
 
         if (rol.getDeleteFlag() == true)
@@ -108,7 +114,10 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         {
             throw new
 
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL ROL "+rol.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
+            SelectNotAllowedException(String
+                    .format(IS_NOT_ALLOWED,
+                            "SELECCIONAR EL ROL " + rol.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADO")
+                    .toUpperCase());
         }
 
         usuario.setRolId(rol);
@@ -280,7 +289,8 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
 
         if (usuario.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
+            throw new UpdateNotAllowedException(String
+                    .format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
 
         Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
@@ -299,17 +309,19 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
 
         if (ubicacion.getDeleteFlag() == true) {
-            throw new
-
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA UBICACION "+ubicacion.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
+            throw new SelectNotAllowedException(String
+                    .format(IS_NOT_ALLOWED,
+                            "SELECCIONAR LA UBICACION " + ubicacion.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADA")
+                    .toUpperCase());
         }
 
         if (rol.getDeleteFlag() == true)
 
         {
-            throw new
-
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL ROL "+rol.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
+            throw new SelectNotAllowedException(String
+                    .format(IS_NOT_ALLOWED,
+                            "SELECCIONAR EL ROL " + rol.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADA")
+                    .toUpperCase());
         }
 
         usuario.setRolId(rol);
@@ -318,8 +330,16 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         BeanUtils.copyProperties(usuarioDTO, usuario);
 
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                usuarioActualizado.getCorreo(), usuarioActualizado.getPassword(),
+                List.of(new SimpleGrantedAuthority(rol.getNombre())));
+        String nuevoToken = jwtGenerador.generarToken(authentication);
+
         UsuarioDTO usuarioActualizadoDTO = new UsuarioDTO();
         BeanUtils.copyProperties(usuarioActualizado, usuarioActualizadoDTO);
+        usuarioActualizadoDTO.setToken(nuevoToken);
+
         return usuarioActualizadoDTO;
 
     }
@@ -342,7 +362,8 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
 
         if (usuario.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
+            throw new DeleteNotAllowedException(String
+                    .format(IS_NOT_ALLOWED, "DESACTIVAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
 
         usuario.setDeleteFlag(true);
@@ -358,7 +379,8 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         }
 
         if (usuario.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE USUARIO PORQUE YA SE ENCUENTRA ACTIVADO").toUpperCase());
+            throw new ActivateNotAllowedException(String
+                    .format(IS_NOT_ALLOWED, "ACTIVAR ESTE USUARIO PORQUE YA SE ENCUENTRA ACTIVADO").toUpperCase());
         }
 
         usuario.setDeleteFlag(false);

@@ -33,4 +33,6 @@ public class ActualizarUsuarioRequest {
 
     private Integer ubicacion;
 
+    private String token;
+
 }

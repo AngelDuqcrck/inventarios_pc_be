@@ -53,7 +53,7 @@ public class ComputadorDTO {
 
     private Integer propietario;
 
-    private String justificacion;
+    private String justificacion; //Solo para actualizar un computador
 
     
 }
