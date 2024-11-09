@@ -346,9 +346,9 @@ public class ComputadorServiceImplementation implements IComputadorService {
             throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
-        if (!computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
+        if (!computador.getEstadoDispositivo().getNombre().equals("Disponible") && !computador.getEstadoDispositivo().getNombre().equals("En uso")) {
             throw new SelectNotAllowedException(String
-                    .format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR PORQUE SU ESTADO ES DIFERENTE A DISPONIBLE")
+                    .format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR PORQUE SU ESTADO ES DIFERENTE A DISPONIBLE O EN USO")
                     .toUpperCase());
         }
         Ubicacion ubicacionActual = computador.getUbicacion();

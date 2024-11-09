@@ -70,6 +70,9 @@ public class TicketServiceImplementation implements ITicketService {
     private EstadoDispositivoRepository estadoDispositivoRepository;
 
     @Autowired
+    private ComputadorServiceImplementation computadorService;
+
+    @Autowired
     private TicketRepository ticketRepository;
 
     @Autowired
@@ -290,7 +293,8 @@ public class TicketServiceImplementation implements ITicketService {
     }
 
     public void cambiarEstadoTickets(CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
-            throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException {
+            throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException,
+            TypeRequestNotFoundException {
 
         Tickets ticket = ticketRepository.findById(cambiarEstadoTicketRequest.getTicketId()).orElse(null);
 
@@ -303,7 +307,7 @@ public class TicketServiceImplementation implements ITicketService {
                 .findById(cambiarEstadoTicketRequest.getNuevoEstadoTicketId()).orElse(null);
 
         if (estadoTickets == null) {
-            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DEL TICKET").toUpperCase());
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, " EL ESTADO DEL TICKET").toUpperCase());
         }
 
         Solicitudes solicitud = ticket.getSolicitudes();
@@ -326,62 +330,52 @@ public class TicketServiceImplementation implements ITicketService {
                 Integer tipoSolicitud = solicitud.getTipoSolicitudes().getId();
 
                 switch (tipoSolicitud) {
-                    case 1: //Reparacion
-                        if(cambiarEstadoTicketRequest.getResuelto() == true){
+                    case 1: // Reparacion
+                        if (cambiarEstadoTicketRequest.getResuelto() == true) {
                             DispositivoPC dispositivoPC = solicitud.getDispositivoPC();
 
                             EstadoDispositivo estadoDisponible = estadoDispositivoRepository.findById(4).orElse(null);
 
-                            if(estadoDisponible == null){
+                            if (estadoDisponible == null) {
                                 throw new StateNotFoundException(
-                                    String.format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE").toUpperCase());
+                                        String.format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE").toUpperCase());
                             }
 
                             dispositivoPC.setEstadoDispositivo(estadoDisponible);
                             dispositivoRepository.save(dispositivoPC);
-                            
+
                         }
-                        if(cambiarEstadoTicketRequest.getResuelto() == false){
+                        if (cambiarEstadoTicketRequest.getResuelto() == false) {
                             DispositivoPC dispositivoPC = solicitud.getDispositivoPC();
 
                             EstadoDispositivo estadoBaja = estadoDispositivoRepository.findById(5).orElse(null);
-                            if(estadoBaja == null){
+                            if (estadoBaja == null) {
                                 throw new StateNotFoundException(
-                                    String.format(IS_NOT_FOUND, "EL ESTADO DADO DE BAJA").toUpperCase());
+                                        String.format(IS_NOT_FOUND, "EL ESTADO DADO DE BAJA").toUpperCase());
                             }
                             dispositivoPC.setEstadoDispositivo(estadoBaja);
                             dispositivoRepository.save(dispositivoPC);
                         }
                         break;
 
-                    case 2://Cambio de ubicacion
-                        if(cambiarEstadoTicketRequest.getResuelto() == true){
+                    case 2:// Cambio de ubicacion
+                        if (cambiarEstadoTicketRequest.getResuelto() == true) {
                             Ubicacion ubicacionDestino = solicitud.getUbicacionDestino();
 
                             Computador computador = solicitud.getComputador();
 
                             Ubicacion ubicacionOrigen = solicitud.getUbicacionOrigen();
 
-                            CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
-
-                            cambioUbicacionPc.setComputador(computador);
-                            cambioUbicacionPc.setUbicacion(ubicacionDestino);
-                            cambioUbicacionPc.setFechaIngreso(new Date());
-
-                            CambioUbicacionPc ultimaUbicacionPc = cambioUbicacionPcRepository.findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, ubicacionOrigen);
-                            if (ultimaUbicacionPc != null) {
-                                ultimaUbicacionPc.setFechaCambio(new Date());
-                                cambioUbicacionPcRepository.save(ultimaUbicacionPc);
-    
-                            }
-                            cambioUbicacionPcRepository.save(cambioUbicacionPc);
+                            computadorService.crearCambioUbicacionPc(computador, ubicacionDestino, ubicacionOrigen,
+                                    "Se ha reasignado exitosamente el equipo " + computador.getNombre()
+                                            + " a la ubicacion " + ubicacionDestino.getNombre());
 
                             computador.setUbicacion(ubicacionDestino);
 
                             computadorRepository.save(computador);
 
                         }
-                        if(cambiarEstadoTicketRequest.getResuelto() == false){
+                        if (cambiarEstadoTicketRequest.getResuelto() == false) {
                             Computador computador = solicitud.getComputador();
 
                             Ubicacion ubicacionOrigen = solicitud.getUbicacionOrigen();
@@ -392,7 +386,8 @@ public class TicketServiceImplementation implements ITicketService {
                         }
                         break;
                     default:
-                        throw new TypeRequestNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE SOLICITUD").toUpperCase());
+                        throw new TypeRequestNotFoundException(
+                                String.format(IS_NOT_FOUND, "EL TIPO DE SOLICITUD").toUpperCase());
                 }
                 solicitud.setEstadoSolicitudes(estadoSolicitudFinalizada);
                 solicitud.setFechaCierre(new Date());
@@ -403,7 +398,9 @@ public class TicketServiceImplementation implements ITicketService {
             case 3: // Cancelado
                 if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
                     throw new SelectNotAllowedException(
-                            String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET").toUpperCase());
+                            String.format(IS_NOT_ALLOWED,
+                                    "SELECCIONAR ESTE TICKET PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN PROCESO")
+                                    .toUpperCase());
 
                 }
 
@@ -412,13 +409,23 @@ public class TicketServiceImplementation implements ITicketService {
                 EstadoSolicitudes estadoSolicitudCancelada = estadoSolicitudesRepository.findById(4).orElse(null);
                 if (estadoSolicitudCancelada == null) {
                     throw new StateNotFoundException(
-                            String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+                            String.format(IS_NOT_FOUND, "EL ESTADO DE LA SOLICITUD").toUpperCase());
                 }
 
                 solicitud.setEstadoSolicitudes(estadoSolicitudCancelada);
                 solicitud.setFechaCierre(new Date());
                 solicitudRepository.save(solicitud);
                 break;
+
+            case 4: // Reasignado
+                if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
+                    throw new SelectNotAllowedException(
+                            String.format(IS_NOT_ALLOWED,
+                                    "SELECCIONAR ESTE TICKET PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN PROCESO")
+                                    .toUpperCase());
+
+                }
+
             default:
                 throw new SelectNotAllowedException(
                         String.format(IS_NOT_ALLOWED, "UTILIZAR ESTE ESTADO DE TICKET").toUpperCase());
@@ -429,6 +436,22 @@ public class TicketServiceImplementation implements ITicketService {
         crearCambioEstado(ticket, estadoTickets);
     }
 
+    @Override
+    public void reasignarTicket(Integer ticketId, Integer tecnicoId)throws TicketNotFoundException, RolNotFoundException, UserNotFoundException, SelectNotAllowedException {
+        Tickets ticket = ticketRepository.findById(ticketId).orElse(null);
+
+        if (ticket == null) {
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, " EL TICKET").toUpperCase());
+
+        }
+        if (!ticket.getEstadoTickets().getNombre().equals("Reasignado")) {
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN PROCESO"));
+
+        }
+        asignarTecnicoATicket(tecnicoId, ticket);
+
+        ticketRepository.save(ticket);
+    }
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
     private void asignarTecnicoATicket(Integer tecnicoId, Tickets ticket)
