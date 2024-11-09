@@ -481,8 +481,12 @@ public class ComputadorServiceImplementation implements IComputadorService {
                 computadorResponse.setResponsable(null);
             }
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+            computadorResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
+            computadorResponse.setArea(computador.getUbicacion().getArea().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+            //campo añadido para ubicar al usuario al momento de autocompletar el dropdown usuarios al cambiar de lugar un pc
+            computadorResponse.setPrimerNombreUser(computador.getResponsable().getPrimerNombre());
 
             computadoresResponses.add(computadorResponse);
         }
