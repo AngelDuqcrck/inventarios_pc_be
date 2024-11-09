@@ -24,7 +24,7 @@ public class Rol {
     private Integer id;
     
     @NotEmpty
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     private String nombre;
 
     @NotNull

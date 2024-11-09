@@ -36,4 +36,6 @@ public class CambioUbicacionPc {
     private Date fechaIngreso;
 
     private Date fechaCambio;
+
+    private String justificacion;
 }

@@ -34,4 +34,6 @@ public class CambioEstadoSolicitudes {
     private EstadoSolicitudes estadoSolicitudes;
 
     private Date fechaCambio;
+
+    
 }

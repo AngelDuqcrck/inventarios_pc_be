@@ -1,5 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +24,7 @@ public class TipoDocumento {
     private Integer id;
 
     @NotEmpty
+    @Column(nullable =  false, unique = true)
     private String nombre;
 
     

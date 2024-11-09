@@ -160,7 +160,6 @@ public class TicketServiceImplementation implements ITicketService {
 
             TicketsResponse ticketResponse = new TicketsResponse().builder()
                     .id(ticket.getId())
-                    .nombre(ticket.getNombre())
                     .fechaCierre(ticket.getFechaCierre())
                     .fecha_asig(ticket.getFecha_asig())
                     .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
@@ -219,7 +218,6 @@ public class TicketServiceImplementation implements ITicketService {
 
             TicketsResponse ticketResponse = new TicketsResponse().builder()
                     .id(ticket.getId())
-                    .nombre(ticket.getNombre())
                     .fechaCierre(ticket.getFechaCierre())
                     .fecha_asig(ticket.getFecha_asig())
                     .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())

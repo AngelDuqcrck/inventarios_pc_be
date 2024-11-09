@@ -27,6 +27,7 @@ public class Marca {
     private Integer id;
 
     @NotEmpty
+    @Column(nullable = false, unique = true)
     private String nombre;
 
     @NotNull

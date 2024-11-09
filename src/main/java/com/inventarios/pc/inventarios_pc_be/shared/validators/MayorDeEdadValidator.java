@@ -20,6 +20,6 @@ public class MayorDeEdadValidator implements ConstraintValidator<MayorDeEdad, Da
         
         LocalDate nacimiento = new java.sql.Date(fechaNacimiento.getTime()).toLocalDate();
         LocalDate ahora = LocalDate.now();
-        return Period.between(nacimiento, ahora).getYears() >= 18;
+        return Period.between(nacimiento, ahora).getYears() >= 15;
     }
 }

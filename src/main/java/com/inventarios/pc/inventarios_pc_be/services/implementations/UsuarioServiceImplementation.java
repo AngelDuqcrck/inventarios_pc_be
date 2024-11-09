@@ -32,7 +32,8 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
-    public static final String IS_NOT_ALLOWED = "%s no esta permitido";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
+    public static final String IS_NOT_ALLOWED = "no esta permitido %s ";
     public static final String IS_NOT_VALID = "%s no es valido";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
@@ -79,7 +80,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException,
             SelectNotAllowedException {
         if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
-            throw new EmailExistException(String.format(IS_ALREADY_USE, "CORREO").toUpperCase());
+            throw new EmailExistException(String.format(IS_ALREADY_USE, "EL CORREO").toUpperCase());
         }
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(usuarioDTO, usuario);
@@ -88,18 +89,18 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacion()).orElse(null);
 
         if (rol == null)
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
 
         if (tipoDocumento == null)
-            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DOCUMENTO").toUpperCase());
+            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE DOCUMENTO").toUpperCase());
 
         if (ubicacion == null)
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA UBICACION").toUpperCase());
 
         if (ubicacion.getDeleteFlag() == true) {
             throw new
 
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA UBICACION "+ubicacion.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
         }
 
         if (rol.getDeleteFlag() == true)
@@ -107,7 +108,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         {
             throw new
 
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE ROL").toUpperCase());
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL ROL "+rol.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
 
         usuario.setRolId(rol);
@@ -167,7 +168,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     public void enviarTokenRecuperacion(String correo) throws EmailNotFoundException {
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
         if (usuario == null) {
-            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "CORREO").toUpperCase());
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, " EL CORREO").toUpperCase());
         }
 
         String tokenRecuperacion = jwtGenerador.generarTokenRecuperacion(correo);
@@ -198,12 +199,12 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         String email = jwtGenerador.obtenerCorreoDeJWT(token);
 
         if (email == null) {
-            throw new TokenNotValidException(String.format(IS_NOT_VALID, "TOKEN").toUpperCase());
+            throw new TokenNotValidException(String.format(IS_NOT_VALID, "EL TOKEN").toUpperCase());
         }
 
         Usuario usuario = usuarioRepository.findByCorreo(email).orElse(null);
         if (usuario == null) {
-            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "CORREO").toUpperCase());
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EL CORREO").toUpperCase());
         }
 
         if (!nuevaPassword.equals(nuevaPassword2)) {
@@ -232,12 +233,12 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         String email = jwtGenerador.obtenerCorreoDeJWT(cambiarPasswordRequest.getToken());
 
         if (email == null) {
-            throw new TokenNotValidException(String.format(IS_NOT_VALID, "TOKEN").toUpperCase());
+            throw new TokenNotValidException(String.format(IS_NOT_VALID, "EL TOKEN").toUpperCase());
         }
 
         Usuario usuario = usuarioRepository.findByCorreo(email).orElse(null);
         if (usuario == null) {
-            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "CORREO").toUpperCase());
+            throw new EmailNotFoundException(String.format(IS_NOT_FOUND, "EL CORREO").toUpperCase());
         }
 
         if (!passwordEncoder.matches(cambiarPasswordRequest.getActualPassword(), usuario.getPassword())) {
@@ -275,32 +276,32 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             UpdateNotAllowedException, SelectNotAllowedException {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
         }
 
         if (usuario.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE USUARIO").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
 
         Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
         }
         Ubicacion ubicacion = ubicacionRepository.findById(usuarioDTO.getUbicacion()).orElse(null);
         if (ubicacion == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA UBICACION").toUpperCase());
         }
 
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
 
         if (tipoDocumento == null) {
-            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DOCUMENTO").toUpperCase());
+            throw new DocumentNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE DOCUMENTO").toUpperCase());
         }
 
         if (ubicacion.getDeleteFlag() == true) {
             throw new
 
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR LA UBICACION "+ubicacion.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
         }
 
         if (rol.getDeleteFlag() == true)
@@ -308,7 +309,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         {
             throw new
 
-            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE ROL").toUpperCase());
+            SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL ROL "+rol.getNombre()+" PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
         }
 
         usuario.setRolId(rol);
@@ -337,11 +338,11 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
 
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
         }
 
         if (usuario.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE USUARIO").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
 
         usuario.setDeleteFlag(true);
@@ -353,11 +354,11 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
 
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
         }
 
         if (usuario.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE USUARIO").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE USUARIO PORQUE YA SE ENCUENTRA ACTIVADO").toUpperCase());
         }
 
         usuario.setDeleteFlag(false);
@@ -368,7 +369,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     public UsuarioResponse listarUsuarioById(Integer id) throws UserNotFoundException {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
         }
         UsuarioResponse usuarioResponse = new UsuarioResponse();
         BeanUtils.copyProperties(usuario, usuarioResponse);
