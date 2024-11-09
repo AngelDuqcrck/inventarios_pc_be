@@ -1,6 +1,8 @@
 package com.inventarios.pc.inventarios_pc_be.controllers;
 
 import java.util.List;
+
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,20 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IComputadorService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComputadorDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.UbicarPcRequest;
@@ -49,7 +37,7 @@ public class ComputadorController {
         public ResponseEntity<HttpResponse> crearComputador(@RequestBody ComputadorDTO computadorDTO)
                         throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
                         LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-                        StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException {
+                        StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException, OwnerNotFoundException {
 
                 computadorService.crearComputador(computadorDTO);
 
@@ -126,7 +114,7 @@ public class ComputadorController {
                         LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
                         StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException,
                         ComputerNotFoundException,
-                        ChangeNotAllowedException, TypeDeviceNotFoundException {
+                        ChangeNotAllowedException, TypeDeviceNotFoundException, OwnerNotFoundException {
 
                 computadorService.actualizarComputador(computadorId, computadorDTO);
 

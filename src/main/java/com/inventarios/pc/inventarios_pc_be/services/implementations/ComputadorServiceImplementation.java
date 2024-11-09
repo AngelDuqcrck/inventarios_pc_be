@@ -1,6 +1,7 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import com.inventarios.pc.inventarios_pc_be.entities.TipoPC;
+import com.inventarios.pc.inventarios_pc_be.entities.TipoRam;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.entities.Usuario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
@@ -10,6 +11,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.OwnerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
@@ -32,6 +34,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Marca;
+import com.inventarios.pc.inventarios_pc_be.entities.Propietario;
+import com.inventarios.pc.inventarios_pc_be.entities.TipoAlmacenamiento;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoAlmacenamientoRam;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.repositories.CambioUbicacionPcRepository;
@@ -41,9 +45,12 @@ import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.HistorialDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.MarcaRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.PropietarioRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoAlmacenamientoRamRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.TipoAlmacenamientoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoPcRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.TipoRamRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UbicacionRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IComputadorService;
@@ -62,6 +69,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
     public static final String IS_NOT_VALID = "no es valido %s";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
+
+    @Autowired
+    private PropietarioRepository propietarioRepository;
+
+    @Autowired
+    private TipoRamRepository tipoRamRepository;
+
+    @Autowired
+    private TipoAlmacenamientoRepository tipoAlmacenamientoRepository;
 
     @Autowired
     private HistorialDispositivoRepository historialDispositivoRepository;
@@ -102,7 +118,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
     public ComputadorDTO crearComputador(ComputadorDTO computadorDTO)
             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-            StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException {
+            StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException, OwnerNotFoundException {
         Computador computador = new Computador();
         BeanUtils.copyProperties(computadorDTO, computador);
 
@@ -214,7 +230,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         computador.setEstadoDispositivo(estadoDispositivo);
 
-        TipoAlmacenamientoRam tipoAlmacenamiento = tipoAlmacenamientoRamRepository
+        TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository
                 .findById(computadorDTO.getTipoAlmacenamiento()).orElse(null);
 
         if (tipoAlmacenamiento == null) {
@@ -222,28 +238,43 @@ public class ComputadorServiceImplementation implements IComputadorService {
                     String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO").toUpperCase());
         }
 
-        if (tipoAlmacenamiento.getId() > 3 && tipoAlmacenamiento.getId() <= 6) {
+        if (tipoAlmacenamiento.getDeleteFlag() == true) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_VALID, "ESTA SELECCION ES UN TIPO DE RAM, NO ES UN TIPO DE ALMACENAMIENTO Y ")
+                    String.format(IS_NOT_VALID,
+                            "SELECCIONAR EL TIPO DE ALMACENAMIENTO " + tipoAlmacenamiento.getNombre()
+                                    + " PORQUE SE ENCUENTRA INACTIVO")
                             .toUpperCase());
         }
 
         computador.setTipoAlmacenamiento(tipoAlmacenamiento);
 
-        TipoAlmacenamientoRam tipoRam = tipoAlmacenamientoRamRepository.findById(computadorDTO.getTipoRam())
+        TipoRam tipoRam = tipoRamRepository.findById(computadorDTO.getTipoRam())
                 .orElse(null);
 
         if (tipoRam == null) {
             throw new MiscellaneousNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE RAM").toUpperCase());
         }
 
-        if (tipoRam.getId() > 0 && tipoRam.getId() <= 3) {
+        if (tipoRam.getDeleteFlag() == true) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_VALID, "ESTA SELECCION ES UN TIPO DE ALMACENAMIENTO, NO ES UN TIPO DE RAM Y ")
+                    String.format(IS_NOT_ALLOWED,
+                            "SELECCIONAR EL TIPO DE RAM " + tipoRam.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADA")
                             .toUpperCase());
         }
 
         computador.setTipoRam(tipoRam);
+
+        Propietario propietario = propietarioRepository.findById(computadorDTO.getPropietario()).orElse(null);
+
+        if (propietario == null) {
+            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO").toUpperCase());
+        }
+
+        if (propietario.getDeleteFlag() == true) {
+            throw new SelectNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE PROPIETARIO PORQUE SE ENCUENTRA DESACTIVADO")
+                            .toUpperCase());
+        }
 
         Computador computadorCreado = computadorRepository.save(computador);
         DispositivoPC dispositivoPc = new DispositivoPC();
@@ -287,7 +318,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         historialDispositivoRepository.save(historialDispositivo);
 
-        crearCambioUbicacionPc(computadorCreado, bodegaSistemas, null);
+        crearCambioUbicacionPc(computadorCreado, bodegaSistemas, null, "Se ha registrado el equipo "+computadorCreado.getNombre()+" en la bodega de sistemas");
         ComputadorDTO computadorCreadoDto = new ComputadorDTO();
 
         BeanUtils.copyProperties(computadorCreado, computadorCreadoDto);
@@ -349,7 +380,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         }
 
         computador.setUbicacion(ubicacion);
-        crearCambioUbicacionPc(computador, ubicacion, ubicacionActual);
+        crearCambioUbicacionPc(computador, ubicacion, ubicacionActual, ubicarPcRequest.getJustificacion());
 
         EstadoDispositivo estadoDispositivo = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
         if (estadoDispositivo == null) {
@@ -504,11 +535,10 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorIdResponse.setTipoPC(computador.getTipoPC().getNombre());
         if (computador != null && computador.getResponsable() != null) {
             computadorIdResponse.setResponsable(
-                computador.getResponsable().getPrimerNombre() + " " +
-                computador.getResponsable().getSegundoNombre() + " " +
-                computador.getResponsable().getPrimerApellido() + " " +
-                computador.getResponsable().getSegundoApellido()
-            );
+                    computador.getResponsable().getPrimerNombre() + " " +
+                            computador.getResponsable().getSegundoNombre() + " " +
+                            computador.getResponsable().getPrimerApellido() + " " +
+                            computador.getResponsable().getSegundoApellido());
             computadorIdResponse.setResPrimerNombre(computador.getResponsable().getPrimerNombre());
         } else {
             computadorIdResponse.setResponsable(null);
@@ -621,11 +651,12 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorRepository.save(computador);
     }
 
+    @Override
     public ComputadorDTO actualizarComputador(Integer computadorId, ComputadorDTO computadorDTO)
             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
             StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
-            ChangeNotAllowedException, TypeDeviceNotFoundException {
+            ChangeNotAllowedException, TypeDeviceNotFoundException, OwnerNotFoundException {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
 
@@ -695,7 +726,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
             computador.setUbicacion(ubicacion);
 
-            crearCambioUbicacionPc(computador, ubicacion, ubicacionActual);
+            crearCambioUbicacionPc(computador, ubicacion, ubicacionActual, computadorDTO.getJustificacion());
         } else {
             computador.setUbicacion(computador.getUbicacion());
         }
@@ -800,7 +831,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         }
 
         if (computadorDTO.getTipoAlmacenamiento() != null) {
-            TipoAlmacenamientoRam tipoAlmacenamiento = tipoAlmacenamientoRamRepository
+            TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository
                     .findById(computadorDTO.getTipoAlmacenamiento()).orElse(null);
 
             if (tipoAlmacenamiento == null) {
@@ -808,10 +839,11 @@ public class ComputadorServiceImplementation implements IComputadorService {
                         String.format(IS_NOT_FOUND, " EL TIPO DE ALMACENAMIENTO").toUpperCase());
             }
 
-            if (tipoAlmacenamiento.getId() > 3 && tipoAlmacenamiento.getId() <= 6) {
+            if (tipoAlmacenamiento.getDeleteFlag() == true) {
                 throw new SelectNotAllowedException(
-                        String.format(IS_NOT_VALID,
-                                "ESTA SELECCION NO ES UN TIPO DE ALMACENAMIENTO, ES UN TIPO DE RAM Y ")
+                        String.format(IS_NOT_ALLOWED,
+                                "SELECCIONAR EL TIPO DE ALMACENAMIENTO " + tipoAlmacenamiento.getNombre()
+                                        + " PORQUE SE ENCUENTRA DESACTIVADO")
                                 .toUpperCase());
             }
 
@@ -821,7 +853,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         }
 
         if (computadorDTO.getTipoRam() != null) {
-            TipoAlmacenamientoRam tipoRam = tipoAlmacenamientoRamRepository.findById(computadorDTO.getTipoRam())
+            TipoRam tipoRam = tipoRamRepository.findById(computadorDTO.getTipoRam())
                     .orElse(null);
 
             if (tipoRam == null) {
@@ -829,10 +861,10 @@ public class ComputadorServiceImplementation implements IComputadorService {
                         String.format(IS_NOT_FOUND, "EL TIPO DE MEMORIA RAM").toUpperCase());
             }
 
-            if (tipoRam.getId() > 0 && tipoRam.getId() <= 3) {
+            if (tipoRam.getDeleteFlag()== true) {
                 throw new SelectNotAllowedException(
-                        String.format(IS_NOT_VALID,
-                                "ESTA SELECCION NO ES UN TIPO DE MEMORIA RAM, ES UN TIPO DE ALMACENAMIENTO Y ")
+                        String.format(IS_NOT_ALLOWED,
+                                "SELECCIONAR EL TIPO DE RAM " + tipoRam.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADA")
                                 .toUpperCase());
             }
 
@@ -841,6 +873,23 @@ public class ComputadorServiceImplementation implements IComputadorService {
             computador.setTipoRam(computador.getTipoRam());
         }
 
+        if (computadorDTO.getPropietario() != null) {
+            Propietario propietario = propietarioRepository.findById(computadorDTO.getPropietario()).orElse(null);
+
+            if (propietario == null) {
+                throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO").toUpperCase());
+            }
+
+            if (propietario.getDeleteFlag() == true) {
+                throw new SelectNotAllowedException(
+                        String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE PROPIETARIO PORQUE SE ENCUENTRA DESACTIVADO")
+                                .toUpperCase());
+            }
+
+            computador.setPropietario(propietario);
+        } else {
+            computador.setPropietario(computador.getPropietario());
+        }
         computador.setEstadoDispositivo(computador.getEstadoDispositivo());
 
         Computador computadorActualizado = computadorRepository.save(computador);
@@ -881,24 +930,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
         return computadorActualizadoDTO;
     }
 
-    /*
-     * private void crearCambioEstado(Tickets tickets, EstadoTickets estadoTickets)
-     * {
-     * CambioEstadoTickets cambioEstadoTickets = new CambioEstadoTickets();
-     * cambioEstadoTickets.setTickets(tickets);
-     * cambioEstadoTickets.setEstadoTickets(estadoTickets);
-     * cambioEstadoTickets.setFecha_cambio(new Date());
-     * 
-     * cambioEstadoTicketsRepository.save(cambioEstadoTickets);
-     * }
-     */
+   
 
-    public void crearCambioUbicacionPc(Computador computador, Ubicacion ubicacionNueva, Ubicacion ubicacionActual) {
+    public void crearCambioUbicacionPc(Computador computador, Ubicacion ubicacionNueva, Ubicacion ubicacionActual, String justificacion) {
 
         CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
         cambioUbicacionPc.setComputador(computador);
         cambioUbicacionPc.setUbicacion(ubicacionNueva);
         cambioUbicacionPc.setFechaIngreso(new Date());
+        cambioUbicacionPc.setJustificacion(justificacion);
 
         if (ubicacionNueva != null) {
             CambioUbicacionPc ultimauUbicacionPc = cambioUbicacionPcRepository

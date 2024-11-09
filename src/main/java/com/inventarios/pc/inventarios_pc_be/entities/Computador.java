@@ -59,11 +59,15 @@ public class Computador {
 
     @ManyToOne
     @JoinColumn(name = "tipo_almacenamiento_id")
-    private TipoAlmacenamientoRam tipoAlmacenamiento;
+    private TipoAlmacenamiento tipoAlmacenamiento;
 
     @ManyToOne
     @JoinColumn(name = "tipo_ram_id")
-    private TipoAlmacenamientoRam tipoRam;
+    private TipoRam tipoRam;
+
+    @ManyToOne
+    @JoinColumn(name = "propietario_id")
+    private Propietario propietario;
 
     @Column(nullable = false, unique = true)
     @NotEmpty

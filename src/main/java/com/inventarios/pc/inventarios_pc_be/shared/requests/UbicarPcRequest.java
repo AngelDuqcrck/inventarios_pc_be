@@ -16,4 +16,6 @@ public class UbicarPcRequest {
     private Integer ubicacionId;
 
     private Integer usuarioId;
+
+    private String justificacion;
 }
