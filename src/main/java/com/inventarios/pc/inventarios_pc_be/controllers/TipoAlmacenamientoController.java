@@ -19,11 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeStorageNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoAlmacenamientoService;
-import com.inventarios.pc.inventarios_pc_be.shared.DTOs.MarcaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoAlmacenamientoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
 

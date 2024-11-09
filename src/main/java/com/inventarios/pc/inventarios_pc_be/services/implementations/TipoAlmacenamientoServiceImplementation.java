@@ -44,7 +44,7 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
-            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND_F, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
         }
 
         if(tipoAlmacenamiento.getDeleteFlag() == true){
@@ -63,7 +63,7 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
-            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND_F, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
         }
 
         if(tipoAlmacenamiento.getDeleteFlag() == true){
@@ -79,7 +79,7 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
-            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND_F, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
         }
 
         if(tipoAlmacenamiento.getDeleteFlag() == false){
@@ -94,7 +94,7 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
-            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND_F, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
         }
 
         TipoAlmacenamientoDTO tipoAlmacenamientoDTO = new TipoAlmacenamientoDTO();
