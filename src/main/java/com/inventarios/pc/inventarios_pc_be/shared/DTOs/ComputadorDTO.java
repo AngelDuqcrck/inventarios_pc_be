@@ -50,4 +50,10 @@ public class ComputadorDTO {
 
     
     private Integer estadoDispositivo;
+
+    private Integer propietario;
+
+    private String justificacion; //Solo para actualizar un computador
+
+    
 }

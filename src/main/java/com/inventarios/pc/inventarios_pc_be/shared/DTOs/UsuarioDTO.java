@@ -57,4 +57,6 @@ public class UsuarioDTO {
     private Integer ubicacion;
 
     private Boolean delete_flag;
+
+    private String token;
 }

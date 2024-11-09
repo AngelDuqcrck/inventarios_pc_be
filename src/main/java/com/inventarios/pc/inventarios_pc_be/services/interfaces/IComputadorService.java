@@ -3,19 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 import java.util.List;
 
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
-import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UserNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComputadorDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.UbicarPcRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
@@ -24,9 +12,9 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresRespons
 public interface IComputadorService {
 
      public ComputadorDTO crearComputador(ComputadorDTO computadorDTO)
-               throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
-               LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-               StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException;
+             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
+             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
+             StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException, OwnerNotFoundException;
 
      public List<ComputadoresResponse> listarComputadores();
 
@@ -38,10 +26,10 @@ public interface IComputadorService {
                throws ComputerNotFoundException, StateNotFoundException, ChangeNotAllowedException;
 
      public ComputadorDTO actualizarComputador(Integer computadorId, ComputadorDTO computadorDTO)
-               throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
-               LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-               StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
-               ChangeNotAllowedException, TypeDeviceNotFoundException;
+             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
+             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
+             StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
+             ChangeNotAllowedException, TypeDeviceNotFoundException, OwnerNotFoundException;
 
      public List<ComputadoresResponse> listarComputadoresByUbicacion(Integer ubicacionId)
                throws LocationNotFoundException;

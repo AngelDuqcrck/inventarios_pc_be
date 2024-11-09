@@ -46,6 +46,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontradA";
     public static final String IS_NOT_ALLOWED = "%s no esta permitido";
     public static final String IS_NOT_VALID = "%s no es valido";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
@@ -336,6 +337,28 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
     }
 
+    public void retornarSolicitudPendiente(Integer solicitudId) throws RequestNotFoundException, SelectNotAllowedException, StateNotFoundException {
+        Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
+
+        if (solicitud == null) {
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "LA SOLICITUD").toUpperCase());
+        }
+
+        if (solicitud.getEstadoSolicitudes().getId() != 6) {
+            throw new SelectNotAllowedException(
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA SOLICITUD PORQUE NO TIENE EL ESTADO EN REVISION").toUpperCase());
+        }
+
+        EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findById(1).orElse(null); //Estado Pendiente
+
+        if (estadoSolicitudes == null) {
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO PENDIENTE").toUpperCase());
+        }
+
+        solicitud.setEstadoSolicitudes(estadoSolicitudes);
+        solicitudRepository.save(solicitud);
+    }
+    
     @Override
     public SolicitudDTO editarSolicitud(Integer solicitudId, ActualizarSolicitudRequest solicitudRequest)
             throws RequestNotFoundException, SelectNotAllowedException, UpdateNotAllowedException,

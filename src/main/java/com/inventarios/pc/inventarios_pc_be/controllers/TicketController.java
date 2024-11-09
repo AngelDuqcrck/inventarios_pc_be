@@ -118,6 +118,31 @@ public class TicketController {
                                 HttpStatus.OK);
         }
 
+        @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
+        @PostMapping("/reasignacion")
+        public ResponseEntity<HttpResponse> solicitarReasginacionTicket(@RequestBody CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
+                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException {
+                ticketService.cambiarEstadoTickets(cambiarEstadoTicketRequest); //Estado 4 reasignado
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Solicitud de reasignación de ticket realizada exitosamente"),
+                                HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/reasignar")
+        public ResponseEntity<HttpResponse> reasignarTicket(@RequestParam Integer ticketId, @RequestParam Integer tecnicoId)
+                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, RolNotFoundException, UserNotFoundException {
+                ticketService.reasignarTicket(ticketId, tecnicoId);
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Ticket reasignado exitosamente"),
+                                HttpStatus.OK);
+        }
+        
+
         @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/cancelar")
         public ResponseEntity<HttpResponse> cancelarTicket(@RequestBody CambiarEstadoTicketRequest cambiarEstadoTicketRequest)

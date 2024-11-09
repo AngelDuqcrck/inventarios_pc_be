@@ -36,4 +36,6 @@ public interface ITicketService {
 
     public void cambiarEstadoTickets(CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
     throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException;
+
+    public void reasignarTicket(Integer ticketId, Integer tecnicoId)throws TicketNotFoundException, RolNotFoundException, UserNotFoundException, SelectNotAllowedException;
 }

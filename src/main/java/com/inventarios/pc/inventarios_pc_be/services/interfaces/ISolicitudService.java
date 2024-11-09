@@ -42,5 +42,7 @@ public interface ISolicitudService {
         public SolicitudDTO editarSolicitud(Integer solicitudId, ActualizarSolicitudRequest solicitudRequest)
             throws RequestNotFoundException, SelectNotAllowedException, UpdateNotAllowedException,
             ComputerNotFoundException, StateNotFoundException, LocationNotFoundException, DeviceNotFoundException;
+
+        public void retornarSolicitudPendiente(Integer solicitudId) throws RequestNotFoundException, SelectNotAllowedException, StateNotFoundException;
         
 }
