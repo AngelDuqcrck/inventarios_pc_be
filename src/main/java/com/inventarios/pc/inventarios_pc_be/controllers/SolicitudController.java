@@ -54,7 +54,7 @@ public class SolicitudController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('EMPLEADO_ADMINISTRATIVO')")
+        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL','ADMIN')")
         @PostMapping("/crear/administrativo")
         public ResponseEntity<HttpResponse> crearSolicitudAdministrativo(@RequestBody SolicitudDTO solicitudDTO,
                         @RequestParam Integer tipoSolicitudId)
@@ -115,6 +115,18 @@ public class SolicitudController {
                                 HttpStatus.OK);
         }
 
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @PostMapping("/pendiente/{solicitudId}")
+        public ResponseEntity<HttpResponse> retornarSolicitudPendiente(@PathVariable Integer solicitudId)
+                        throws StateNotFoundException, RequestNotFoundException, SelectNotAllowedException {
+
+                solicitudService.retornarSolicitudPendiente(solicitudId);
+
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                "Solicitud retornada a pendiente exitosamente"), 
+                                HttpStatus.OK);
+        }
         @PreAuthorize("hasAnyAuthority('ADMIN')")
         @PostMapping("/rechazar-solicitud/{solicitudId}")
         public ResponseEntity<HttpResponse> rechazarSolicitud(@PathVariable Integer solicitudId)
