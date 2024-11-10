@@ -283,13 +283,17 @@ public class HistorialComputadorService implements IHistorialComputadorService {
             if (historial != null) {
                 DispositivosVinculadosResponse dispositivoVinculado = DispositivosVinculadosResponse.builder()
                         .id(historial.getDispositivoPC().getId())
-                        .nombre(historial.getDispositivoPC().getNombre())
+                        .placa(historial.getDispositivoPC().getPlaca())
+                        .marca(historial.getDispositivoPC().getMarca().getNombre())
+                        .modelo(historial.getDispositivoPC().getModelo())
+                        .serial(historial.getDispositivoPC().getSerial())
+                        .nombre(historial.getDispositivoPC().getModelo()+" "+historial.getDispositivoPC().getMarca().getNombre()+" "+historial.getDispositivoPC().getPlaca())
                         .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
                         .build();
                 dispositivosVinculadosList.add(dispositivoVinculado);
             } else {
                 DispositivosVinculadosResponse dispositivoNoVinculado = DispositivosVinculadosResponse.builder()
-                        .id(null).nombre(null).tipoDispositivo(tipo.getNombre()).build();
+                        .id(null).placa(null).serial(null).marca(null).modelo(null).tipoDispositivo(tipo.getNombre()).build();
                 dispositivosVinculadosList.add(dispositivoNoVinculado);
             }
         }
@@ -380,14 +384,16 @@ public class HistorialComputadorService implements IHistorialComputadorService {
             if (historial != null) {
                 DispositivosVinculadosResponse dispositivoVinculado = DispositivosVinculadosResponse.builder()
                         .id(historial.getDispositivoPC().getId())
-                        .nombre(historial.getDispositivoPC().getNombre())
                         .placa(historial.getDispositivoPC().getPlaca())
+                        .marca(historial.getDispositivoPC().getMarca().getNombre())
+                        .modelo(historial.getDispositivoPC().getModelo())
+                        .serial(historial.getDispositivoPC().getSerial())
                         .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
                         .build();
                 dispositivosVinculadosList.add(dispositivoVinculado);
             } else {
                 DispositivosVinculadosResponse dispositivoNoVinculado = DispositivosVinculadosResponse.builder()
-                        .id(null).nombre(null).tipoDispositivo(tipo.getNombre()).build();
+                        .id(null).marca(null).placa(null).modelo(null).serial(null).tipoDispositivo(tipo.getNombre()).build();
                 dispositivosVinculadosList.add(dispositivoNoVinculado);
             }
         }

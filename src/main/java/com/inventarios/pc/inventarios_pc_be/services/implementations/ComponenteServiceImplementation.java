@@ -39,8 +39,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
 
         BeanUtils.copyProperties(componenteDTO, componente);
 
-        TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente().getId())
-                .orElse(null);
+        TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente()).orElse(null);
 
         if (tipoComponente == null) {
             throw new ComponentNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE COMPONENTE").toUpperCase());
@@ -98,7 +97,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
         componente.setDeleteFlag(false);
 
         if (componenteDTO.getTipoComponente() != null) {
-            TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente().getId())
+            TipoComponente tipoComponente = tipoComponenteRepository.findById(componenteDTO.getTipoComponente())
                     .orElse(null);
             if (tipoComponente == null) {
                 throw new ComponentNotFoundException(
@@ -116,7 +115,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
 
         Componente componenteActualizado = componenteRepository.save(componente);
         ComponenteDTO componenteActualizadoDTO = new ComponenteDTO();
-        componenteActualizadoDTO.setTipoComponente(componenteActualizado.getTipoComponente());
+        componenteActualizadoDTO.setTipoComponente(componenteActualizado.getTipoComponente().getId());
         BeanUtils.copyProperties(componenteActualizado, componenteActualizadoDTO);
         return componenteActualizadoDTO;
     }

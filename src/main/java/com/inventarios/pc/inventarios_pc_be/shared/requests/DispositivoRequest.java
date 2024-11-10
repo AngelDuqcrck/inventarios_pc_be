@@ -29,5 +29,5 @@ public class DispositivoRequest {
      private String serial;
  
     
-     private String nombre;
+     //private String nombre;
 }

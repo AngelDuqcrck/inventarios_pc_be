@@ -51,6 +51,7 @@ public class TipoAlmacenamientoController {
                 tipoAlmacenamientoService.listarTiposAlmacenamiento().stream().map(tipoAlmacenamiento -> {
                     TipoAlmacenamientoDTO tipoAlmacenamientoDTO = new TipoAlmacenamientoDTO();
                     BeanUtils.copyProperties(tipoAlmacenamiento, tipoAlmacenamientoDTO);
+                    tipoAlmacenamientoDTO.setTipoComponente("Tipo de Disco Duro");
                     return tipoAlmacenamientoDTO;
                 }).collect(Collectors.toList()));
     }

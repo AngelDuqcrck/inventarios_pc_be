@@ -76,6 +76,10 @@ public class DispositivoController {
                                         BeanUtils.copyProperties(dispositivo, dispositivoR);
                                         dispositivoR.setTipoDispositivo(dispositivo.getTipoDispositivo().getNombre());
                                         dispositivoR.setMarca(dispositivo.getMarca().getNombre());
+                                        dispositivoR.setPlaca(dispositivo.getPlaca());
+                                        dispositivoR.setSerial(dispositivo.getSerial());
+                                        dispositivoR.setModelo(dispositivo.getModelo());
+                                        dispositivoR.setNombre(dispositivo.getModelo()+" "+dispositivo.getMarca().getNombre()+" "+dispositivo.getPlaca());
                                         dispositivoR.setEstadoDispositivo(
                                                         dispositivo.getEstadoDispositivo().getNombre());
                                         return dispositivoR;

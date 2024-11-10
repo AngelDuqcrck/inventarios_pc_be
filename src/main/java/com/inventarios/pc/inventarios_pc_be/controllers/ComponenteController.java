@@ -49,13 +49,13 @@ public class ComponenteController {
 
         @PreAuthorize("hasAuthority('ADMIN')")
         @GetMapping
-        public ResponseEntity<List<ComponenteDTO>> listarCompoenetes() {
+        public ResponseEntity<List<ComponenteResponse>> listarCompoenetes() {
                 return ResponseEntity.ok(
                                 componenteService.listarComponentes().stream().map(componente -> {
-                                        ComponenteDTO componenteDTO = new ComponenteDTO();
-                                        BeanUtils.copyProperties(componente, componenteDTO);
-                                        componenteDTO.setTipoComponente(componente.getTipoComponente());
-                                        return componenteDTO;
+                                        ComponenteResponse componenteR = new ComponenteResponse();
+                                        BeanUtils.copyProperties(componente, componenteR);
+                                        componenteR.setTipoComponente(componente.getTipoComponente().getNombre());
+                                        return componenteR;
                                 }).collect(Collectors.toList()));
         }
 
