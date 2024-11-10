@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.repositories.*;
@@ -15,10 +16,12 @@ import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
+import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.entities.SedePC;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
@@ -35,6 +38,9 @@ public class AreaServiceImplementation implements IAreaService {
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND ="%s no fue encontrada";
     public static final String IS_NOT_ALLOWED ="no esta permitido %s ";
+
+    @Autowired
+    private RolRepository rolRepository;
 
     @Autowired
     private CambioUbicacionPcRepository cambioUbicacionPcRepository;
@@ -69,7 +75,7 @@ public class AreaServiceImplementation implements IAreaService {
      * @throws LocationNotFoundException Si no se encuentra la sede especificada.
      */
     @Override
-    public AreaDTO crearArea(AreaDTO areaDTO) throws LocationNotFoundException, SelectNotAllowedException {
+    public AreaDTO crearArea(AreaDTO areaDTO) throws LocationNotFoundException, SelectNotAllowedException, RolNotFoundException {
         AreaPC areaPC = new AreaPC();
         BeanUtils.copyProperties(areaDTO, areaPC);
         // Con el id de la sede llamamos al repositorio para consultar y traernos la
@@ -92,6 +98,17 @@ public class AreaServiceImplementation implements IAreaService {
             }
         }
         
+
+        Rol rol = rolRepository.findById(areaDTO.getRol()).orElse(null);
+
+        if (rol == null) {
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
+        }
+
+        if(rol.getDeleteFlag()==true){
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL ROL "+rol.getNombre()+" PORQUE ESTA INACTIVO").toUpperCase());
+        }
+        areaPC.setRol(rol);
         areaPC.setSede(sedePC);
         areaPC.setDeleteFlag(false);
 
@@ -137,6 +154,28 @@ public class AreaServiceImplementation implements IAreaService {
         return areas;
     }
 
+    @Override
+    public List<AreaResponse> listarAreasPorRolySede(Integer rol, Integer sedeId) throws LocationNotFoundException, SelectNotAllowedException, RolNotFoundException {
+        Rol rolPC = rolRepository.findById(rol).orElse(null);
+        SedePC sedePC = sedeRepository.findById(sedeId).orElse(null);
+        if (rolPC == null) {
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
+        }
+        if (sedePC == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LA SEDE").toUpperCase());
+        }
+        List<AreaPC> areas = areaRepository.findBySedeAndRol(sedePC, rolPC);
+        List<AreaResponse> areasResponses = new ArrayList<>();
+        for (AreaPC area : areas) {
+            AreaResponse areaResponse = new AreaResponse();
+            BeanUtils.copyProperties(area, areaResponse);
+            areaResponse.setSede(area.getSede().getNombre());
+            areaResponse.setRol(area.getRol().getNombre());
+            areasResponses.add(areaResponse);
+        }
+
+        return areasResponses;
+    }
 
     // Metodo que lista toda la informacion especifica de acuerdo a su id
     @Override
@@ -163,7 +202,7 @@ public class AreaServiceImplementation implements IAreaService {
      */
     @Override
     public AreaDTO actualizarArea(Integer id, AreaDTO areaDTO)
-            throws SelectNotAllowedException, LocationNotFoundException, UpdateNotAllowedException {
+            throws SelectNotAllowedException, LocationNotFoundException, UpdateNotAllowedException, RolNotFoundException {
         AreaPC areaPC = areaRepository.findById(id).orElse(null);
         if (areaPC == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL ÁREA").toUpperCase());
@@ -195,6 +234,21 @@ public class AreaServiceImplementation implements IAreaService {
                         areaDTO.getNombre().toUpperCase(), areaPC.getSede().getNombre().toUpperCase()));
                 }
             }
+        }
+
+        if(areaDTO.getRol()!= null){
+            Rol rol = rolRepository.findById(areaDTO.getRol()).orElse(null);
+
+            if (rol == null) {
+                throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
+            }
+
+            if(rol.getDeleteFlag()==true){
+                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL ROL "+rol.getNombre()+" PORQUE ESTA INACTIVO").toUpperCase());
+            }
+            areaPC.setRol(rol);
+        }else{
+            areaPC.setRol(areaPC.getRol());
         }
         AreaPC areaActualizada = areaRepository.save(areaPC);
         AreaDTO areaActualizadaDTO = new AreaDTO();

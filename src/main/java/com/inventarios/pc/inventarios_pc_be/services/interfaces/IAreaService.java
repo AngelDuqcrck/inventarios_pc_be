@@ -3,12 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.services.interfaces;
 import java.util.List;
 
 import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
-import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
 
@@ -24,8 +19,7 @@ public interface IAreaService {
      * @return Un objeto {@link AreaDTO} con los datos del área recién creada.
      * @throws LocationNotFoundException Si no se encuentra la sede especificada.
      */
-    public AreaDTO crearArea(AreaDTO areaDTO) throws LocationNotFoundException, SelectNotAllowedException;
-
+    public AreaDTO crearArea(AreaDTO areaDTO) throws LocationNotFoundException, SelectNotAllowedException, RolNotFoundException;
     /*
      * Lista un area especifica por su id.
      * 
@@ -61,7 +55,7 @@ public interface IAreaService {
      *                                   especificada.
      */
     public AreaDTO actualizarArea(Integer id, AreaDTO areaDTO)
-            throws SelectNotAllowedException, LocationNotFoundException, UpdateNotAllowedException;
+            throws SelectNotAllowedException, LocationNotFoundException, UpdateNotAllowedException, RolNotFoundException;
 
     /**
      * Elimina (deshabilita) un área del sistema, marcándola como eliminada.
@@ -74,4 +68,6 @@ public interface IAreaService {
     public void eliminarArea(Integer id) throws LocationNotFoundException, DeleteNotAllowedException, StateNotFoundException;
 
     public void activarArea(Integer id) throws LocationNotFoundException, ActivateNotAllowedException;
+
+    public List<AreaResponse> listarAreasPorRolySede(Integer rol, Integer sedeId) throws LocationNotFoundException, SelectNotAllowedException, RolNotFoundException;
 }

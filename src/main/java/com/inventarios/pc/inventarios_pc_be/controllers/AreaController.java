@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IAreaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.AreaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.AreaResponse;
@@ -50,7 +45,7 @@ public class AreaController {
         @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearArea(@RequestBody AreaDTO areaDTO)
-                        throws SelectNotAllowedException, LocationNotFoundException {
+                        throws SelectNotAllowedException, LocationNotFoundException, RolNotFoundException {
                 areaServiceImplementation.crearArea(areaDTO);
 
                 return new ResponseEntity<>(
@@ -88,7 +83,8 @@ public class AreaController {
         @PreAuthorize("hasAuthority('ADMIN')")
         @PutMapping("/actualizar/{areaId}")
         public ResponseEntity<HttpResponse> actualizarArea(@PathVariable Integer areaId, @RequestBody AreaDTO areaDTO)
-                        throws LocationNotFoundException, UpdateNotAllowedException, SelectNotAllowedException {
+                        throws LocationNotFoundException, UpdateNotAllowedException, SelectNotAllowedException,
+                        RolNotFoundException {
                 areaServiceImplementation.actualizarArea(areaId, areaDTO);
 
                 return new ResponseEntity<>(
@@ -135,15 +131,24 @@ public class AreaController {
                 return new ResponseEntity<>(areaResponse, HttpStatus.OK);
         }
 
-        @PreAuthorize("isAuthenticated()") //ACA VA TAMBIÉN ROL ASISTENCIAL, ADMINISTRATIVO, ETC
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/sede-rol/{rol}/{sedeId}")
+        public ResponseEntity<List<AreaResponse>> listarAreasPorSedeyRol(@PathVariable Integer rol, @PathVariable Integer sedeId)
+                        throws LocationNotFoundException, SelectNotAllowedException, RolNotFoundException {
+                List<AreaResponse> areasResponses = areaServiceImplementation.listarAreasPorRolySede(rol, sedeId);
+                return new ResponseEntity<>(areasResponses, HttpStatus.OK);
+        }
+
+        @PreAuthorize("isAuthenticated()") // ACA VA TAMBIÉN ROL ASISTENCIAL, ADMINISTRATIVO, ETC
         @GetMapping("/sede")
-        public ResponseEntity<List<AreaResponse>> listarAreaBySede(@RequestParam Integer sedeId) throws LocationNotFoundException, SelectNotAllowedException {
+        public ResponseEntity<List<AreaResponse>> listarAreaBySede(@RequestParam Integer sedeId)
+                        throws LocationNotFoundException, SelectNotAllowedException {
                 return ResponseEntity.ok(
-                        areaServiceImplementation.listarAreasPorSede(sedeId).stream().map(area -> {
-                                AreaResponse areaR = new AreaResponse();
-                                BeanUtils.copyProperties(area, areaR);
-                                areaR.setSede(area.getSede().getNombre());
-                                return areaR;
-                        }).collect(Collectors.toList()));
+                                areaServiceImplementation.listarAreasPorSede(sedeId).stream().map(area -> {
+                                        AreaResponse areaR = new AreaResponse();
+                                        BeanUtils.copyProperties(area, areaR);
+                                        areaR.setSede(area.getSede().getNombre());
+                                        return areaR;
+                                }).collect(Collectors.toList()));
         }
 }

@@ -22,4 +22,6 @@ public class AreaResponse {
     private String sede;
 
     private Boolean deleteFlag;
+
+    private String rol;
 }

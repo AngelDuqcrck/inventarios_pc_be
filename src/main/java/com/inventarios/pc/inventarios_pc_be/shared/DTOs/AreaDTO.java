@@ -22,4 +22,6 @@ public class AreaDTO {
 
     private Boolean deleteFlag;
 
+    private Integer rol;
+
 }
