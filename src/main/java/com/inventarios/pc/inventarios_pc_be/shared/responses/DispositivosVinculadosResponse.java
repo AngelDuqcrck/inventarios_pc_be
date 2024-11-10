@@ -10,9 +10,15 @@ public class DispositivosVinculadosResponse {
     
     private Integer id;
 
+    private String tipoDispositivo;
+
     private String nombre;
 
-    private String tipoDispositivo;
+    private String modelo;
+
+    private String serial;
+
+    private String marca;
 
     private String placa;
 

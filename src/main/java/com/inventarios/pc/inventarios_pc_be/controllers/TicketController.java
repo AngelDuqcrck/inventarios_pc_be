@@ -133,7 +133,7 @@ public class TicketController {
         @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/reasignar")
         public ResponseEntity<HttpResponse> reasignarTicket(@RequestParam Integer ticketId, @RequestParam Integer tecnicoId)
-                        throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, RolNotFoundException, UserNotFoundException {
+                         throws TicketNotFoundException, RolNotFoundException, UserNotFoundException, SelectNotAllowedException, StateNotFoundException, TypeRequestNotFoundException {
                 ticketService.reasignarTicket(ticketId, tecnicoId);
 
                 return new ResponseEntity<>(

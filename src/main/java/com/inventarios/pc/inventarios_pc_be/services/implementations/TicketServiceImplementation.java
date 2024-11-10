@@ -165,6 +165,7 @@ public class TicketServiceImplementation implements ITicketService {
                     .id(ticket.getId())
                     .fechaCierre(ticket.getFechaCierre())
                     .fecha_asig(ticket.getFecha_asig())
+                    .nombre(ticket.getSolicitudes().getTipoSolicitudes().getNombre())
                     .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
                     .estadoTicket(ticket.getEstadoTickets().getNombre())
                     .build();
@@ -190,6 +191,7 @@ public class TicketServiceImplementation implements ITicketService {
         BeanUtils.copyProperties(ticket, ticketIdResponse);
 
         ticketIdResponse.setEstadoTickets(ticket.getEstadoTickets().getNombre());
+        ticketIdResponse.setNombre(ticket.getSolicitudes().getTipoSolicitudes().getNombre());
         ticketIdResponse.setSolicitudId(ticket.getSolicitudes().getId());
         ticketIdResponse.setSolicitudes(ticket.getSolicitudes().getTitulo());
         ticketIdResponse
@@ -223,6 +225,7 @@ public class TicketServiceImplementation implements ITicketService {
                     .id(ticket.getId())
                     .fechaCierre(ticket.getFechaCierre())
                     .fecha_asig(ticket.getFecha_asig())
+                    .nombre(ticket.getSolicitudes().getTipoSolicitudes().getNombre())
                     .usuario(ticket.getUsuario().getPrimerNombre() + " " + ticket.getUsuario().getPrimerApellido())
                     .estadoTicket(ticket.getEstadoTickets().getNombre())
                     .build();
@@ -425,6 +428,7 @@ public class TicketServiceImplementation implements ITicketService {
                                     .toUpperCase());
 
                 }
+                break;
 
             default:
                 throw new SelectNotAllowedException(

@@ -109,9 +109,6 @@ public class ComputadorServiceImplementation implements IComputadorService {
     private EstadoDispositivoRepository estadoDispositivoRepository;
 
     @Autowired
-    private TipoAlmacenamientoRamRepository tipoAlmacenamientoRamRepository;
-
-    @Autowired
     private CambioUbicacionPcRepository cambioUbicacionPcRepository;
 
     @Override
@@ -275,6 +272,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
                     String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE PROPIETARIO PORQUE SE ENCUENTRA DESACTIVADO")
                             .toUpperCase());
         }
+
+        computador.setPropietario(propietario);
 
         Computador computadorCreado = computadorRepository.save(computador);
         DispositivoPC dispositivoPc = new DispositivoPC();
@@ -508,16 +507,17 @@ public class ComputadorServiceImplementation implements IComputadorService {
                                 + computador.getResponsable().getSegundoNombre()
                                 + " " + computador.getResponsable().getPrimerApellido() + " "
                                 + computador.getResponsable().getSegundoApellido());
+                                //campo añadido para ubicar al usuario al momento de autocompletar el dropdown usuarios al cambiar de lugar un pc
+                                computadorResponse.setPrimerNombreUser(computador.getResponsable().getPrimerNombre());
             } else {
                 computadorResponse.setResponsable(null);
+                computadorResponse.setPrimerNombreUser(null);
             }
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
             computadorResponse.setArea(computador.getUbicacion().getArea().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
-            //campo añadido para ubicar al usuario al momento de autocompletar el dropdown usuarios al cambiar de lugar un pc
-            computadorResponse.setPrimerNombreUser(computador.getResponsable().getPrimerNombre());
 
             computadoresResponses.add(computadorResponse);
         }
@@ -537,7 +537,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         BeanUtils.copyProperties(computador, computadorIdResponse);
         computadorIdResponse.setTipoPC(computador.getTipoPC().getNombre());
-        if (computador != null && computador.getResponsable() != null) {
+        if (computador.getResponsable() != null) {
             computadorIdResponse.setResponsable(
                     computador.getResponsable().getPrimerNombre() + " " +
                             computador.getResponsable().getSegundoNombre() + " " +
