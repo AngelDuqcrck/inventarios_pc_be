@@ -58,7 +58,7 @@ public class Usuario {
     private TipoDocumento tipoDocumento;
 
     @NotEmpty(message = "La cédula no puede estar vacía")
-    @Size(min = 6, max = 10, message = "La cédula debe tener entre 6 y 10 dígitos")
+    @Size(min = 6, max = 20, message = "El numero de documento debe tener entre 6 y 20 dígitos")
     @Column(nullable = false, unique = true)
     private String cedula;
 

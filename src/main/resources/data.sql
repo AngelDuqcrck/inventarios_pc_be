@@ -84,19 +84,30 @@ INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion, delete_flag) V
     
 
 -- Creamos la tabla tipo_documento si no existe
-CREATE TABLE IF NOT EXISTS tipo_documento
-(
+CREATE TABLE IF NOT EXISTS tipo_documento (
     id INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(255) NOT NULL,
+    abreviatura VARCHAR(10) NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
 );
 
--- Insertamos los tipos de documento si no existen en el sistema
-INSERT IGNORE INTO tipo_documento (id, nombre) VALUES
-    (1, "Cedula de Ciudadania"),
-    (2, "Cedula de Extranjeria"),
-    (3, "Pasaporte");
+-- Insertamos tipos de documento si no existen en el sistema
+INSERT IGNORE INTO tipo_documento (id, nombre, abreviatura) VALUES
+    (1, 'Cédula de Ciudadanía', 'CC'),
+    (2, 'Número de identificación tributaria', 'NIT'),
+    (3, 'Pasaporte', 'PA'),
+    (4, 'Tarjeta de Identidad', 'TI'),
+    (5, 'Menor sin identificación', 'MS'),
+    (6, 'Adulto sin identificacion', 'AS'),
+    (7, 'Número Identificación Personal', 'NIP'),
+    (8, 'Cédula de extranjeria', 'CE'),
+    (9, 'Carné Diplomático', 'CD'),
+    (10, 'Salvo Conducto', 'SC'),
+    (11, 'Permiso Especial de Permanencia', 'PE'),
+    (12, 'Permiso por Protección Temporal', 'PT'),
+    (13, 'Documento Extranjero', 'DE');
+
 
 -- Creamos la tabla tipo_software si no existe
 CREATE TABLE IF NOT EXISTS tipo_software

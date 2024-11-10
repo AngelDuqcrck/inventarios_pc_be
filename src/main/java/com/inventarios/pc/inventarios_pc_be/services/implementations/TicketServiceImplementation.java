@@ -450,6 +450,14 @@ public class TicketServiceImplementation implements ITicketService {
         }
         asignarTecnicoATicket(tecnicoId, ticket);
 
+        EstadoTickets estadoTickets = estadoTicketsRepository.findById(1).orElse(null);
+        if (estadoTickets == null) {
+            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EL ESTADO EN PROCESO").toUpperCase());
+        }
+        if(estadoTickets.getDeleteFlag()==true){
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "EL ESTADO EN PROCESO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
+        }
+        ticket.setEstadoTickets(estadoTickets);
         ticketRepository.save(ticket);
     }
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|

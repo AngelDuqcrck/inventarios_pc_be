@@ -27,7 +27,7 @@ public class TipoDocumento {
     @Column(nullable =  false, unique = true)
     private String nombre;
 
-    
+    private String abreviatura;
     
 
 }

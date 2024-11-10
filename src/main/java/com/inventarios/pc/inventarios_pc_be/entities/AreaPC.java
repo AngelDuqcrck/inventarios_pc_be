@@ -42,4 +42,8 @@ public class AreaPC {
     @ManyToOne
     @JoinColumn(name = "sede_id")
     private SedePC sede;
+
+    @ManyToOne
+    @JoinColumn(name = "rol_id")
+    private Rol rol;
 }

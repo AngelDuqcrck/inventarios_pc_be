@@ -16,5 +16,7 @@ public class TipoDocDTO {
 
     private String nombre;
 
+    private String abreviatura;
+
     private Boolean deleteFlag;
 }
