@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,14 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IDispositivoService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.DispositivoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.DispositivoRequest;
@@ -44,7 +37,7 @@ public class DispositivoController {
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearDispositivo(@RequestBody DispositivoRequest dispositivoRequest)
                         throws TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException,
-                        SelectNotAllowedException {
+                        SelectNotAllowedException, OwnerNotFoundException {
                 dispositivoService.crearDispositivo(dispositivoRequest);
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
@@ -92,7 +85,7 @@ public class DispositivoController {
         public ResponseEntity<HttpResponse> actualizarDispositivo(@PathVariable Integer dispositivoId,
                         @RequestBody DispositivoRequest dispositivoRequest) throws TypeDeviceNotFoundException,
                         MarcaNotFoundException, StateNotFoundException, DeviceNotFoundException,
-                        SelectNotAllowedException, UpdateNotAllowedException {
+                        SelectNotAllowedException, UpdateNotAllowedException, OwnerNotFoundException {
                 dispositivoService.actualizarDispositivo(dispositivoId, dispositivoRequest);
 
                 return new ResponseEntity<>(

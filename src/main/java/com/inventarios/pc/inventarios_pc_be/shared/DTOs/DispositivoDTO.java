@@ -28,4 +28,6 @@ public class DispositivoDTO {
     private String serial;
    
     private String nombre;
+
+    private Integer propietario;
 }

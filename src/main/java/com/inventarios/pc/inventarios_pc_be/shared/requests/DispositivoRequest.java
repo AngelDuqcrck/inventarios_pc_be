@@ -28,6 +28,6 @@ public class DispositivoRequest {
      
      private String serial;
  
-    
+    private Integer propietario;   
      //private String nombre;
 }

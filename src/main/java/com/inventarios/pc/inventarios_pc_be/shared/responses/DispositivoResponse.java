@@ -32,4 +32,6 @@ public class DispositivoResponse {
  
     
      private String nombre;
+
+     private String propietario;
 }

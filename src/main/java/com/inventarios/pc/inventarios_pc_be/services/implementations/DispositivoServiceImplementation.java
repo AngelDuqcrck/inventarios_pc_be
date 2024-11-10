@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Marca;
+import com.inventarios.pc.inventarios_pc_be.entities.Propietario;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.OwnerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
@@ -21,6 +23,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.MarcaRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.PropietarioRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IDispositivoService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.DispositivoDTO;
@@ -39,6 +42,9 @@ public class DispositivoServiceImplementation implements IDispositivoService {
     public static final String IS_NOT_CORRECT = "%s no es correcto";
 
     @Autowired
+    private PropietarioRepository propietarioRepository;
+
+    @Autowired
     private TipoDispositivoRepository tipoDispositivoRepository;
 
     @Autowired
@@ -52,7 +58,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
 
     @Override
     public DispositivoRequest crearDispositivo(DispositivoRequest dispositivoRequest) throws SelectNotAllowedException,
-            TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException {
+            TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException, OwnerNotFoundException {
         DispositivoPC dispositivoPC = new DispositivoPC();
         BeanUtils.copyProperties(dispositivoRequest, dispositivoPC);
         TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(dispositivoRequest.getTipoDispositivo())
@@ -87,6 +93,14 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         }
         dispositivoPC.setMarca(marca);
 
+        Propietario propietario = propietarioRepository.findById(dispositivoRequest.getPropietario()).orElse(null);
+        if (propietario == null) {
+            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND_F, "EL PROPIETARIO").toUpperCase());
+        }
+        if (propietario.getDeleteFlag() == true) {
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL PROPIETARIO "+propietario.getNombre()+" PORQUE ESTA DESACTIVADA").toUpperCase());
+        }
+        dispositivoPC.setPropietario(propietario);
         DispositivoPC dispositivoCreado = dispositivoRepository.save(dispositivoPC);
         DispositivoRequest dispositivoCreadoRequest = new DispositivoRequest();
         BeanUtils.copyProperties(dispositivoCreado, dispositivoCreadoRequest);
@@ -108,7 +122,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
     @Override
     public DispositivoRequest actualizarDispositivo(Integer id, DispositivoRequest dispositivoRequest)
             throws UpdateNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
-            StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException {
+            StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException, OwnerNotFoundException {
         DispositivoPC dispositivoPC = dispositivoRepository.findById(id).orElse(null);
 
         if (dispositivoPC == null) {
@@ -171,6 +185,16 @@ public class DispositivoServiceImplementation implements IDispositivoService {
             dispositivoPC.setTipoDispositivo(dispositivoPC.getTipoDispositivo());
         }
 
+        if(dispositivoRequest.getPropietario() != null){
+            Propietario propietario = propietarioRepository.findById(dispositivoRequest.getPropietario()).orElse(null);
+            if (propietario == null) {
+                throw new OwnerNotFoundException(String.format(IS_NOT_FOUND_F, "EL PROPIETARIO").toUpperCase());
+            }
+            if (propietario.getDeleteFlag() == true) {
+                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL PROPIETARIO "+propietario.getNombre()+" PORQUE ESTA DESACTIVADA").toUpperCase());
+            }
+            dispositivoPC.setPropietario(propietario);
+        }
         DispositivoPC dispositivoActualizado = dispositivoRepository.save(dispositivoPC);
         DispositivoRequest dispositivoActualizadoReq = new DispositivoRequest();
         BeanUtils.copyProperties(dispositivoActualizado, dispositivoActualizadoReq);

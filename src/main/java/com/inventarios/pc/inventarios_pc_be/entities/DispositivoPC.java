@@ -48,6 +48,9 @@ public class DispositivoPC {
     
     private String serial;
 
+    @ManyToOne
+    @JoinColumn(name = "propietario_id")
+    private Propietario propietario;
     
     @Column(nullable = true)
     private String nombre;
