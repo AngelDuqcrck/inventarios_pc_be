@@ -188,6 +188,7 @@ public class AreaServiceImplementation implements IAreaService {
         AreaResponse areaResponse = new AreaResponse();
         BeanUtils.copyProperties(areaPC, areaResponse);
         areaResponse.setSede(areaPC.getSede().getNombre());
+        areaResponse.setRol(areaPC.getRol().getNombre());
         return areaResponse;
     }
 

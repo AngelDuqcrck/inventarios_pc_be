@@ -132,8 +132,8 @@ public class AreaController {
         }
 
         @PreAuthorize("hasAuthority('ADMIN')")
-        @GetMapping("/sede-rol/{rol}/{sedeId}")
-        public ResponseEntity<List<AreaResponse>> listarAreasPorSedeyRol(@PathVariable Integer rol, @PathVariable Integer sedeId)
+        @GetMapping("/sede-rol")
+        public ResponseEntity<List<AreaResponse>> listarAreasPorSedeYRol(@RequestParam Integer rol, @RequestParam Integer sedeId)
                         throws LocationNotFoundException, SelectNotAllowedException, RolNotFoundException {
                 List<AreaResponse> areasResponses = areaServiceImplementation.listarAreasPorRolySede(rol, sedeId);
                 return new ResponseEntity<>(areasResponses, HttpStatus.OK);

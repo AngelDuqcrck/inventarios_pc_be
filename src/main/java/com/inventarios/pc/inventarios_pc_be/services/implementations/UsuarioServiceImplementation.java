@@ -416,7 +416,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             usuarioResponse.setSede(u.getUbicacionId().getArea().getSede().getNombre());
             usuarioResponse.setUbicacion(u.getUbicacionId().getNombre());
             usuarioResponse.setRol(u.getRolId().getNombre());
-            usuarioResponse.setTipoDocumento(u.getTipoDocumento().getNombre());
+            usuarioResponse.setTipoDocumento(u.getTipoDocumento().getAbreviatura());
             usuarioResponse.setArea(u.getUbicacionId().getArea().getNombre());
             usuariosResponse.add(usuarioResponse);
         }
