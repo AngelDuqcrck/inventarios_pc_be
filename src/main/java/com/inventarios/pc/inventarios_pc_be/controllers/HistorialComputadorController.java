@@ -16,6 +16,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComputadorService;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialUbicacionesXPcResponse;
@@ -101,6 +102,14 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(softwareXPcResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/computador-vinculado/{dispositivoId}")
+    public ResponseEntity<ComputadoresResponse> listarComputadorVinculadoByDispositivo(@PathVariable Integer dispositivoId) throws DeviceNotFoundException, SelectNotAllowedException {
+        ComputadoresResponse computadoresResponse = historialComputadorService.listarComputadorVinculadoByDispositivo(dispositivoId);
+
+        return new ResponseEntity<>(computadoresResponse, HttpStatus.OK);
+    }
+    
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/cv-pc/{computadorId}")
     public ResponseEntity<HojaVidaPcResponse> hojaDeVidaPc(@PathVariable Integer computadorId)

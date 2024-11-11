@@ -4,11 +4,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialUbicacionesXPcResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareXPcResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.*;
 
 public interface IHistorialComputadorService {
 
@@ -33,4 +29,6 @@ public interface IHistorialComputadorService {
        public HistorialUbicacionesXPcResponse listarHistorialUbicacionesXPc(Integer computadorId)
             throws ComputerNotFoundException;
        public HistorialResponse listarHistorialDispositivosXPc(Integer computadorId) throws ComputerNotFoundException;
+
+       public ComputadoresResponse listarComputadorVinculadoByDispositivo(Integer dispositivoId) throws DeviceNotFoundException, SelectNotAllowedException;
 }

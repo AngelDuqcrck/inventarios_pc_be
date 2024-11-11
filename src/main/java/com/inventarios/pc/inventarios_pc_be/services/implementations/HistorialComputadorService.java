@@ -1,6 +1,8 @@
 package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.*;
+
+import com.inventarios.pc.inventarios_pc_be.shared.responses.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,16 +28,6 @@ import com.inventarios.pc.inventarios_pc_be.repositories.SoftwareCsaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SoftwarePcRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComputadorService;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosVinculadosResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialDispositivosResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialUbicaciones;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialUbicacionesXPcResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.HojaVidaPcResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareVinculadosResponse;
-import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareXPcResponse;
 
 @Service
 public class HistorialComputadorService implements IHistorialComputadorService {
@@ -47,6 +39,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
     public static final String IS_NOT_VALID = "no es valido %s";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
+    public static final String IS_NOT_VINCULATED = "%s no esta vinculado";
 
     @Autowired
     private CambioUbicacionPcRepository cambioUbicacionPcRepository;
@@ -136,6 +129,39 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         dispositivoRepository.save(dispositivoPC);
 
         historialDispositivoRepository.save(historialDispositivo);
+    }
+
+    @Override
+    public ComputadoresResponse listarComputadorVinculadoByDispositivo(Integer dispositivoId) throws DeviceNotFoundException, SelectNotAllowedException {
+
+        DispositivoPC dispositivoPC = dispositivoRepository.findById(dispositivoId).orElse(null);
+        if (dispositivoPC == null) {
+            throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "EL DISPOSITIVO").toUpperCase());
+        }
+
+        Boolean dispositivoEstaVinculado = historialDispositivoRepository.existsByDispositivoPCAndFechaDesvinculacionIsNull(dispositivoPC);
+
+        if (dispositivoEstaVinculado == false) {
+            throw new SelectNotAllowedException(String.format(IS_NOT_VINCULATED, "EL DISPOSITIVO").toUpperCase());
+        }
+
+        HistorialDispositivo historial = historialDispositivoRepository.findFirstByDispositivoPCAndFechaDesvinculacionIsNull(dispositivoPC);
+
+        Computador computador = historial.getComputador();
+
+        ComputadoresResponse computadoresResponse = new ComputadoresResponse();
+        BeanUtils.copyProperties(computador, computadoresResponse);
+        computadoresResponse.setTipoPC(computador.getTipoPC().getNombre());
+        computadoresResponse.setUbicacion(computador.getUbicacion().getNombre());
+        computadoresResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+        computadoresResponse.setPrimerNombreUser(computador.getResponsable().getPrimerNombre());
+        computadoresResponse.setArea(computador.getUbicacion().getArea().getNombre());
+        computadoresResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
+        if(computador.getResponsable() != null){
+            computadoresResponse.setResponsable(computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre() + " " + computador.getResponsable().getPrimerApellido() + " " + computador.getResponsable().getSegundoApellido());
+        }
+        return computadoresResponse;
+
     }
 
     @Override
@@ -288,13 +314,16 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                         .marca(historial.getDispositivoPC().getMarca().getNombre())
                         .modelo(historial.getDispositivoPC().getModelo())
                         .serial(historial.getDispositivoPC().getSerial())
-                        .nombre(historial.getDispositivoPC().getModelo()+" "+historial.getDispositivoPC().getMarca().getNombre()+" "+historial.getDispositivoPC().getPlaca())
+                        .nombre(historial.getDispositivoPC().getModelo() + " "
+                                + historial.getDispositivoPC().getMarca().getNombre() + " "
+                                + historial.getDispositivoPC().getPlaca())
                         .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
                         .build();
                 dispositivosVinculadosList.add(dispositivoVinculado);
             } else {
                 DispositivosVinculadosResponse dispositivoNoVinculado = DispositivosVinculadosResponse.builder()
-                        .id(null).placa(null).serial(null).marca(null).modelo(null).tipoDispositivo(tipo.getNombre()).build();
+                        .id(null).placa(null).serial(null).marca(null).modelo(null).tipoDispositivo(tipo.getNombre())
+                        .build();
                 dispositivosVinculadosList.add(dispositivoNoVinculado);
             }
         }
@@ -394,7 +423,8 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                 dispositivosVinculadosList.add(dispositivoVinculado);
             } else {
                 DispositivosVinculadosResponse dispositivoNoVinculado = DispositivosVinculadosResponse.builder()
-                        .id(null).marca(null).placa(null).modelo(null).serial(null).tipoDispositivo(tipo.getNombre()).build();
+                        .id(null).marca(null).placa(null).modelo(null).serial(null).tipoDispositivo(tipo.getNombre())
+                        .build();
                 dispositivosVinculadosList.add(dispositivoNoVinculado);
             }
         }
