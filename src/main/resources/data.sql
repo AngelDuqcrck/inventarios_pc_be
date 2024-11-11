@@ -40,26 +40,26 @@ INSERT IGNORE INTO sedes_PC (id, direccion, descripcion, nombre, delete_flag) VA
     (3, 'COLSAG', 'ESPECIALISTAS...', 'Centro de Especialistas', 0);
 
 -- Creamos la tabla areas_PC si no existe
-CREATE TABLE IF NOT EXISTS areas_PC
-(
+CREATE TABLE IF NOT EXISTS areas_PC (
     id INT NOT NULL AUTO_INCREMENT,
-    sede_id INT,
     nombre VARCHAR(255) NOT NULL,
-    descripcion TEXT NOT NULL,
+    descripcion VARCHAR(255) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
+    sede_id INT,
+    rol_id INT,
     PRIMARY KEY (id),
-    UNIQUE KEY (nombre),
-    CONSTRAINT fk_sede FOREIGN KEY (sede_id) REFERENCES sedes_PC(id) ON DELETE SET NULL
+    FOREIGN KEY (sede_id) REFERENCES sede(id),
+    FOREIGN KEY (rol_id) REFERENCES rol(id)
 );
 
 -- Insertamos las áreas si no existen en el sistema
-INSERT IGNORE INTO areas_PC (id, sede_id, nombre, descripcion, delete_flag) VALUES
-    (1, 1, 'Urgencias', 'Zona urgente', 0),
-    (2, 1, 'Talento Humano', 'Zona empleados', 0),
-    (3, 2, 'Gerencia', 'Zona Jefe', 0),
-    (4, 1, 'Sistemas', 'Zona de Sistemas de la sede principal', 0),
-    (5, 2, 'Sistemas SC', 'Zona de Sistemas de la sede Colsag', 0),
-    (6, 3, 'Sistemas SCE', 'Zona de Sistemas del Centro de Especialistas', 0);
+INSERT IGNORE INTO areas_PC (id, sede_id, rol_id, nombre, descripcion, delete_flag) VALUES
+    (1, 1, 2, 'Urgencias', 'Zona urgente', 0),
+    (2, 1, 2, 'Talento Humano', 'Zona empleados', 0),
+    (3, 2, 3, 'Gerencia', 'Zona Jefe', 0),
+    (4, 1, 4, 'Sistemas', 'Zona de Sistemas de la sede principal', 0),
+    (5, 2, 4, 'Sistemas SC', 'Zona de Sistemas de la sede Colsag', 0),
+    (6, 3, 4, 'Sistemas SCE', 'Zona de Sistemas del Centro de Especialistas', 0);
 
 -- Creamos la tabla ubicaciones si no existe
 CREATE TABLE IF NOT EXISTS ubicaciones

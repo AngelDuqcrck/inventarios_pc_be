@@ -46,6 +46,9 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     public static final String IS_NOT_ALLOWED = "%s no esta permitido";
 
     @Autowired
+    private ComputadorServiceImplementation computadorServiceImplementation;
+
+    @Autowired
     private CambioUbicacionPcRepository cambioUbicacionPcRepository;
 
     @Autowired
@@ -245,20 +248,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
                             .format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
                 }
 
-                CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
-                cambioUbicacionPc.setComputador(computador);
-                cambioUbicacionPc.setUbicacion(bodegaSistemas);
-                cambioUbicacionPc.setFechaIngreso(new Date());
-
-                CambioUbicacionPc ultimaUbicacionPc = cambioUbicacionPcRepository
-                        .findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, antiguaUbicacion);
-                if (ultimaUbicacionPc != null) {
-                    ultimaUbicacionPc.setFechaCambio(new Date());
-                    cambioUbicacionPcRepository.save(ultimaUbicacionPc);
-
-                }
-
-                cambioUbicacionPcRepository.save(cambioUbicacionPc);
+                computadorServiceImplementation.crearCambioUbicacionPc(computador, antiguaUbicacion, bodegaSistemas, "La ubicacion fue desactivada y el computador "+computador.getNombre()+" fue movido a la bodega de sistemas de la sede principal"); 
 
                 computador.setUbicacion(bodegaSistemas);
                 computador.setResponsable(null);
@@ -271,6 +261,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
                     DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
                     if (dispositivoPC.getTipoDispositivo().getId() != 8) {
                         historialDispositivo.setFechaDesvinculacion(new Date());
+                        historialDispositivo.setJustificacion("El dispositivo fue desvinculado, porque la ubicacion "+ubicacion.getNombre().toLowerCase()+ " fue eliminada y el computador fue movido a la bodega de sistemas"); 
                         historialDispositivoRepository.save(historialDispositivo);
 
                     }

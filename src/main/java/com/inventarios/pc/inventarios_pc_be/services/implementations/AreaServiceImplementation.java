@@ -40,6 +40,8 @@ public class AreaServiceImplementation implements IAreaService {
     public static final String IS_NOT_ALLOWED ="no esta permitido %s ";
 
     @Autowired
+    private ComputadorServiceImplementation computadorServiceImplementation;
+    @Autowired
     private RolRepository rolRepository;
 
     @Autowired
@@ -315,20 +317,7 @@ public class AreaServiceImplementation implements IAreaService {
                                     .format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
                         }
 
-                        CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
-                        cambioUbicacionPc.setComputador(computador);
-                        cambioUbicacionPc.setUbicacion(bodegaSistemas);
-                        cambioUbicacionPc.setFechaIngreso(new Date());
-
-                        CambioUbicacionPc ultimaUbicacionPc = cambioUbicacionPcRepository
-                                .findTopByComputadorAndAndUbicacionOrderByFechaIngresoDesc(computador, antiguaUbicacion);
-                        if (ultimaUbicacionPc != null) {
-                            ultimaUbicacionPc.setFechaCambio(new Date());
-                            cambioUbicacionPcRepository.save(ultimaUbicacionPc);
-
-                        }
-
-                        cambioUbicacionPcRepository.save(cambioUbicacionPc);
+                        computadorServiceImplementation.crearCambioUbicacionPc(computador, antiguaUbicacion, bodegaSistemas, "El Área fue desactivada y el computador "+computador.getNombre()+" fue movido a la bodega de sistemas de la sede principal"); 
                         
                         computador.setUbicacion(bodegaSistemas);
                         computador.setResponsable(null);
@@ -341,6 +330,7 @@ public class AreaServiceImplementation implements IAreaService {
                             DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
                             if (dispositivoPC.getTipoDispositivo().getId() != 8) {
                                 historialDispositivo.setFechaDesvinculacion(new Date());
+                                historialDispositivo.setJustificacion("El dispositivo fue desvinculado, porque el área "+areaPC.getNombre().toLowerCase()+ " fue desactivada y el computador fue movido a la bodega de sistemas"); 
                                 historialDispositivoRepository.save(historialDispositivo);
 
                             }
