@@ -139,7 +139,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
     }
 
     @Override
-    public void desvincularDispositivo(Integer computadorId, Integer dispositivoId)
+    public void desvincularDispositivo(Integer computadorId, Integer dispositivoId, String justificacion)
             throws ComputerNotFoundException, DeviceNotFoundException, SelectNotAllowedException {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
@@ -162,7 +162,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         }
 
         historialDispositivo.setFechaDesvinculacion(new Date());
-
+        historialDispositivo.setJustificacion(justificacion);
         EstadoDispositivo estadoDisponible = estadoDispositivoRepository.findByNombre("Disponible").orElse(null);
         if (estadoDisponible == null) {
             throw new SelectNotAllowedException(
@@ -234,7 +234,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
     }
 
     @Override
-    public void desvincularSoftware(Integer computadorId, Integer softwareId)
+    public void desvincularSoftware(Integer computadorId, Integer softwareId, String justificacion)
             throws ComputerNotFoundException, SoftwareNotFoundException, SelectNotAllowedException {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
@@ -258,6 +258,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         }
 
         softwareCSA.setFechaDesvinculacion(new Date());
+        softwareCSA.setJustificacion(justificacion);
 
         softwareCsaRepository.save(softwareCSA);
     }

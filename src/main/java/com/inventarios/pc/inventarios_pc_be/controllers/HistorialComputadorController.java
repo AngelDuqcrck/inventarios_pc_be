@@ -59,9 +59,9 @@ public class HistorialComputadorController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/desvincular-dispositivo")
     public ResponseEntity<HttpResponse> desvincularDispositivo(@RequestParam Integer computadorId,
-            @RequestParam Integer dispositivoId)
+            @RequestParam Integer dispositivoId, @RequestParam String justificacion)
             throws ComputerNotFoundException, SelectNotAllowedException, DeviceNotFoundException {
-        historialComputadorService.desvincularDispositivo(computadorId, dispositivoId);
+        historialComputadorService.desvincularDispositivo(computadorId, dispositivoId, justificacion);
 
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
@@ -72,9 +72,9 @@ public class HistorialComputadorController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/desvincular-software")
     public ResponseEntity<HttpResponse> desvincularSoftware(@RequestParam Integer computadorId,
-            @RequestParam Integer softwareId)
+            @RequestParam Integer softwareId, @RequestParam String justificacion)
             throws ComputerNotFoundException, SelectNotAllowedException, SoftwareNotFoundException {
-        historialComputadorService.desvincularSoftware(computadorId, softwareId);
+        historialComputadorService.desvincularSoftware(computadorId, softwareId, justificacion);
 
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),

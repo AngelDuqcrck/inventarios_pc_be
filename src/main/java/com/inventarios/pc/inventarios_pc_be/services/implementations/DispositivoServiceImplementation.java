@@ -6,12 +6,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
+import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Marca;
 import com.inventarios.pc.inventarios_pc_be.entities.Propietario;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
@@ -20,6 +23,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.repositories.ComputadorRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.MarcaRepository;
@@ -27,6 +31,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.PropietarioRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IDispositivoService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.DispositivoDTO;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarEstadoDispositivoRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.DispositivoRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivoResponse;
 
@@ -40,6 +45,9 @@ public class DispositivoServiceImplementation implements IDispositivoService {
     public static final String IS_NOT_VALID = "no es valido %s";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
+
+    @Autowired
+    private HistorialComputadorService historialComputadorService;
 
     @Autowired
     private PropietarioRepository propietarioRepository;
@@ -240,15 +248,15 @@ public class DispositivoServiceImplementation implements IDispositivoService {
     }
 
     @Override
-    public void cambiarEstadoDispositivo(Integer dispositivoId, Integer nuevoEstadoDispositivoId)
-            throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException {
-        DispositivoPC dispositivoPC = dispositivoRepository.findById(dispositivoId).orElse(null);
+    public void cambiarEstadoDispositivo(CambiarEstadoDispositivoRequest cambiarEstadoDispositivoRequest)
+            throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException, ComputerNotFoundException, SelectNotAllowedException {
+        DispositivoPC dispositivoPC = dispositivoRepository.findById(cambiarEstadoDispositivoRequest.getDispositivoId()).orElse(null);
 
         if (dispositivoPC == null) {
             throw new DeviceNotFoundException(String.format(IS_NOT_FOUND, "EL DISPOSITIVO").toUpperCase());
         }
 
-        EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findById(nuevoEstadoDispositivoId)
+        EstadoDispositivo nuevoEstadoDispositivo = estadoDispositivoRepository.findById(cambiarEstadoDispositivoRequest.getNuevoEstadoDispositivoId())
                 .orElse(null);
         if (nuevoEstadoDispositivo == null) {
             throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO DEL DISPOSITIVO").toUpperCase());
@@ -257,13 +265,16 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         String estadoActual = dispositivoPC.getEstadoDispositivo().getNombre();
 
         // Lógica de validación basada en las reglas de cambio de estado
-        switch (nuevoEstadoDispositivoId) {
+        switch (cambiarEstadoDispositivoRequest.getNuevoEstadoDispositivoId()) {
             case 1: // En uso
                 if (!estadoActual.equals("Disponible") && !estadoActual.equals("En reparacion")) {
                     throw new ChangeNotAllowedException(
                             String.format(IS_NOT_ALLOWED, "EL ESTADO EN USO PORQUE SU ESTADO ACTUAL ES DIFERENTE A DISPONIBLE O EN REPARACIÓN")
                                     .toUpperCase());
+
                 }
+
+                historialComputadorService.vincularDispositivo(cambiarEstadoDispositivoRequest.getComputadorId(), cambiarEstadoDispositivoRequest.getDispositivoId());
                 break;
 
             case 3: // Averiado
@@ -271,6 +282,8 @@ public class DispositivoServiceImplementation implements IDispositivoService {
                     throw new ChangeNotAllowedException(
                             String.format(IS_NOT_ALLOWED, "EL ESTADO AVERIADO PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN USO").toUpperCase());
                 }
+
+                historialComputadorService.desvincularDispositivo(cambiarEstadoDispositivoRequest.getComputadorId(), cambiarEstadoDispositivoRequest.getDispositivoId(), cambiarEstadoDispositivoRequest.getJustificacion());
                 break;
 
             case 2: // En reparacion
@@ -287,6 +300,11 @@ public class DispositivoServiceImplementation implements IDispositivoService {
                             String.format(IS_NOT_ALLOWED, "EL ESTADO DISPONIBLE PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN REPARACION O EN USO")
                                     .toUpperCase());
                 }
+
+                if(estadoActual.equals("En uso")){
+                    historialComputadorService.desvincularDispositivo(cambiarEstadoDispositivoRequest.getComputadorId(), cambiarEstadoDispositivoRequest.getDispositivoId(), cambiarEstadoDispositivoRequest.getJustificacion());
+                }
+                
                 break;
 
             case 5: // Baja

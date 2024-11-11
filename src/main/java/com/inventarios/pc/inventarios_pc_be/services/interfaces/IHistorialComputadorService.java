@@ -15,13 +15,13 @@ public interface IHistorialComputadorService {
        public void vincularDispositivo(Integer computadorId, Integer dispositivoId)
                      throws ComputerNotFoundException, SelectNotAllowedException, DeviceNotFoundException;
 
-       public void desvincularDispositivo(Integer computadorId, Integer dispositivoId)
+       public void desvincularDispositivo(Integer computadorId, Integer dispositivoId, String justificacion)
                      throws ComputerNotFoundException, DeviceNotFoundException, SelectNotAllowedException;
 
        public void vincularSoftware(Integer computadorId, Integer softwareId)
                      throws ComputerNotFoundException, SoftwareNotFoundException, SelectNotAllowedException;
 
-       public void desvincularSoftware(Integer computadorId, Integer softwareId)
+       public void desvincularSoftware(Integer computadorId, Integer softwareId, String justificacion)
                      throws ComputerNotFoundException, SoftwareNotFoundException, SelectNotAllowedException;
 
        public DispositivosXPcResponse listarDispositivosXPc(Integer computadorId) throws ComputerNotFoundException;
