@@ -687,13 +687,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
                 }
 
                 Ubicacion ubicacion = ubicacionRepository.findById(4).orElse(null); // bodega sistemas
-
+                Ubicacion antiguaUbicacion = computador.getUbicacion();
                 if (ubicacion == null) {
                     throw new StateNotFoundException(
                             String.format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
                 }
+                
                 computador.setUbicacion(ubicacion);
                 computador.setResponsable(null);
+                crearCambioUbicacionPc(computador, ubicacion, antiguaUbicacion, "El computador fue movido a la bodega de sistemas de la sede principal porque su estado cambio a disponible");
 
                 if (estadoActual.equals("En uso")) {
                     List<HistorialDispositivo> DispositivosVinculado = historialDispositivoRepository
