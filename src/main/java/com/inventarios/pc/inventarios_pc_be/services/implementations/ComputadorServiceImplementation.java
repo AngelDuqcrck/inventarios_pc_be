@@ -35,6 +35,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Marca;
 import com.inventarios.pc.inventarios_pc_be.entities.Propietario;
+import com.inventarios.pc.inventarios_pc_be.entities.SoftwareCSA;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoAlmacenamiento;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoAlmacenamientoRam;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
@@ -46,6 +47,7 @@ import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoReposi
 import com.inventarios.pc.inventarios_pc_be.repositories.HistorialDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.MarcaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.PropietarioRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.SoftwareCsaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoAlmacenamientoRamRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoAlmacenamientoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDispositivoRepository;
@@ -70,6 +72,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
     public static final String IS_NOT_CORRECT = "%s no es correcto";
 
+    @Autowired
+    private SoftwareCsaRepository softwareCSARepository;
     @Autowired
     private PropietarioRepository propietarioRepository;
 
@@ -317,7 +321,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         historialDispositivoRepository.save(historialDispositivo);
 
-        crearCambioUbicacionPc(computadorCreado, bodegaSistemas, null, "Se ha registrado el equipo "+computadorCreado.getNombre()+" en la bodega de sistemas");
+        crearCambioUbicacionPc(computadorCreado, bodegaSistemas, null,
+                "Se ha registrado el equipo " + computadorCreado.getNombre() + " en la bodega de sistemas");
         ComputadorDTO computadorCreadoDto = new ComputadorDTO();
 
         BeanUtils.copyProperties(computadorCreado, computadorCreadoDto);
@@ -345,9 +350,11 @@ public class ComputadorServiceImplementation implements IComputadorService {
             throw new ComputerNotFoundException(String.format(IS_NOT_FOUND, "EL COMPUTADOR").toUpperCase());
         }
 
-        if (!computador.getEstadoDispositivo().getNombre().equals("Disponible") && !computador.getEstadoDispositivo().getNombre().equals("En uso")) {
+        if (!computador.getEstadoDispositivo().getNombre().equals("Disponible")
+                && !computador.getEstadoDispositivo().getNombre().equals("En uso")) {
             throw new SelectNotAllowedException(String
-                    .format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR PORQUE SU ESTADO ES DIFERENTE A DISPONIBLE O EN USO")
+                    .format(IS_NOT_ALLOWED,
+                            "SELECCIONAR ESTE COMPUTADOR PORQUE SU ESTADO ES DIFERENTE A DISPONIBLE O EN USO")
                     .toUpperCase());
         }
         Ubicacion ubicacionActual = computador.getUbicacion();
@@ -507,8 +514,9 @@ public class ComputadorServiceImplementation implements IComputadorService {
                                 + computador.getResponsable().getSegundoNombre()
                                 + " " + computador.getResponsable().getPrimerApellido() + " "
                                 + computador.getResponsable().getSegundoApellido());
-                                //campo añadido para ubicar al usuario al momento de autocompletar el dropdown usuarios al cambiar de lugar un pc
-                                computadorResponse.setPrimerNombreUser(computador.getResponsable().getPrimerNombre());
+                // campo añadido para ubicar al usuario al momento de autocompletar el dropdown
+                // usuarios al cambiar de lugar un pc
+                computadorResponse.setPrimerNombreUser(computador.getResponsable().getPrimerNombre());
             } else {
                 computadorResponse.setResponsable(null);
                 computadorResponse.setPrimerNombreUser(null);
@@ -608,6 +616,23 @@ public class ComputadorServiceImplementation implements IComputadorService {
                             String.format(IS_NOT_ALLOWED,
                                     "EL ESTADO EN USO PORQUE SU ESTADO ACTUAL ES DIFERENTE A DISPONIBLE O EN REPARACIÓN")
                                     .toUpperCase());
+
+                }
+
+                List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository
+                        .findByComputadorAndFechaDesvinculacionIsNull(computador);
+                EstadoDispositivo estadoDispositivo = estadoDispositivoRepository.findById(1).orElse(null);
+                if (estadoDispositivo == null) {
+                    throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
+                }
+
+                for (HistorialDispositivo historialDispositivo : historialDispositivos) {
+                    DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
+
+                    if (dispositivoPC.getTipoDispositivo().getId() == 8) {
+                        dispositivoPC.setEstadoDispositivo(estadoDispositivo);
+                        dispositivoRepository.save(dispositivoPC);
+                    }
                 }
                 break;
 
@@ -616,6 +641,29 @@ public class ComputadorServiceImplementation implements IComputadorService {
                     throw new ChangeNotAllowedException(
                             String.format(IS_NOT_ALLOWED,
                                     "EL ESTADO AVERIADO PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN USO").toUpperCase());
+                }
+
+                List<HistorialDispositivo> DispositivosVinculados = historialDispositivoRepository
+                        .findByComputadorAndFechaDesvinculacionIsNull(computador);
+                EstadoDispositivo estadoDisponible = estadoDispositivoRepository.findById(4).orElse(null);
+                if (estadoDisponible == null) {
+                    throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE").toUpperCase());
+                }
+                for (HistorialDispositivo historialDispositivo : DispositivosVinculados) {
+
+                    DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
+                    if (dispositivoPC.getTipoDispositivo().getId() != 8) {
+                        historialDispositivo.setFechaDesvinculacion(new Date());
+                        historialDispositivo
+                                .setJustificacion("El dispositivo fue desvinculado porque estaba el computador "
+                                        + computador.getNombre().toLowerCase() + " se encuentra averiado");
+                        historialDispositivoRepository.save(historialDispositivo);
+                        dispositivoPC.setEstadoDispositivo(estadoDisponible);
+                    } else {
+                        dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
+                    }
+
+                    dispositivoRepository.save(dispositivoPC);
                 }
                 break;
 
@@ -635,6 +683,38 @@ public class ComputadorServiceImplementation implements IComputadorService {
                             String.format(IS_NOT_ALLOWED,
                                     "EL ESTADO DISPONIBLE PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN REPARACION O EN USO")
                                     .toUpperCase());
+
+                }
+
+                Ubicacion ubicacion = ubicacionRepository.findById(4).orElse(null); // bodega sistemas
+
+                if (ubicacion == null) {
+                    throw new StateNotFoundException(
+                            String.format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
+                }
+                computador.setUbicacion(ubicacion);
+                computador.setResponsable(null);
+
+                if (estadoActual.equals("En uso")) {
+                    List<HistorialDispositivo> DispositivosVinculado = historialDispositivoRepository
+                            .findByComputadorAndFechaDesvinculacionIsNull(computador);
+                    
+                    
+                    for (HistorialDispositivo historialDispositivo : DispositivosVinculado) {
+
+                        DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
+                        if (dispositivoPC.getTipoDispositivo().getId() != 8) {
+                            historialDispositivo.setFechaDesvinculacion(new Date());
+                            historialDispositivo
+                                    .setJustificacion("El dispositivo fue desvinculado porque estaba el computador "
+                                            + computador.getNombre().toLowerCase() + " fue movido a la bodega de sistemas");
+                            historialDispositivoRepository.save(historialDispositivo);
+                        } 
+                            dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
+                        
+
+                        dispositivoRepository.save(dispositivoPC);
+                    }
                 }
                 break;
 
@@ -644,6 +724,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
                             String.format(IS_NOT_ALLOWED,
                                     "EL ESTADO DADO DE BAJA PORQUE SU ESTADO ACTUAL ES DIFERENTE A AVERIADO O DISPONIBLE")
                                     .toUpperCase());
+                }
+
+                List<SoftwareCSA> softwareCSAs = softwareCSARepository.findByComputadorAndFechaDesvinculacionIsNull(computador);
+
+                for (SoftwareCSA softwareCSA : softwareCSAs) {
+                    softwareCSA.setFechaDesvinculacion(new Date());
+                    softwareCSA.setJustificacion("El software fue desvinculado porque estaba el computador "
+                            + computador.getNombre().toLowerCase() + " fue dado de baja");
+                    softwareCSARepository.save(softwareCSA);
                 }
                 break;
 
@@ -866,10 +955,11 @@ public class ComputadorServiceImplementation implements IComputadorService {
                         String.format(IS_NOT_FOUND, "EL TIPO DE MEMORIA RAM").toUpperCase());
             }
 
-            if (tipoRam.getDeleteFlag()== true) {
+            if (tipoRam.getDeleteFlag() == true) {
                 throw new SelectNotAllowedException(
                         String.format(IS_NOT_ALLOWED,
-                                "SELECCIONAR EL TIPO DE RAM " + tipoRam.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADA")
+                                "SELECCIONAR EL TIPO DE RAM " + tipoRam.getNombre()
+                                        + " PORQUE SE ENCUENTRA DESACTIVADA")
                                 .toUpperCase());
             }
 
@@ -935,9 +1025,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
         return computadorActualizadoDTO;
     }
 
-   
-
-    public void crearCambioUbicacionPc(Computador computador, Ubicacion ubicacionNueva, Ubicacion ubicacionActual, String justificacion) {
+    public void crearCambioUbicacionPc(Computador computador, Ubicacion ubicacionNueva, Ubicacion ubicacionActual,
+            String justificacion) {
 
         CambioUbicacionPc cambioUbicacionPc = new CambioUbicacionPc();
         cambioUbicacionPc.setComputador(computador);
