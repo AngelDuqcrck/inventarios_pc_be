@@ -314,37 +314,53 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
 
-        if (solicitud.getTipoSolicitudes().getId() == 1)// Solicitud de Reparacion
+        if (solicitud.getTipoSolicitudes().getId() == 1 || solicitud.getTipoSolicitudes().getId() == 3)// Solicitud de
+                                                                                                       // Reparacion
         {
-
-            if (solicitud.getDispositivoPC() != null) {
-                EstadoDispositivo estadoEnUso = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
-                if (estadoEnUso == null) {
-                    throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO EN USO").toUpperCase());
-                }
-                DispositivoPC dispositivo = solicitud.getDispositivoPC();
-                dispositivo.setEstadoDispositivo(estadoEnUso);
-
-                Computador computadorAnterior = solicitud.getComputador();
-                HistorialDispositivo historial = historialDispositivoRepository
-                        .findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(computadorAnterior,
-                                dispositivo);
-
-                if (dispositivo.getTipoDispositivo().getId() != 8)// Tipo de dispositivo diferente a torre
-
-                {
-                    if (historial != null) {
-                        historial.setFechaDesvinculacion(null);
-                        historialDispositivoRepository.save(historial);
+            if (solicitud.getEsHardaware() == true) {
+                if (solicitud.getDispositivoPC() != null) {
+                    EstadoDispositivo estadoEnUso = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
+                    if (estadoEnUso == null) {
+                        throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO EN USO").toUpperCase());
                     }
+                    DispositivoPC dispositivo = solicitud.getDispositivoPC();
+                    dispositivo.setEstadoDispositivo(estadoEnUso);
+
+                    Computador computadorAnterior = solicitud.getComputador();
+                    HistorialDispositivo historial = historialDispositivoRepository
+                            .findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(computadorAnterior,
+                                    dispositivo);
+
+                    if (dispositivo.getTipoDispositivo().getId() != 8)// Tipo de dispositivo diferente a torre
+
+                    {
+                        if (historial != null) {
+                            historial.setFechaDesvinculacion(null);
+                            historial.setJustificacion(null);
+                            historialDispositivoRepository.save(historial);
+                        }
+                    }
+
+                    dispositivoRepository.save(dispositivo);
                 }
 
-                dispositivoRepository.save(dispositivo);
             }
+            if (solicitud.getEsHardaware() == false) {
+                Computador computadorAnterior = solicitud.getComputador();
+                SoftwarePC softwarePc = solicitud.getSoftwarePC();
 
+                SoftwareCSA softwareCSA = softwareCsaRepository
+                        .findTopByComputadorAndSoftwarePCOrderByFechaDesvinculacionDesc(computadorAnterior, softwarePc);
+
+                if (softwareCSA != null) {
+                    softwareCSA.setFechaDesvinculacion(null);
+                    softwareCSA.setJustificacion(null);
+                    softwareCsaRepository.save(softwareCSA);
+                }
+
+            }
+            solicitudRepository.save(solicitud);
         }
-        solicitudRepository.save(solicitud);
-
     }
 
     public void retornarSolicitudPendiente(Integer solicitudId)
