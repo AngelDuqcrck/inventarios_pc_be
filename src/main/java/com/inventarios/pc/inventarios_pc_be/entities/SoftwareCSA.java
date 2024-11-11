@@ -31,4 +31,6 @@ public class SoftwareCSA {
 
     private Date fechaVinculacion;
 
+    private String justificacion;
+
 }

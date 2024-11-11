@@ -56,4 +56,11 @@ public class Solicitudes {
     @ManyToOne
     @JoinColumn( name = "dispositivo_id")
     private DispositivoPC dispositivoPC;
+
+
+    @ManyToOne
+    @JoinColumn(name = "software_id")
+    private  SoftwarePC softwarePC;
+
+    private Boolean esHardaware;
 }

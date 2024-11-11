@@ -2,6 +2,8 @@ package com.inventarios.pc.inventarios_pc_be.shared.DTOs;
 
 import java.util.Date;
 
+import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
+
 import lombok.*;
 
 @Data
@@ -39,4 +41,8 @@ public class SolicitudDTO {
 
    
     private Integer dispositivoPC;
+
+    private Integer softwarePC;
+    
+    private Boolean esHardaware;
 }

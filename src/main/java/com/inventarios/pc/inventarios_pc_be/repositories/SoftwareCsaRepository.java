@@ -7,6 +7,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwareCSA;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
 import java.util.List;
+import java.util.Date;
+
 
 
 public interface SoftwareCsaRepository extends JpaRepository<SoftwareCSA, Integer> {
@@ -20,5 +22,7 @@ public interface SoftwareCsaRepository extends JpaRepository<SoftwareCSA, Intege
     List<SoftwareCSA> findByComputador(Computador computador);
 
     List<SoftwareCSA> findByComputadorAndFechaDesvinculacionIsNull(Computador computador);
+
+    SoftwareCSA findTopByComputadorAndSoftwarePCOrderByFechaDesvinculacionDesc(Computador computador, SoftwarePC softwarePC);
 
 }

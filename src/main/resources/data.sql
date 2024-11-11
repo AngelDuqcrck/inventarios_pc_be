@@ -223,11 +223,10 @@ CREATE TABLE IF NOT EXISTS tipo_solicitudes
 
 -- Insertamos los tipos de solicitudes si no existen en el sistema
 INSERT IGNORE INTO tipo_solicitudes (id, nombre, delete_flag) VALUES
-    (1, 'Reparacion', 0),
+    (1, 'Mantenimiento correctivo', 0),
     (2, 'Cambio de ubicacion', 0),
-    (3, 'Mantenimiento Correctivo', 0),
-    (4, 'Mantenimiento Preventivo', 0),
-    (5, 'General', 0);
+    (3, 'Mantenimiento preventivo', 0),
+    (4, 'General', 0);
 
 -- Creamos la tabla estado_solicitudes si no existe
 CREATE TABLE IF NOT EXISTS estado_solicitudes
