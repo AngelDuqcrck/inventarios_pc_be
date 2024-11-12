@@ -331,14 +331,14 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
+        /* Authentication authentication = new UsernamePasswordAuthenticationToken(
                 usuarioActualizado.getCorreo(), usuarioActualizado.getPassword(),
                 List.of(new SimpleGrantedAuthority(rol.getNombre())));
         String nuevoToken = jwtGenerador.generarToken(authentication);
-
+    */
         UsuarioDTO usuarioActualizadoDTO = new UsuarioDTO();
         BeanUtils.copyProperties(usuarioActualizado, usuarioActualizadoDTO);
-        usuarioActualizadoDTO.setToken(nuevoToken);
+        //usuarioActualizadoDTO.setToken(nuevoToken);
 
         return usuarioActualizadoDTO;
 

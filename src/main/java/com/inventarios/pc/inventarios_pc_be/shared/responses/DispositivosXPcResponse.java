@@ -13,6 +13,8 @@ public class DispositivosXPcResponse {
 
     private String nombre;
 
+    private String placa;
+
     private List<DispositivosVinculadosResponse> dispositivosVinculados;
 
 }

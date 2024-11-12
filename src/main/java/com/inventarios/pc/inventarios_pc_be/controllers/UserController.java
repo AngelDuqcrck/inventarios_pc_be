@@ -114,12 +114,18 @@ public class UserController {
          */
         @PreAuthorize("hasAuthority('ADMIN')")
         @PutMapping("/actualizar/{usuarioId}")
-        public ResponseEntity<UsuarioDTO> actualizarUsuario(@PathVariable Integer usuarioId,
+        public ResponseEntity<HttpResponse> actualizarUsuario(@PathVariable Integer usuarioId,
                         @RequestBody ActualizarUsuarioRequest actualizarUsuarioRequest)
                         throws SelectNotAllowedException, UpdateNotAllowedException, RolNotFoundException,
                         LocationNotFoundException, DocumentNotFoundException, UserNotFoundException {
-                UsuarioDTO usuarioDTO = usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
-                return new ResponseEntity<>( usuarioDTO, HttpStatus.OK);
+                //UsuarioDTO usuarioDTO = usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
+                //return new ResponseEntity<>( usuarioDTO, HttpStatus.OK);
+
+                usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
+                return new ResponseEntity<>(
+                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                                " Usuario actualizado exitosamente"),
+                                HttpStatus.OK);
         }
 
         /**
