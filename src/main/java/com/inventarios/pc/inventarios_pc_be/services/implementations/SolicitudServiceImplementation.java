@@ -266,6 +266,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         }
         retornarModificacionesSolicitud(solicitud);
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
+        solicitud.setFechaCierre(new Date());
 
         
         solicitudRepository.save(solicitud);
@@ -292,6 +293,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
         }
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
+        solicitud.setFechaCierre(new Date());
 
         solicitudRepository.save(solicitud);
     }

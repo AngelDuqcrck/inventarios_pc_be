@@ -15,7 +15,10 @@ import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoSolicitudes;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoTickets;
+import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.Rol;
+import com.inventarios.pc.inventarios_pc_be.entities.SoftwareCSA;
+import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
 import com.inventarios.pc.inventarios_pc_be.entities.Solicitudes;
 import com.inventarios.pc.inventarios_pc_be.entities.Tickets;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
@@ -35,7 +38,9 @@ import com.inventarios.pc.inventarios_pc_be.repositories.DispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoSolicitudesRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.EstadoTicketsRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.HistorialDispositivoRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.RolRepository;
+import com.inventarios.pc.inventarios_pc_be.repositories.SoftwareCsaRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.SolicitudRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.TicketRepository;
 import com.inventarios.pc.inventarios_pc_be.repositories.UsuarioRepository;
@@ -58,6 +63,10 @@ public class TicketServiceImplementation implements ITicketService {
     public static final String IS_NOT_CORRECT = "%s no es correcto";
     public static final String IS_NOT_VINCULATED = "%s no esta vinculado";
 
+    @Autowired
+    private SoftwareCsaRepository softwareCsaRepository;
+    @Autowired
+    private HistorialDispositivoRepository historialDispositivoRepository;
     @Autowired
     private ComputadorRepository computadorRepository;
 
@@ -336,28 +345,60 @@ public class TicketServiceImplementation implements ITicketService {
                     case 1: // Reparacion
                         if (cambiarEstadoTicketRequest.getResuelto() == true) {
                             DispositivoPC dispositivoPC = solicitud.getDispositivoPC();
+                            Computador computador = solicitud.getComputador();
+                            if (solicitud.getEsHardaware() == true) {
 
-                            EstadoDispositivo estadoDisponible = estadoDispositivoRepository.findById(4).orElse(null);
+                                EstadoDispositivo estadoEnUso = estadoDispositivoRepository.findById(1)
+                                        .orElse(null);
 
-                            if (estadoDisponible == null) {
-                                throw new StateNotFoundException(
-                                        String.format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE").toUpperCase());
+                                if (estadoEnUso == null) {
+                                    throw new StateNotFoundException(
+                                            String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
+                                }
+
+                                dispositivoPC.setEstadoDispositivo(estadoEnUso);
+
+                                HistorialDispositivo historial = historialDispositivoRepository
+                                        .findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(
+                                                computador, dispositivoPC);
+                                if (dispositivoPC.getTipoDispositivo().getId() != 8)// Tipo de dispositivo diferente a
+                                                                                    // torre
+
+                                {
+                                    if (historial != null) {
+                                        historial.setFechaDesvinculacion(null);
+                                        historial.setJustificacion(null);
+                                        historialDispositivoRepository.save(historial);
+                                    }
+                                }
+                                dispositivoRepository.save(dispositivoPC);
+
                             }
+                            if (solicitud.getEsHardaware() == false) {
+                                SoftwarePC softwarePC = solicitud.getSoftwarePC();
+                                SoftwareCSA softwareCSA = softwareCsaRepository
+                                        .findTopByComputadorAndSoftwarePCOrderByFechaDesvinculacionDesc(computador,
+                                                softwarePC);
 
-                            dispositivoPC.setEstadoDispositivo(estadoDisponible);
-                            dispositivoRepository.save(dispositivoPC);
-
+                                if (softwareCSA != null) {
+                                    softwareCSA.setFechaDesvinculacion(null);
+                                    softwareCSA.setJustificacion(null);
+                                    softwareCsaRepository.save(softwareCSA);
+                                }
+                            }
                         }
                         if (cambiarEstadoTicketRequest.getResuelto() == false) {
-                            DispositivoPC dispositivoPC = solicitud.getDispositivoPC();
+                            if (solicitud.getEsHardaware() == true) {
+                                DispositivoPC dispositivoPC = solicitud.getDispositivoPC();
 
-                            EstadoDispositivo estadoBaja = estadoDispositivoRepository.findById(5).orElse(null);
-                            if (estadoBaja == null) {
-                                throw new StateNotFoundException(
-                                        String.format(IS_NOT_FOUND, "EL ESTADO DADO DE BAJA").toUpperCase());
+                                EstadoDispositivo estadoBaja = estadoDispositivoRepository.findById(5).orElse(null);
+                                if (estadoBaja == null) {
+                                    throw new StateNotFoundException(
+                                            String.format(IS_NOT_FOUND, "EL ESTADO DADO DE BAJA").toUpperCase());
+                                }
+                                dispositivoPC.setEstadoDispositivo(estadoBaja);
+                                dispositivoRepository.save(dispositivoPC);
                             }
-                            dispositivoPC.setEstadoDispositivo(estadoBaja);
-                            dispositivoRepository.save(dispositivoPC);
                         }
                         break;
 
@@ -386,6 +427,63 @@ public class TicketServiceImplementation implements ITicketService {
                             computador.setUbicacion(ubicacionOrigen);
 
                             computadorRepository.save(computador);
+                        }
+                        break;
+
+                    case 3: // Mantenimiento preventivo
+                        if (cambiarEstadoTicketRequest.getResuelto() == true) {
+                            DispositivoPC dispositivoPC = solicitud.getDispositivoPC();
+                            Computador computador = solicitud.getComputador();
+                            if (solicitud.getEsHardaware() == true) {
+
+                                EstadoDispositivo estadoEnUso = estadoDispositivoRepository.findById(1)
+                                        .orElse(null);
+
+                                if (estadoEnUso == null) {
+                                    throw new StateNotFoundException(
+                                            String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
+                                }
+
+                                dispositivoPC.setEstadoDispositivo(estadoEnUso);
+
+                                HistorialDispositivo historial = historialDispositivoRepository
+                                        .findTopByComputadorAndDispositivoPCOrderByFechaDesvinculacionDesc(
+                                                computador, dispositivoPC);
+                                if (dispositivoPC.getTipoDispositivo().getId() != 8)// Tipo de dispositivo diferente a
+                                                                                    // torre
+
+                                {
+                                    if (historial != null) {
+                                        historial.setFechaDesvinculacion(null);
+                                        historial.setJustificacion(null);
+                                        historialDispositivoRepository.save(historial);
+                                    }
+                                }
+                                dispositivoRepository.save(dispositivoPC);
+
+                            }
+                            if (solicitud.getEsHardaware() == false) {
+                                SoftwarePC softwarePC = solicitud.getSoftwarePC();
+                                SoftwareCSA softwareCSA = softwareCsaRepository
+                                        .findTopByComputadorAndSoftwarePCOrderByFechaDesvinculacionDesc(computador,
+                                                softwarePC);
+
+                                if (softwareCSA != null) {
+                                    softwareCSA.setFechaDesvinculacion(null);
+                                    softwareCSA.setJustificacion(null);
+                                    softwareCsaRepository.save(softwareCSA);
+                                }
+                            }
+                        }
+
+                        if (cambiarEstadoTicketRequest.getResuelto() == false) {
+                            EstadoTickets estadoReasignado = estadoTicketsRepository.findById(4).orElse(null);
+
+                            if (estadoReasignado == null) {
+                                throw new StateNotFoundException(
+                                        String.format(IS_NOT_FOUND, "EL ESTADO REASIGNADO").toUpperCase());
+                            }
+                            ticket.setEstadoTickets(estadoReasignado);
                         }
                         break;
                     default:
@@ -436,12 +534,24 @@ public class TicketServiceImplementation implements ITicketService {
         }
 
         ticket.setEstadoTickets(estadoTickets);
+
+        if (ticket.getSolicitudes().getTipoSolicitudes().getId() == 3
+                && cambiarEstadoTicketRequest.getResuelto() == false) {
+            EstadoTickets estadoReasignado = estadoTicketsRepository.findById(4).orElse(null);
+
+            if (estadoReasignado == null) {
+                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO REASIGNADO").toUpperCase());
+            }
+            ticket.setEstadoTickets(estadoReasignado);
+        }
+
         ticketRepository.save(ticket);
         crearCambioEstado(ticket, estadoTickets);
     }
 
     @Override
-    public void reasignarTicket(Integer ticketId, Integer tecnicoId)throws TicketNotFoundException, RolNotFoundException, UserNotFoundException, SelectNotAllowedException {
+    public void reasignarTicket(Integer ticketId, Integer tecnicoId)
+            throws TicketNotFoundException, RolNotFoundException, UserNotFoundException, SelectNotAllowedException {
         Tickets ticket = ticketRepository.findById(ticketId).orElse(null);
 
         if (ticket == null) {
@@ -449,7 +559,8 @@ public class TicketServiceImplementation implements ITicketService {
 
         }
         if (!ticket.getEstadoTickets().getNombre().equals("Reasignado")) {
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN PROCESO"));
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED,
+                    "SELECCIONAR ESTE TICKET PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN PROCESO"));
 
         }
         asignarTecnicoATicket(tecnicoId, ticket);
@@ -458,8 +569,9 @@ public class TicketServiceImplementation implements ITicketService {
         if (estadoTickets == null) {
             throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EL ESTADO EN PROCESO").toUpperCase());
         }
-        if(estadoTickets.getDeleteFlag()==true){
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "EL ESTADO EN PROCESO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
+        if (estadoTickets.getDeleteFlag() == true) {
+            throw new SelectNotAllowedException(String
+                    .format(IS_NOT_ALLOWED, "EL ESTADO EN PROCESO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
         ticket.setEstadoTickets(estadoTickets);
         ticketRepository.save(ticket);
