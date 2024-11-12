@@ -605,7 +605,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
         if (nuevoEstadoDispositivo == null) {
             throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO DEL COMPUTADOR").toUpperCase());
         }
-
+        List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository
+                .findByComputadorAndFechaDesvinculacionIsNull(computador);
         String estadoActual = computador.getEstadoDispositivo().getNombre();
 
         // Lógica de validación basada en las reglas de cambio de estado
@@ -619,18 +620,11 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
                 }
 
-                List<HistorialDispositivo> historialDispositivos = historialDispositivoRepository
-                        .findByComputadorAndFechaDesvinculacionIsNull(computador);
-                EstadoDispositivo estadoDispositivo = estadoDispositivoRepository.findById(1).orElse(null);
-                if (estadoDispositivo == null) {
-                    throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
-                }
-
                 for (HistorialDispositivo historialDispositivo : historialDispositivos) {
                     DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
 
                     if (dispositivoPC.getTipoDispositivo().getId() == 8) {
-                        dispositivoPC.setEstadoDispositivo(estadoDispositivo);
+                        dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
                         dispositivoRepository.save(dispositivoPC);
                     }
                 }
@@ -643,13 +637,11 @@ public class ComputadorServiceImplementation implements IComputadorService {
                                     "EL ESTADO AVERIADO PORQUE SU ESTADO ACTUAL ES DIFERENTE A EN USO").toUpperCase());
                 }
 
-                List<HistorialDispositivo> DispositivosVinculados = historialDispositivoRepository
-                        .findByComputadorAndFechaDesvinculacionIsNull(computador);
                 EstadoDispositivo estadoDisponible = estadoDispositivoRepository.findById(4).orElse(null);
                 if (estadoDisponible == null) {
                     throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO DISPONIBLE").toUpperCase());
                 }
-                for (HistorialDispositivo historialDispositivo : DispositivosVinculados) {
+                for (HistorialDispositivo historialDispositivo : historialDispositivos) {
 
                     DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
                     if (dispositivoPC.getTipoDispositivo().getId() != 8) {
@@ -674,6 +666,17 @@ public class ComputadorServiceImplementation implements IComputadorService {
                                     "EL ESTADO EN REPARACIÓN PORQUE SU ESTADO ACTUAL ES DIFERENTE A AVERIADO")
                                     .toUpperCase());
                 }
+
+               
+
+                for (HistorialDispositivo historialDispositivo : historialDispositivos) {
+                    DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
+
+                    if (dispositivoPC.getTipoDispositivo().getId() == 8) {
+                        dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
+                        dispositivoRepository.save(dispositivoPC);
+                    }
+                }
                 break;
 
             case 4: // Disponible
@@ -692,28 +695,26 @@ public class ComputadorServiceImplementation implements IComputadorService {
                     throw new StateNotFoundException(
                             String.format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
                 }
-                
+
                 computador.setUbicacion(ubicacion);
                 computador.setResponsable(null);
-                crearCambioUbicacionPc(computador, ubicacion, antiguaUbicacion, "El computador fue movido a la bodega de sistemas de la sede principal porque su estado cambio a disponible");
+                crearCambioUbicacionPc(computador, ubicacion, antiguaUbicacion,
+                        "El computador fue movido a la bodega de sistemas de la sede principal porque su estado cambio a disponible");
 
                 if (estadoActual.equals("En uso")) {
-                    List<HistorialDispositivo> DispositivosVinculado = historialDispositivoRepository
-                            .findByComputadorAndFechaDesvinculacionIsNull(computador);
-                    
-                    
-                    for (HistorialDispositivo historialDispositivo : DispositivosVinculado) {
+                   
+                    for (HistorialDispositivo historialDispositivo : historialDispositivos) {
 
                         DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
                         if (dispositivoPC.getTipoDispositivo().getId() != 8) {
                             historialDispositivo.setFechaDesvinculacion(new Date());
                             historialDispositivo
                                     .setJustificacion("El dispositivo fue desvinculado porque estaba el computador "
-                                            + computador.getNombre().toLowerCase() + " fue movido a la bodega de sistemas");
+                                            + computador.getNombre().toLowerCase()
+                                            + " fue movido a la bodega de sistemas");
                             historialDispositivoRepository.save(historialDispositivo);
-                        } 
-                            dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
-                        
+                        }
+                        dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
 
                         dispositivoRepository.save(dispositivoPC);
                     }
@@ -727,8 +728,16 @@ public class ComputadorServiceImplementation implements IComputadorService {
                                     "EL ESTADO DADO DE BAJA PORQUE SU ESTADO ACTUAL ES DIFERENTE A AVERIADO O DISPONIBLE")
                                     .toUpperCase());
                 }
+                for (HistorialDispositivo historialDispositivo : historialDispositivos) {
+                    DispositivoPC dispositivoPC = historialDispositivo.getDispositivoPC();
 
-                List<SoftwareCSA> softwareCSAs = softwareCSARepository.findByComputadorAndFechaDesvinculacionIsNull(computador);
+                    if (dispositivoPC.getTipoDispositivo().getId() == 8) {
+                        dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
+                        dispositivoRepository.save(dispositivoPC);
+                    }
+                }
+                List<SoftwareCSA> softwareCSAs = softwareCSARepository
+                        .findByComputadorAndFechaDesvinculacionIsNull(computador);
 
                 for (SoftwareCSA softwareCSA : softwareCSAs) {
                     softwareCSA.setFechaDesvinculacion(new Date());
