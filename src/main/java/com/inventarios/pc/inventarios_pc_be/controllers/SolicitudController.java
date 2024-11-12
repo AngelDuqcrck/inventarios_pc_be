@@ -30,7 +30,7 @@ public class SolicitudController {
         @Autowired
         private ISolicitudService solicitudService;
 
-        @PreAuthorize("hasAuthority('EMPLEADO_ASISTENCIAL')")
+        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL','ADMIN')")
         @PostMapping("/crear/asistencial")
         public ResponseEntity<HttpResponse> crearSolicitudAsistencial(@RequestBody SolicitudDTO solicitudDTO,
                         @RequestParam Integer tipoSolicitudId)
@@ -46,7 +46,7 @@ public class SolicitudController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL','ADMIN')")
+        @PreAuthorize("hasAuthority('EMPLEADO_ADMINISTRATIVO')")
         @PostMapping("/crear/administrativo")
         public ResponseEntity<HttpResponse> crearSolicitudAdministrativo(@RequestBody SolicitudDTO solicitudDTO,
                         @RequestParam Integer tipoSolicitudId)
@@ -62,7 +62,7 @@ public class SolicitudController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL', 'EMPLEADO_ADMINISTRATIVO')")
+        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL', 'EMPLEADO_ADMINISTRATIVO', 'ADMIN')")
         @PutMapping("/editar/{solicitudId}")
         public ResponseEntity<HttpResponse> editarSolicitud(@PathVariable Integer solicitudId,
                         @RequestBody ActualizarSolicitudRequest solicitudRequest)  throws RequestNotFoundException, SelectNotAllowedException, UpdateNotAllowedException,

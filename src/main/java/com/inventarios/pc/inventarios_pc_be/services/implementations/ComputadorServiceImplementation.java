@@ -300,6 +300,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         dispositivoPc.setNombre(computadorCreado.getNombre());
         dispositivoPc.setPlaca(computadorCreado.getPlaca());
         dispositivoPc.setSerial(computadorCreado.getSerial());
+        dispositivoPc.setPropietario(computadorCreado.getPropietario());
         dispositivoRepository.save(dispositivoPc);
 
         HistorialDispositivo historialDispositivo = new HistorialDispositivo();
@@ -457,6 +458,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
+            computadorResponse.setArea(computador.getUbicacion().getArea().getNombre());
+            computadorResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
 
             computadoresResponses.add(computadorResponse);
@@ -490,6 +493,10 @@ public class ComputadorServiceImplementation implements IComputadorService {
                 computadorResponse.setResponsable(null);
             }
             computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+            computadorResponse.setMarca(computador.getMarca().getNombre());
+            computadorResponse.setModelo(computador.getModelo());
+            computadorResponse.setSerial(computador.getSerial());
+            computadorResponse.setPlaca(computador.getPlaca());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
 

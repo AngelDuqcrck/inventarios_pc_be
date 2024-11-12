@@ -48,6 +48,10 @@ public class SolicitudIdResponse {
 
     private String ubicacionDestino;
 
+    private Boolean esHardaware;
+
+    private String softwarePC;
+
    
     private String dispositivoPC;
 }

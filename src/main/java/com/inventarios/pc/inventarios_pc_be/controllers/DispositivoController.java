@@ -57,6 +57,7 @@ public class DispositivoController {
                                         dispositivoR.setMarca(dispositivo.getMarca().getNombre());
                                         dispositivoR.setEstadoDispositivo(
                                                         dispositivo.getEstadoDispositivo().getNombre());
+                                        dispositivoR.setPropietario(dispositivo.getPropietario().getNombre());
                                         return dispositivoR;
                                 }).collect(Collectors.toList()));
         }

@@ -21,4 +21,6 @@ public class HistorialUbicaciones {
     private Date fechaCambio;
 
     private Date fechaIngreso;
+
+    private String justificacion;
 }

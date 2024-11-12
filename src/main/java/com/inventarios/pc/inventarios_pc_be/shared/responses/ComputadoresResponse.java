@@ -25,6 +25,12 @@ public class ComputadoresResponse {
     private String nombre;
     
     private String placa;
+
+    private String modelo;
+
+    private String serial;
+
+    private String marca;
     
     private String estadoDispositivo;
 
