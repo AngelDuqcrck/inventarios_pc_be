@@ -214,7 +214,18 @@ public class AreaServiceImplementation implements IAreaService {
         if (areaPC.getDeleteFlag() == true) {
             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL ÁREA "+areaPC.getNombre()+" PORQUE ESTA INACTIVA").toUpperCase());
         }
-        BeanUtils.copyProperties(areaDTO, areaPC);
+        
+        if (areaDTO.getNombre() != null && !areaDTO.getNombre().equalsIgnoreCase(areaPC.getNombre())) {
+            // Obtener todas las áreas en la misma sede
+            List<AreaPC> areasExistentes = areaRepository.findBySede(areaPC.getSede());
+            for (AreaPC areaExistente : areasExistentes) {
+                if (areaExistente.getNombre().equalsIgnoreCase(areaDTO.getNombre())) {
+                    throw new SelectNotAllowedException(String.format("YA EXISTE UN ÁREA CON EL NOMBRE '%s' EN LA SEDE '%s'.",
+                            areaDTO.getNombre().toUpperCase(), areaPC.getSede().getNombre().toUpperCase()));
+                }
+            }
+            areaPC.setNombre(areaDTO.getNombre()); // Asignar el nuevo nombre si no hay duplicados
+        }
 
         if (areaDTO.getSede() != null) {
             SedePC sedePC = sedeRepository.findById(areaDTO.getSede()).orElse(null);
@@ -229,15 +240,7 @@ public class AreaServiceImplementation implements IAreaService {
             areaPC.setSede(sedePC);
         }
 
-        if(areaDTO.getNombre()!= null){
-            List<AreaPC> areasExistentes = areaRepository.findBySede(areaPC.getSede());
-            for (AreaPC areaExistente : areasExistentes) {
-                if (areaExistente.getNombre().equalsIgnoreCase(areaDTO.getNombre())) {
-                    throw new SelectNotAllowedException(String.format("YA EXISTE UN ÁREA CON EL NOMBRE '%s' EN LA SEDE '%s'.",
-                        areaDTO.getNombre().toUpperCase(), areaPC.getSede().getNombre().toUpperCase()));
-                }
-            }
-        }
+        
 
         if(areaDTO.getRol()!= null){
             Rol rol = rolRepository.findById(areaDTO.getRol()).orElse(null);

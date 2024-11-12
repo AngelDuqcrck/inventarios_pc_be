@@ -304,6 +304,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             throw new UpdateNotAllowedException(String
                     .format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
+        Ubicacion ubicacionActual = usuario.getUbicacionId();
 
         Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
         if (rol == null) {
@@ -319,6 +320,11 @@ public class UsuarioServiceImplementation implements IUsuarioService {
                             "SELECCIONAR LA UBICACION " + ubicacion.getNombre() + " PORQUE SE ENCUENTRA OCUPADA")
                     .toUpperCase());
         }
+        if(ubicacionActual.getId() == ubicacion.getId()){
+            ubicacionActual.setEstaOcupada(false);
+            ubicacionRepository.save(ubicacionActual);
+        }
+
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
 
         if (tipoDocumento == null) {
