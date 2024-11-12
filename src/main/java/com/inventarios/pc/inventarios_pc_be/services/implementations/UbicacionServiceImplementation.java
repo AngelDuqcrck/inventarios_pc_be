@@ -173,9 +173,9 @@ public class UbicacionServiceImplementation implements IUbicacionService {
             ubicacion.setArea(areaPC);
         }
 
-        if (ubicacionDTO.getNombre() != null) {
+        if (ubicacionDTO.getNombre() != null && !ubicacionDTO.getNombre().equalsIgnoreCase(ubicacion.getNombre())) {
+           
             List<Ubicacion> ubicacionesExistentes = ubicacionRepository.findByArea(ubicacion.getArea());
-
             for (Ubicacion ubicacionExistente : ubicacionesExistentes) {
                 if (ubicacionExistente.getNombre().equalsIgnoreCase(ubicacionDTO.getNombre())) {
                     throw new SelectNotAllowedException(String.format(
@@ -183,6 +183,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
                             ubicacionDTO.getNombre().toUpperCase(), ubicacion.getArea().getNombre().toUpperCase()));
                 }
             }
+            ubicacion.setNombre(ubicacionDTO.getNombre()); 
         }
 
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
