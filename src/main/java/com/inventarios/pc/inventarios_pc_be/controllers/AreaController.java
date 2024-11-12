@@ -67,6 +67,7 @@ public class AreaController {
                                         AreaResponse areaR = new AreaResponse();
                                         BeanUtils.copyProperties(area, areaR);
                                         areaR.setSede(area.getSede().getNombre());
+                                        areaR.setRol(area.getRol().getNombre());
                                         return areaR;
                                 }).collect(Collectors.toList()));
         }

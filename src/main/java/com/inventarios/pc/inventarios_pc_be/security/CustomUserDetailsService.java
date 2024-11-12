@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByCorreo(username).orElseThrow(
-                () -> new UsernameNotFoundException("El usuario con el correo " + username + " no fue encontrado"));
+                () -> new UsernameNotFoundException("Sesión no válida o usuario no encontrado"));
 
 
         // Nos traemos la lista de autoridades a traves de la lista de roles
