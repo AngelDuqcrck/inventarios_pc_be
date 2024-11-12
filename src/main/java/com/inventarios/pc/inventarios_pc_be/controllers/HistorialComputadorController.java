@@ -92,7 +92,7 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(dispositivosXPcResponse, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/software-pc/{computadorId}")
     public ResponseEntity<SoftwareXPcResponse> listarSoftwaresXPc(@PathVariable Integer computadorId)
             throws ComputerNotFoundException {
