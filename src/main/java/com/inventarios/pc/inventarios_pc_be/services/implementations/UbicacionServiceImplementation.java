@@ -2,6 +2,7 @@ package com.inventarios.pc.inventarios_pc_be.services.implementations;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import org.springframework.beans.BeanUtils;
@@ -115,6 +116,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         }
         ubicacion.setArea(areaPC);
         ubicacion.setDeleteFlag(false);
+        ubicacion.setEstaOcupada(false);
 
         Ubicacion ubicacionCreada = ubicacionRepository.save(ubicacion);
         UbicacionDTO ubicacionCreadaDTO = new UbicacionDTO();
@@ -287,6 +289,24 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         return ubicacionResponse;
     }
 
+    @Override
+    public List<UbicacionResponse> listarUbicacionesPorAreaYOcupadaIsFalse(Integer areaId) throws LocationNotFoundException {
+        AreaPC areaPC = areaRepository.findById(areaId).orElse(null);
+        if (areaPC == null) {
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL AREA").toUpperCase());
+        }
+        List<Ubicacion> ubicaciones = ubicacionRepository.findByAreaAndEstaOcupadaIsFalse(areaPC);
+        List<UbicacionResponse> ubicacionesResponses = new ArrayList<>();
+        for (Ubicacion ubicacion : ubicaciones) {
+            UbicacionResponse ubicacionResponse = new UbicacionResponse();
+            BeanUtils.copyProperties(ubicacion, ubicacionResponse);
+            ubicacionResponse.setArea(ubicacion.getArea().getNombre());
+            ubicacionResponse.setSede(ubicacion.getArea().getSede().getNombre());
+            ubicacionResponse.setEstaOcupada(ubicacion.getEstaOcupada());
+            ubicacionesResponses.add(ubicacionResponse);
+        }
+        return ubicacionesResponses;
+    }
     @Override
     public List<Ubicacion> listarUbicacionesPorArea(Integer areaId)
             throws LocationNotFoundException, SelectNotAllowedException {

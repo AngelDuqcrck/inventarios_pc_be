@@ -62,26 +62,26 @@ INSERT IGNORE INTO areas_PC (id, sede_id, rol_id, nombre, descripcion, delete_fl
     (6, 3, 4, 'Sistemas SCE', 'Zona de Sistemas del Centro de Especialistas', 0);
 
 -- Creamos la tabla ubicaciones si no existe
-CREATE TABLE IF NOT EXISTS ubicaciones
-(
-    id INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS ubicaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
+    descripcion VARCHAR(255) NOT NULL,
+    esta_ocupada BOOLEAN NOT NULL,
     area_id INT,
-    descripcion TEXT NOT NULL,
-    delete_flag BOOLEAN NOT NULL,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_area FOREIGN KEY (area_id) REFERENCES areas_PC(id) ON DELETE SET NULL
+    delete_flag BOOLEAN NOT NULL DEFAULT 0,
+    CONSTRAINT fk_area FOREIGN KEY (area_id) REFERENCES areas(id)
 );
 
--- Insertamos las ubicaciones si no existen en el sistema
-INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion, delete_flag) VALUES
-    (1,1, 'Consultorio 101', 'Consultorios el primero', 0),
-    (2,2, 'Tesoreria', 'Finanzas csa', 0),
-    (2,3, 'Seguridad y Salud en el Trabajo', 'SGST', 0),
-    (4, 4, 'Bodega de Sistemas', 'Bodega de Sistemas de la sede principal', 0),
-    (5, 5, 'Bodega de Sistemas SC', 'Bodega de Sistemas de la sede Colsag', 0),
-    (6, 6, 'Bodega de Sistemas SCE', 'Bodega de Sistemas del Centro de Especialistas', 0);
-    
+
+-- Insertamos las ubicaciones por defecto si no existen en el sistema
+INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion, esta_ocupada, delete_flag) VALUES
+    (1, 1, 'Consultorio 101', 'Consultorios el primero', false, 0),
+    (2, 2, 'Tesoreria', 'Finanzas csa', false, 0),
+    (2, 3, 'Seguridad y Salud en el Trabajo', 'SGST', false, 0),
+    (4, 4, 'Bodega de Sistemas', 'Bodega de Sistemas de la sede principal', false, 0),
+    (5, 5, 'Bodega de Sistemas SC', 'Bodega de Sistemas de la sede Colsag', false, 0),
+    (6, 6, 'Bodega de Sistemas SCE', 'Bodega de Sistemas del Centro de Especialistas', false, 0);
+
 
 -- Creamos la tabla tipo_documento si no existe
 CREATE TABLE IF NOT EXISTS tipo_documento (

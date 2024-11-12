@@ -76,4 +76,6 @@ public interface IUbicacionService {
     public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException;
 
     public void activarUbicacion(Integer id) throws LocationNotFoundException, ActivateNotAllowedException;
+
+    public List<UbicacionResponse> listarUbicacionesPorAreaYOcupadaIsFalse(Integer areaId) throws LocationNotFoundException;
 }

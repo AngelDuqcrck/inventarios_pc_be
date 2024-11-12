@@ -18,4 +18,6 @@ public class UbicacionDTO {
     private Integer area;
 
     private Boolean deleteFlag;
+
+    private Boolean estaOcupada;
 }

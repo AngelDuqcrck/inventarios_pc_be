@@ -109,6 +109,13 @@ public class UsuarioServiceImplementation implements IUsuarioService {
                     .toUpperCase());
         }
 
+        if(ubicacion.getEstaOcupada() == true){
+            throw new  SelectNotAllowedException(String
+                    .format(IS_NOT_ALLOWED,
+                            "SELECCIONAR LA UBICACION " + ubicacion.getNombre() + " PORQUE SE ENCUENTRA OCUPADA")
+                    .toUpperCase());
+        }
+        
         if (rol.getDeleteFlag() == true)
 
         {
@@ -126,8 +133,13 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         usuario.setDeleteFlag(false);
         usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
 
+        
         Usuario usuarioCreado = usuarioRepository.save(usuario);
-
+        Integer rolId = ubicacion.getArea().getRol().getId();
+        if(rolId == 2){
+        ubicacion.setEstaOcupada(true);
+        ubicacionRepository.save(ubicacion);
+        }
         UsuarioDTO usuarioCreadoDTO = new UsuarioDTO();
         BeanUtils.copyProperties(usuarioCreado, usuarioCreadoDTO);
 
@@ -301,7 +313,12 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         if (ubicacion == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA UBICACION").toUpperCase());
         }
-
+        if(ubicacion.getEstaOcupada() == true){
+            throw new  SelectNotAllowedException(String
+                    .format(IS_NOT_ALLOWED,
+                            "SELECCIONAR LA UBICACION " + ubicacion.getNombre() + " PORQUE SE ENCUENTRA OCUPADA")
+                    .toUpperCase());
+        }
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
 
         if (tipoDocumento == null) {
@@ -323,14 +340,21 @@ public class UsuarioServiceImplementation implements IUsuarioService {
                             "SELECCIONAR EL ROL " + rol.getNombre() + " PORQUE SE ENCUENTRA DESACTIVADA")
                     .toUpperCase());
         }
-
+        Ubicacion antiguaUbicacion = usuario.getUbicacionId();
         usuario.setRolId(rol);
         usuario.setUbicacionId(ubicacion);
         usuario.setTipoDocumento(tipoDocumento);
         BeanUtils.copyProperties(usuarioDTO, usuario);
+       
 
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
-
+        Integer rolId = ubicacion.getArea().getRol().getId();
+        if(rolId == 2){
+        ubicacion.setEstaOcupada(true);
+        ubicacionRepository.save(ubicacion);
+        antiguaUbicacion.setEstaOcupada(false);
+        ubicacionRepository.save(antiguaUbicacion);
+        }
         /* Authentication authentication = new UsernamePasswordAuthenticationToken(
                 usuarioActualizado.getCorreo(), usuarioActualizado.getPassword(),
                 List.of(new SimpleGrantedAuthority(rol.getNombre())));

@@ -87,7 +87,12 @@ public class UbicacionController {
                                 return ubicR;
                         }).collect(Collectors.toList()));
         }
-
+        @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/libre")
+        public ResponseEntity<List<UbicacionResponse>> listarUbicByAreaYOcupadaIsFalse(@RequestParam Integer areaId) throws LocationNotFoundException {
+                List<UbicacionResponse> ubicacionesResponses = ubicacionServiceImplementation.listarUbicacionesPorAreaYOcupadaIsFalse(areaId);
+                return new ResponseEntity<>(ubicacionesResponses, HttpStatus.OK);
+        }
         /**
          * Actualiza una ubicación existente.
          *

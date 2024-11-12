@@ -10,5 +10,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 public interface UbicacionRepository extends JpaRepository<Ubicacion, Integer> {
 
     public List<Ubicacion> findByArea(AreaPC area);
+
+    public List<Ubicacion> findByAreaAndEstaOcupadaIsFalse(AreaPC areaPC);
+    
     
 }
