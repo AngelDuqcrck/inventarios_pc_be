@@ -215,6 +215,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         dispositivoResponse.setEstadoDispositivo(dispositivoPC.getEstadoDispositivo().getNombre());
         dispositivoResponse.setMarca(dispositivoPC.getMarca().getNombre());
         dispositivoResponse.setTipoDispositivo(dispositivoPC.getTipoDispositivo().getNombre());
+        dispositivoResponse.setPropietario(dispositivoPC.getPropietario().getNombre());
         return dispositivoResponse;
     }
 

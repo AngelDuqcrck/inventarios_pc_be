@@ -435,6 +435,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                     .area(cambioUbicacionPc.getUbicacion().getArea().getNombre())
                     .fechaIngreso(cambioUbicacionPc.getFechaIngreso())
                     .fechaCambio(cambioUbicacionPc.getFechaCambio())
+                    .justificacion(cambioUbicacionPc.getJustificacion())
                     .build();
 
             historialUbicaciones.add(historialUbicacion);
@@ -467,6 +468,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                     .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
                     .fechaCambio(historial.getFechaCambio())
                     .fechaDesvinculacion(historial.getFechaDesvinculacion())
+                    .justificacion(historial.getJustificacion())
                     .build();
 
             historialDispositivosResponses.add(historialResponse);

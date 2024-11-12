@@ -296,6 +296,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         dispositivoPc.setNombre(computadorCreado.getNombre());
         dispositivoPc.setPlaca(computadorCreado.getPlaca());
         dispositivoPc.setSerial(computadorCreado.getSerial());
+        dispositivoPc.setPropietario(computadorCreado.getPropietario());
         dispositivoRepository.save(dispositivoPc);
 
         HistorialDispositivo historialDispositivo = new HistorialDispositivo();
