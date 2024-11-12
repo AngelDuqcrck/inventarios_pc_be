@@ -34,4 +34,6 @@ public class ComputadoresResponse {
     
     private String estadoDispositivo;
 
+    private String ipAsignada;
+
 }

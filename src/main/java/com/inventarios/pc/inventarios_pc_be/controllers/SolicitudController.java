@@ -135,7 +135,7 @@ public class SolicitudController {
         @PreAuthorize("isAuthenticated()")
         @GetMapping("/{solicitudId}/{correo}")
         public ResponseEntity<SolicitudIdResponse> listarSolicitudesById(@PathVariable Integer solicitudId, @PathVariable String correo)
-                        throws RequestNotFoundException, StateNotFoundException, UserNotFoundException {
+                        throws RequestNotFoundException, StateNotFoundException, UserNotFoundException, SelectNotAllowedException {
 
                 SolicitudIdResponse solicitudIdResponse = solicitudService.listarSolicitudById(solicitudId, correo);
 

@@ -12,4 +12,8 @@ public class SoftwareVinculadosResponse {
     private String nombre;
 
     private String version;
+
+    private String empresa;
+
+    private String tipoSoftware;
 }

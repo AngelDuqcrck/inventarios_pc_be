@@ -354,6 +354,8 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                     .id(software.getSoftwarePC().getId())
                     .nombre(software.getSoftwarePC().getNombre())
                     .version(software.getSoftwarePC().getVersion())
+                    .empresa(software.getSoftwarePC().getEmpresa())
+                    .tipoSoftware(software.getSoftwarePC().getTipoSoftware().getNombre())
                     .build();
 
             softwareVinculadosResponses.add(softwareResponse);
