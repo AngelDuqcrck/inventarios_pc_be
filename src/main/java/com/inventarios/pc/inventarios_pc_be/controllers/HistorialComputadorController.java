@@ -16,6 +16,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IHistorialComputadorService;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivosXPcResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HistorialUbicacionesXPcResponse;
@@ -59,9 +60,9 @@ public class HistorialComputadorController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/desvincular-dispositivo")
     public ResponseEntity<HttpResponse> desvincularDispositivo(@RequestParam Integer computadorId,
-            @RequestParam Integer dispositivoId)
+            @RequestParam Integer dispositivoId, @RequestParam String justificacion)
             throws ComputerNotFoundException, SelectNotAllowedException, DeviceNotFoundException {
-        historialComputadorService.desvincularDispositivo(computadorId, dispositivoId);
+        historialComputadorService.desvincularDispositivo(computadorId, dispositivoId, justificacion);
 
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
@@ -72,9 +73,9 @@ public class HistorialComputadorController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/desvincular-software")
     public ResponseEntity<HttpResponse> desvincularSoftware(@RequestParam Integer computadorId,
-            @RequestParam Integer softwareId)
+            @RequestParam Integer softwareId, @RequestParam String justificacion)
             throws ComputerNotFoundException, SelectNotAllowedException, SoftwareNotFoundException {
-        historialComputadorService.desvincularSoftware(computadorId, softwareId);
+        historialComputadorService.desvincularSoftware(computadorId, softwareId, justificacion);
 
         return new ResponseEntity<>(
                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
@@ -101,6 +102,14 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(softwareXPcResponse, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/computador-vinculado/{dispositivoId}")
+    public ResponseEntity<ComputadoresResponse> listarComputadorVinculadoByDispositivo(@PathVariable Integer dispositivoId) throws DeviceNotFoundException, SelectNotAllowedException {
+        ComputadoresResponse computadoresResponse = historialComputadorService.listarComputadorVinculadoByDispositivo(dispositivoId);
+
+        return new ResponseEntity<>(computadoresResponse, HttpStatus.OK);
+    }
+    
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/cv-pc/{computadorId}")
     public ResponseEntity<HojaVidaPcResponse> hojaDeVidaPc(@PathVariable Integer computadorId)

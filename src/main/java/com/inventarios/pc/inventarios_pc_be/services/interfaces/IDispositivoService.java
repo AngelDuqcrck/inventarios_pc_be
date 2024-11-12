@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.exceptions.*;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarEstadoDispositivoRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.DispositivoRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivoResponse;
 
@@ -25,6 +26,6 @@ public interface IDispositivoService {
 
         public void eliminarDispositivo(Integer id) throws DeviceNotFoundException, DeleteNotAllowedException;
 
-        public void cambiarEstadoDispositivo(Integer dispositivoId, Integer nuevoEstadoDispositivoId)
-                        throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException;
+        public void cambiarEstadoDispositivo(CambiarEstadoDispositivoRequest cambiarEstadoDispositivoRequest)
+                throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException, ComputerNotFoundException, SelectNotAllowedException;
 }

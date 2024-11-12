@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.inventarios.pc.inventarios_pc_be.exceptions.*;
+import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarEstadoDispositivoRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -116,10 +117,9 @@ public class DispositivoController {
 
         @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/cambiar-estado")
-        public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestParam Integer dispositivoId,
-                        @RequestParam Integer nuevoEstadoDispositivoId)
-                        throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException {
-                dispositivoService.cambiarEstadoDispositivo(dispositivoId, nuevoEstadoDispositivoId);
+        public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestBody CambiarEstadoDispositivoRequest cambiarEstadoDispositivoRequest)
+                        throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException, ComputerNotFoundException, SelectNotAllowedException {
+                dispositivoService.cambiarEstadoDispositivo(cambiarEstadoDispositivoRequest);
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
                                                 "Estado cambiado exitosamente"),
