@@ -155,23 +155,6 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      */
     @Override
     public List<Usuario> listarUsuarios() {
-        // List<Usuario> usuarios = usuarioRepository.findAll();
-
-        // List<UsuariosResponse> usuariosResponses = new ArrayList<>();
-
-        // for (Usuario usuario : usuarios) {
-        // UsuariosResponse usuarioResponse = new UsuariosResponse();
-        // usuarioResponse.setId(usuario.getId());
-        // usuarioResponse.setNombreCompleto(usuario.getPrimerNombre() + " " +
-        // usuario.getSegundoNombre() + " "
-        // + usuario.getPrimerApellido() + " " + usuario.getSegundoApellido());
-        // usuarioResponse.setRol(usuario.getRolId().getNombre());
-        // usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
-        // usuarioResponse.setCorreo(usuario.getCorreo());
-
-        // usuariosResponses.add(usuarioResponse);
-        // }
-
         return (List<Usuario>) usuarioRepository.findAll();
     }
 
@@ -314,15 +297,14 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         if (ubicacion == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA UBICACION").toUpperCase());
         }
-        if(ubicacion.getEstaOcupada() == true){
-            throw new  SelectNotAllowedException(String
-                    .format(IS_NOT_ALLOWED,
-                            "SELECCIONAR LA UBICACION " + ubicacion.getNombre() + " PORQUE SE ENCUENTRA OCUPADA")
-                    .toUpperCase());
-        }
-        if(ubicacionActual.getId() == ubicacion.getId()){
-            ubicacionActual.setEstaOcupada(false);
-            ubicacionRepository.save(ubicacionActual);
+        if(ubicacionActual.getId() != ubicacion.getId()){
+        
+            if(ubicacion.getEstaOcupada() == true){
+                throw new  SelectNotAllowedException(String
+                        .format(IS_NOT_ALLOWED,
+                                "SELECCIONAR LA UBICACION " + ubicacion.getNombre() + " PORQUE SE ENCUENTRA OCUPADA")
+                        .toUpperCase());
+            }
         }
 
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
