@@ -395,6 +395,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         hojadeVidaPc.setArea(computador.getUbicacion().getArea().getNombre());
         hojadeVidaPc.setMarca(computador.getMarca().getNombre());
         hojadeVidaPc.setProcesador(computador.getProcesador().getNombre());
+        hojadeVidaPc.setPropietario(computador.getPropietario().getNombre());
         hojadeVidaPc.setRam(computador.getRam().getNombre());
         hojadeVidaPc.setAlmacenamiento(computador.getAlmacenamiento().getNombre());
         hojadeVidaPc.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
@@ -438,6 +439,8 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                     .id(softwareCSA.getSoftwarePC().getId())
                     .nombre(softwareCSA.getSoftwarePC().getNombre())
                     .version(softwareCSA.getSoftwarePC().getVersion())
+                    .tipoSoftware(softwareCSA.getSoftwarePC().getTipoSoftware().getNombre())
+                    .empresa(softwareCSA.getSoftwarePC().getEmpresa())
                     .build();
             softwareVinculadosList.add(softwareVinculado);
         }

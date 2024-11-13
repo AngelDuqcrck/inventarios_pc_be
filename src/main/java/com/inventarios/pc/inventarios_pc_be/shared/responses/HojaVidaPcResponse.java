@@ -19,7 +19,8 @@ public class HojaVidaPcResponse {
     
     //private String resPrimerNombre;
 
-    
+    private String propietario;
+
     private String ubicacion;
 
     private String sede;
