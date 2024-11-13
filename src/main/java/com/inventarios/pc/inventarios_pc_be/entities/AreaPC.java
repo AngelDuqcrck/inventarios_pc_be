@@ -21,7 +21,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "areas_PC")
+@Table(name = "areas_pc")
 public class AreaPC {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

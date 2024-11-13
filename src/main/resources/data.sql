@@ -22,7 +22,7 @@ IGNORE INTO roles (delete_flag,id,nombre) VALUES
     (0,4,"TECNICO_SISTEMAS");
 
 -- Creamos la tabla sedes_PC si no existe
-CREATE TABLE IF NOT EXISTS sedes_PC
+CREATE TABLE IF NOT EXISTS sedes_pc
 (
     id INT NOT NULL AUTO_INCREMENT,
     direccion VARCHAR(190) NOT NULL,
@@ -34,13 +34,13 @@ CREATE TABLE IF NOT EXISTS sedes_PC
 );
 
 -- Insertamos las sedes si no existen en el sistema
-INSERT IGNORE INTO sedes_PC (id, direccion, descripcion, nombre, delete_flag) VALUES
+INSERT IGNORE INTO sedes_pc (id, direccion, descripcion, nombre, delete_flag) VALUES
     (1, 'Av. 11E# 8-41COLSAG', 'Principal...', 'Sede Principal', 0),
     (2, 'Cl. 8 # 11E-62 COLSAG', 'COLSAG...', 'Sede Colsag', 0),
     (3, 'COLSAG', 'ESPECIALISTAS...', 'Centro de Especialistas', 0);
 
 -- Creamos la tabla areas_PC si no existe
-CREATE TABLE IF NOT EXISTS areas_PC (
+CREATE TABLE IF NOT EXISTS areas_pc (
     id INT NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(190) NOT NULL,
     descripcion VARCHAR(255) NOT NULL,
@@ -48,12 +48,12 @@ CREATE TABLE IF NOT EXISTS areas_PC (
     sede_id INT,
     rol_id INT,
     PRIMARY KEY (id),
-    FOREIGN KEY (sede_id) REFERENCES sede(id),
-    FOREIGN KEY (rol_id) REFERENCES rol(id)
+    FOREIGN KEY (sede_id) REFERENCES sedes_pc(id),
+    FOREIGN KEY (rol_id) REFERENCES roles(id)
 );
 
 -- Insertamos las áreas si no existen en el sistema
-INSERT IGNORE INTO areas_PC (id, sede_id, rol_id, nombre, descripcion, delete_flag) VALUES
+INSERT IGNORE INTO areas_pc (id, sede_id, rol_id, nombre, descripcion, delete_flag) VALUES
     (1, 1, 2, 'Urgencias', 'Zona urgente', 0),
     (2, 1, 2, 'Talento Humano', 'Zona empleados', 0),
     (3, 2, 3, 'Gerencia', 'Zona Jefe', 0),
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
     esta_ocupada BOOLEAN NOT NULL,
     area_id INT,
     delete_flag BOOLEAN NOT NULL DEFAULT 0,
-    CONSTRAINT fk_area FOREIGN KEY (area_id) REFERENCES areas(id)
+    CONSTRAINT fk_area FOREIGN KEY (area_id) REFERENCES areas_pc(id)
 );
 
 
