@@ -63,7 +63,7 @@ public class UbicacionController {
          *
          * @return Lista de ubicaciones en formato DTO.
          */
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("isAuthenticated()")
         @GetMapping
         public ResponseEntity<List<UbicacionResponse>> listarUbicaciones() {
                 return ResponseEntity.ok(

@@ -167,6 +167,13 @@ public class UserController {
                 return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
         }
 
+        @PreAuthorize("isAuthenticated()")
+        @GetMapping("/email")
+        public ResponseEntity<UsuarioResponse> getUsuarioByEmail(@RequestParam String correo) throws UserNotFoundException {
+                UsuarioResponse usuarioResponse = usuarioServiceImplementation.userByEmail(correo);
+                return new ResponseEntity<>(usuarioResponse, HttpStatus.OK);
+        }
+
         @PreAuthorize("hasAuthority('ADMIN')")
         @GetMapping("/ubicacion")
         public ResponseEntity<List<UsuarioResponse>> getUsuarioByUbicacion(@RequestParam Integer ubicId) throws LocationNotFoundException {

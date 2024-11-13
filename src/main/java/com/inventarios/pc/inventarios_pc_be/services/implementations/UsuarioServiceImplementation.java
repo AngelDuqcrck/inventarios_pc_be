@@ -416,6 +416,22 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     }
 
     @Override
+    public UsuarioResponse userByEmail(String correo) throws UserNotFoundException {
+        Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
+        if (usuario == null) {
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
+        }
+        UsuarioResponse usuarioResponse = new UsuarioResponse();
+        BeanUtils.copyProperties(usuario, usuarioResponse);
+        usuarioResponse.setRol(usuario.getRolId().getNombre());
+        usuarioResponse.setTipoDocumento(usuario.getTipoDocumento().getNombre());
+        usuarioResponse.setSede(usuario.getUbicacionId().getArea().getSede().getNombre());
+        usuarioResponse.setArea(usuario.getUbicacionId().getArea().getNombre());
+        usuarioResponse.setUbicacion(usuario.getUbicacionId().getNombre());
+        return usuarioResponse;
+    }
+
+    @Override
     public List<UsuarioResponse> listarUsuarioByUbic(Integer ubicacionId) throws LocationNotFoundException {
         List<UsuarioResponse> usuariosResponse = new ArrayList<>();
         Ubicacion ubicacion = ubicacionRepository.findById(ubicacionId).orElse(null);

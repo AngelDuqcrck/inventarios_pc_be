@@ -119,4 +119,6 @@ public interface IUsuarioService {
         public List<UsuarioResponse> listarUsuarioByUbic(Integer ubicacionId) throws LocationNotFoundException;
 
         public void activarUsuario(Integer id) throws UserNotFoundException, ActivateNotAllowedException;
+
+        public UsuarioResponse userByEmail(String correo) throws UserNotFoundException;
 }
