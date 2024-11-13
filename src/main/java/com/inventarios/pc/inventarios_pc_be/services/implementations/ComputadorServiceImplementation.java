@@ -27,6 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.CambioUbicacionPc;
 import com.inventarios.pc.inventarios_pc_be.entities.Componente;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
@@ -114,6 +115,9 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
     @Autowired
     private CambioUbicacionPcRepository cambioUbicacionPcRepository;
+
+    @Autowired
+    private NotificationController notificationController;
 
     @Override
     public ComputadorDTO crearComputador(ComputadorDTO computadorDTO)
@@ -761,6 +765,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         computador.setEstadoDispositivo(nuevoEstadoDispositivo);
         computadorRepository.save(computador);
+        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
     }
 
     @Override
