@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.CambioEstadoTickets;
 import com.inventarios.pc.inventarios_pc_be.entities.CambioUbicacionPc;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
@@ -101,6 +102,9 @@ public class TicketServiceImplementation implements ITicketService {
 
     @Autowired
     private EstadoSolicitudesRepository estadoSolicitudesRepository;
+
+    @Autowired
+    private NotificationController notificationController;
 
     @Override
     public TicketDTO crearTicket(TicketDTO ticketDTO) throws RequestNotFoundException, StateNotFoundException,
@@ -372,6 +376,7 @@ public class TicketServiceImplementation implements ITicketService {
                                     }
                                 }
                                 dispositivoRepository.save(dispositivoPC);
+                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre());
 
                             }
                             if (solicitud.getEsHardaware() == false) {
@@ -398,6 +403,7 @@ public class TicketServiceImplementation implements ITicketService {
                                 }
                                 dispositivoPC.setEstadoDispositivo(estadoBaja);
                                 dispositivoRepository.save(dispositivoPC);
+                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre());
                             }
                         }
                         break;
@@ -417,6 +423,7 @@ public class TicketServiceImplementation implements ITicketService {
                             computador.setUbicacion(ubicacionDestino);
 
                             computadorRepository.save(computador);
+                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
 
                         }
                         if (cambiarEstadoTicketRequest.getResuelto() == false) {
@@ -427,7 +434,9 @@ public class TicketServiceImplementation implements ITicketService {
                             computador.setUbicacion(ubicacionOrigen);
 
                             computadorRepository.save(computador);
+                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
                         }
+                        
                         break;
 
                     case 3: // Mantenimiento preventivo
@@ -460,6 +469,7 @@ public class TicketServiceImplementation implements ITicketService {
                                     }
                                 }
                                 dispositivoRepository.save(dispositivoPC);
+                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre());
 
                             }
                             if (solicitud.getEsHardaware() == false) {
@@ -493,6 +503,7 @@ public class TicketServiceImplementation implements ITicketService {
                 solicitud.setEstadoSolicitudes(estadoSolicitudFinalizada);
                 solicitud.setFechaCierre(new Date());
                 solicitudRepository.save(solicitud);
+                notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre());
 
                 break;
 
@@ -516,6 +527,7 @@ public class TicketServiceImplementation implements ITicketService {
                 solicitud.setEstadoSolicitudes(estadoSolicitudCancelada);
                 solicitud.setFechaCierre(new Date());
                 solicitudRepository.save(solicitud);
+                notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre());
                 break;
 
             case 4: // Reasignado
@@ -546,6 +558,7 @@ public class TicketServiceImplementation implements ITicketService {
         }
 
         ticketRepository.save(ticket);
+        notificationController.notifyStatusUpdate("TICKET", ticket.getId(), ticket.getEstadoTickets().getNombre());
         crearCambioEstado(ticket, estadoTickets);
     }
 
@@ -575,6 +588,7 @@ public class TicketServiceImplementation implements ITicketService {
         }
         ticket.setEstadoTickets(estadoTickets);
         ticketRepository.save(ticket);
+        notificationController.notifyStatusUpdate("TICKET", ticket.getId(), ticket.getEstadoTickets().getNombre());
     }
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 

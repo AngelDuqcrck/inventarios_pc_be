@@ -6,6 +6,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
@@ -63,6 +64,9 @@ public class DispositivoServiceImplementation implements IDispositivoService {
 
     @Autowired
     private DispositivoRepository dispositivoRepository;
+
+    @Autowired
+    private NotificationController notificationController;
 
     @Override
     public DispositivoRequest crearDispositivo(DispositivoRequest dispositivoRequest) throws SelectNotAllowedException,
@@ -324,6 +328,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
 
         dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
         dispositivoRepository.save(dispositivoPC);
+        notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre());
     }
 
 

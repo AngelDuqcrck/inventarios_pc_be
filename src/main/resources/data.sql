@@ -25,9 +25,9 @@ IGNORE INTO roles (delete_flag,id,nombre) VALUES
 CREATE TABLE IF NOT EXISTS sedes_PC
 (
     id INT NOT NULL AUTO_INCREMENT,
-    direccion VARCHAR(255) NOT NULL,
+    direccion VARCHAR(190) NOT NULL,
     descripcion TEXT NOT NULL,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -42,7 +42,7 @@ INSERT IGNORE INTO sedes_PC (id, direccion, descripcion, nombre, delete_flag) VA
 -- Creamos la tabla areas_PC si no existe
 CREATE TABLE IF NOT EXISTS areas_PC (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     descripcion VARCHAR(255) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     sede_id INT,
@@ -64,7 +64,7 @@ INSERT IGNORE INTO areas_PC (id, sede_id, rol_id, nombre, descripcion, delete_fl
 -- Creamos la tabla ubicaciones si no existe
 CREATE TABLE IF NOT EXISTS ubicaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     descripcion VARCHAR(255) NOT NULL,
     esta_ocupada BOOLEAN NOT NULL,
     area_id INT,
@@ -86,7 +86,7 @@ INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion, esta_ocupada, 
 -- Creamos la tabla tipo_documento si no existe
 CREATE TABLE IF NOT EXISTS tipo_documento (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     abreviatura VARCHAR(10) NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -113,7 +113,7 @@ INSERT IGNORE INTO tipo_documento (id, nombre, abreviatura) VALUES
 CREATE TABLE IF NOT EXISTS tipo_software
 (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -130,7 +130,7 @@ INSERT IGNORE INTO tipo_software (id, nombre, delete_flag) VALUES
 CREATE TABLE IF NOT EXISTS tipo_pc
 (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -148,7 +148,7 @@ INSERT IGNORE INTO tipo_pc (id, nombre, delete_flag) VALUES
 CREATE TABLE IF NOT EXISTS tipo_componentes
 (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -164,7 +164,7 @@ INSERT IGNORE INTO tipo_componentes (id, nombre, delete_flag) VALUES
 CREATE TABLE IF NOT EXISTS estado_dispositivos
 (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -182,7 +182,7 @@ INSERT IGNORE INTO estado_dispositivos (id, nombre, delete_flag) VALUES
 CREATE TABLE IF NOT EXISTS tipo_dispositivos
 (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -203,7 +203,7 @@ INSERT IGNORE INTO tipo_dispositivos (id, nombre, delete_flag) VALUES
 CREATE TABLE IF NOT EXISTS tipo_almacenamiento_ram
 (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS tipo_almacenamiento_ram
 CREATE TABLE IF NOT EXISTS tipo_solicitudes
 (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -232,7 +232,7 @@ INSERT IGNORE INTO tipo_solicitudes (id, nombre, delete_flag) VALUES
 CREATE TABLE IF NOT EXISTS estado_solicitudes
 (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -250,7 +250,7 @@ INSERT IGNORE INTO estado_solicitudes (id, nombre, delete_flag) VALUES
 -- Crear la tabla estado_tickets si no existe
 CREATE TABLE IF NOT EXISTS estado_tickets (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -265,7 +265,7 @@ INSERT IGNORE INTO estado_tickets (id, nombre, delete_flag) VALUES
 -- Creamos la tabla marcas si no existe
 CREATE TABLE IF NOT EXISTS marcas (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -285,7 +285,7 @@ INSERT IGNORE INTO marcas (id, nombre, delete_flag) VALUES
 -- Creamos la tabla tipo_almacenamiento si no existe
 CREATE TABLE IF NOT EXISTS tipo_almacenamiento (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -301,7 +301,7 @@ INSERT IGNORE INTO tipo_almacenamiento (id, nombre, delete_flag) VALUES
 -- Creamos la tabla tipo_ram si no existe
 CREATE TABLE IF NOT EXISTS tipo_ram (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)
@@ -316,7 +316,7 @@ INSERT IGNORE INTO tipo_ram (id, nombre, delete_flag) VALUES
 
 CREATE TABLE IF NOT EXISTS propietario (
     id INT NOT NULL AUTO_INCREMENT,
-    nombre VARCHAR(255) NOT NULL,
+    nombre VARCHAR(190) NOT NULL,
     delete_flag BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY (nombre)

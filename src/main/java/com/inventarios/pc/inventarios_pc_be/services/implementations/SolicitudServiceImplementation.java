@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
 import com.inventarios.pc.inventarios_pc_be.entities.DispositivoPC;
 import com.inventarios.pc.inventarios_pc_be.entities.EstadoDispositivo;
@@ -89,6 +90,9 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
     @Autowired
     private EstadoSolicitudesRepository estadoSolicitudesRepository;
+
+    @Autowired
+    private NotificationController notificationController;
 
     @Override
     public SolicitudDTO crearSolicitudAsistencial(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)
@@ -239,6 +243,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             }
             alterarSolicitud(solicitud);
             solicitudRepository.save(solicitud);
+            notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre());
         }
 
         return solicitudIdResponse;
@@ -270,6 +275,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         
         solicitudRepository.save(solicitud);
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre());
     }
 
     @Override
@@ -296,6 +302,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitud.setFechaCierre(new Date());
 
         solicitudRepository.save(solicitud);
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre());
     }
 
     public void retornarSolicitudPendiente(Integer solicitudId)
@@ -322,6 +329,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
         solicitudRepository.save(solicitud);
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre());
     }
 
     @Override
@@ -405,6 +413,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         }
                         computador.setEstadoDispositivo(estadoComputador);
                         computadorRepository.save(computador);
+                        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
                         
                         solicitud.setDispositivoPC(dispositivoNuevo);
 
@@ -433,6 +442,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             }
                             computador.setEstadoDispositivo(estadoComputador);
                             computadorRepository.save(computador);
+                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
 
                             solicitud.setSoftwarePC(softwarePcNuevo);
                             solicitud.setComputador(computador);
@@ -507,6 +517,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         }
                         computador.setEstadoDispositivo(estadoComputador);
                         computadorRepository.save(computador);
+                        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
                         
                         solicitud.setDispositivoPC(dispositivoNuevo);
                         solicitud.setComputador(computador);
@@ -539,6 +550,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             }
                             computador.setEstadoDispositivo(estadoComputador);
                             computadorRepository.save(computador);
+                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
 
                             
 
@@ -596,6 +608,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 }
                 computador.setEstadoDispositivo(estadoComputador);
                 computadorRepository.save(computador);
+                notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
                 solicitud.setComputador(computador);
 
             }
@@ -646,6 +659,8 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         }
 
         solicitudRepository.save(solicitud);
+
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre());
 
         BeanUtils.copyProperties(solicitud, solicitudActualizada);
 
@@ -854,6 +869,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         }
         computador.setEstadoDispositivo(nuevoEstadoComputador);
         computadorRepository.save(computador);
+        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
         solicitudes.setComputador(computador);
 
         return solicitudes;
@@ -904,6 +920,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         historialDispositivoRepository.save(dispositivoVinculado);
                     }
                     dispositivoRepository.save(dispositivo);
+                    notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivo.getId(), dispositivo.getEstadoDispositivo().getNombre());
         }
        
         if(solicitud.getEsHardaware() == false){
@@ -957,6 +974,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                     }
 
                     dispositivoRepository.save(dispositivo);
+                    notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivo.getId(), dispositivo.getEstadoDispositivo().getNombre());
                 }
 
             }
