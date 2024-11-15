@@ -1,3 +1,4 @@
+ALTER DATABASE inventarios_pc_csa CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 -- Creamos la tabla roles si no existe
 CREATE TABLE IF NOT EXISTS roles
 (
@@ -54,8 +55,8 @@ CREATE TABLE IF NOT EXISTS areas_pc (
 
 -- Insertamos las áreas si no existen en el sistema
 INSERT IGNORE INTO areas_pc (id, sede_id, rol_id, nombre, descripcion, delete_flag) VALUES
-    (1, 1, 2, 'Urgencias', 'Zona urgente', 0),
-    (2, 1, 2, 'Talento Humano', 'Zona empleados', 0),
+    (1, 1, 2, 'Consultorios', 'Zona urgencias', 0),
+    (2, 1, 3, 'Talento Humano', 'Zona empleados', 0),
     (3, 2, 3, 'Gerencia', 'Zona Jefe', 0),
     (4, 1, 4, 'Sistemas', 'Zona de Sistemas de la sede principal', 0),
     (5, 2, 4, 'Sistemas SC', 'Zona de Sistemas de la sede Colsag', 0),
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
 
 -- Insertamos las ubicaciones por defecto si no existen en el sistema
 INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion, esta_ocupada, delete_flag) VALUES
-    (1, 1, 'Consultorio 101', 'Consultorios el primero', false, 0),
+    (1, 1, 'Consultorio 101', 'Consultorio', false, 0),
     (2, 2, 'Tesoreria', 'Finanzas csa', false, 0),
     (2, 3, 'Seguridad y Salud en el Trabajo', 'SGST', false, 0),
     (4, 4, 'Bodega de Sistemas', 'Bodega de Sistemas de la sede principal', false, 0),
@@ -94,19 +95,62 @@ CREATE TABLE IF NOT EXISTS tipo_documento (
 
 -- Insertamos tipos de documento si no existen en el sistema
 INSERT IGNORE INTO tipo_documento (id, nombre, abreviatura) VALUES
-    (1, 'Cédula de Ciudadanía', 'CC'),
-    (2, 'Número de identificación tributaria', 'NIT'),
+    (1, 'Cedula de Ciudadania', 'CC'),
+    (2, 'Numero de identificacion Tributaria', 'NIT'),
     (3, 'Pasaporte', 'PA'),
     (4, 'Tarjeta de Identidad', 'TI'),
-    (5, 'Menor sin identificación', 'MS'),
+    (5, 'Menor sin identificacion', 'MS'),
     (6, 'Adulto sin identificacion', 'AS'),
-    (7, 'Número Identificación Personal', 'NIP'),
-    (8, 'Cédula de extranjeria', 'CE'),
-    (9, 'Carné Diplomático', 'CD'),
+    (7, 'Numero de Identificacion Personal', 'NIP'),
+    (8, 'Cedula de Extranjeria', 'CE'),
+    (9, 'Carnet Diplomatico', 'CD'),
     (10, 'Salvo Conducto', 'SC'),
     (11, 'Permiso Especial de Permanencia', 'PE'),
-    (12, 'Permiso por Protección Temporal', 'PT'),
+    (12, 'Permiso por Proteccion Temporal', 'PT'),
     (13, 'Documento Extranjero', 'DE');
+
+
+-- Creamos la tabla usuarios si no existe
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT NOT NULL AUTO_INCREMENT,
+    rol_id INT,
+    primer_nombre VARCHAR(100) NOT NULL,
+    segundo_nombre VARCHAR(100),
+    primer_apellido VARCHAR(100) NOT NULL,
+    segundo_apellido VARCHAR(100),
+    tipo_documento_id INT,
+    cedula VARCHAR(20) NOT NULL UNIQUE,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    telefono VARCHAR(10),
+    fecha_nacimiento DATE,
+    ubicacion_id INT,
+    delete_flag BOOLEAN NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_rol FOREIGN KEY (rol_id) REFERENCES roles(id),
+    CONSTRAINT fk_tipo_documento FOREIGN KEY (tipo_documento_id) REFERENCES tipo_documento(id),
+    CONSTRAINT fk_ubicacion FOREIGN KEY (ubicacion_id) REFERENCES ubicaciones(id)
+);
+
+-- Insertamos un usuario ADMIN si no existe
+-- Insertamos un usuario ADMIN si no existe
+INSERT IGNORE INTO usuarios (
+    rol_id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, tipo_documento_id, cedula, correo, password, telefono, fecha_nacimiento, ubicacion_id, delete_flag
+) VALUES (
+    1, -- rol_id para ADMIN
+    'Admin', -- primer_nombre
+    'Super', -- segundo_nombre
+    'Sistemas', -- primer_apellido
+    'CSA', -- segundo_apellido
+    1, -- tipo_documento_id, 1 representa 'Cédula de Ciudadanía'
+    '1000000000', -- cédula
+    'sistemas@clinicasantanasa.com', -- correo
+    '$2a$10$O/RsohdsFehWq1UsTsuD.OCJbc/QIAy407wvaEPlBYILegt5kZ.JS', -- password encriptada (P@ssword123)
+    '3001234567', -- teléfono (debe comenzar con '3' y tener 10 dígitos)
+    '1995-01-01', -- fecha_nacimiento (ejemplo)
+    4, -- ubicacion_id, puedes ajustar según el ID de una ubicación válida
+    0 -- delete_flag
+);
 
 
 -- Creamos la tabla tipo_software si no existe
@@ -326,3 +370,5 @@ CREATE TABLE IF NOT EXISTS propietario (
 INSERT IGNORE INTO propietario (id, nombre, delete_flag) VALUES
     (1, 'OFICANON', 0),
     (2, 'CSA', 0);
+
+
