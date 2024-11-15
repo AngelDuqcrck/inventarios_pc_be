@@ -34,7 +34,7 @@ public class ReporteController {
     
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/hoja-de-vida/{computadorId}")
-    public ResponseEntity<byte[]> downloadHojaDeVida(@PathVariable Integer computadorId) throws IOException, ComputerNotFoundException {
+    public ResponseEntity<byte[]> downloadHojaDeVida(@PathVariable Integer computadorId) throws IOException, ComputerNotFoundException, Exception {
         HojaVidaPcResponse hojaVidaPcResponse = historialComputadorService.hojaDeVidaPc(computadorId);
 
         XWPFDocument document = reportService.generateHojaDeVidaDoc(hojaVidaPcResponse);

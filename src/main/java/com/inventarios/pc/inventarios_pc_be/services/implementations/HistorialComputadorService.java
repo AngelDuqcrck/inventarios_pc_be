@@ -384,6 +384,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         hojadeVidaPc.setTipoPC(computador.getTipoPC().getNombre());
         if (computador.getResponsable() != null) {
             hojadeVidaPc.setResponsable(
+                    computador.getResponsable().getTipoDocumento().getAbreviatura()+" "+computador.getResponsable().getCedula()+" "+
                     computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
                             + " " + computador.getResponsable().getPrimerApellido() + " "
                             + computador.getResponsable().getSegundoApellido());
