@@ -186,6 +186,8 @@ public class UbicacionServiceImplementation implements IUbicacionService {
             ubicacion.setNombre(ubicacionDTO.getNombre()); 
         }
 
+        
+
         BeanUtils.copyProperties(ubicacionDTO, ubicacion);
         Ubicacion ubicacionActualizada = ubicacionRepository.save(ubicacion);
         UbicacionDTO ubicacionActualizadaDTO = new UbicacionDTO();
@@ -287,6 +289,8 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         UbicacionResponse ubicacionResponse = new UbicacionResponse();
         BeanUtils.copyProperties(ubicacion, ubicacionResponse);
         ubicacionResponse.setArea(ubicacion.getArea().getNombre());
+        ubicacionResponse.setSede(ubicacion.getArea().getSede().getNombre());
+        ubicacionResponse.setEstaOcupada(ubicacion.getEstaOcupada());
         return ubicacionResponse;
     }
 

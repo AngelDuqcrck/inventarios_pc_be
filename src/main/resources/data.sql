@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS areas_pc (
 -- Insertamos las áreas si no existen en el sistema
 INSERT IGNORE INTO areas_pc (id, sede_id, rol_id, nombre, descripcion, delete_flag) VALUES
     (1, 1, 2, 'Urgencias', 'Zona urgente', 0),
-    (2, 1, 2, 'Talento Humano', 'Zona empleados', 0),
+    (2, 1, 3, 'Talento Humano', 'Zona empleados', 0),
     (3, 2, 3, 'Gerencia', 'Zona Jefe', 0),
     (4, 1, 4, 'Sistemas', 'Zona de Sistemas de la sede principal', 0),
     (5, 2, 4, 'Sistemas SC', 'Zona de Sistemas de la sede Colsag', 0),

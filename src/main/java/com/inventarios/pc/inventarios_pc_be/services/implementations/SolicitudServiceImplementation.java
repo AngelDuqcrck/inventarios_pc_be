@@ -103,6 +103,15 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudRepository.save(solicitudCreadaAsistencial);
 
         SolicitudDTO solicitudAsistencialCreadaDTO = new SolicitudDTO();
+        SolicitudesResponse solicitudesResponse = new SolicitudesResponse();
+        solicitudesResponse.setId(solicitudCreadaAsistencial.getId());
+        solicitudesResponse.setEstadoSolicitud(solicitudCreadaAsistencial.getEstadoSolicitudes().getNombre());
+        solicitudesResponse.setFechaCreacion(solicitudCreadaAsistencial.getFechaCreacion());
+        solicitudesResponse.setFechaCierre(solicitudCreadaAsistencial.getFechaCierre());
+        solicitudesResponse.setResponsable(solicitudCreadaAsistencial.getUsuario().getPrimerNombre() + " " + solicitudCreadaAsistencial.getUsuario().getPrimerApellido());
+        solicitudesResponse.setTipoSolicitud(solicitudCreadaAsistencial.getTipoSolicitudes().getNombre());
+        solicitudesResponse.setTitulo(solicitudCreadaAsistencial.getTipoSolicitudes().getNombre());
+        notificationController.notifyNewRequest("NEWSOLICITUD", solicitudCreadaAsistencial.getId(), solicitudesResponse);
         BeanUtils.copyProperties(solicitudCreadaAsistencial, solicitudAsistencialCreadaDTO);
         return solicitudAsistencialCreadaDTO;
 
@@ -120,6 +129,15 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudCreadaAdministrativo.setUbicacionOrigen(ubicacion);
 
         solicitudRepository.save(solicitudCreadaAdministrativo);
+        SolicitudesResponse solicitudesResponse = new SolicitudesResponse();
+        solicitudesResponse.setId(solicitudCreadaAdministrativo.getId());
+        solicitudesResponse.setEstadoSolicitud(solicitudCreadaAdministrativo.getEstadoSolicitudes().getNombre());
+        solicitudesResponse.setFechaCreacion(solicitudCreadaAdministrativo.getFechaCreacion());
+        solicitudesResponse.setFechaCierre(solicitudCreadaAdministrativo.getFechaCierre());
+        solicitudesResponse.setResponsable(solicitudCreadaAdministrativo.getUsuario().getPrimerNombre() + " " + solicitudCreadaAdministrativo.getUsuario().getPrimerApellido());
+        solicitudesResponse.setTipoSolicitud(solicitudCreadaAdministrativo.getTipoSolicitudes().getNombre());
+        solicitudesResponse.setTitulo(solicitudCreadaAdministrativo.getTipoSolicitudes().getNombre());
+        notificationController.notifyNewRequest("NEWSOLICITUD", solicitudCreadaAdministrativo.getId(), solicitudesResponse);
 
         SolicitudDTO solicitudCreadaAdministrativoDTO = new SolicitudDTO();
         BeanUtils.copyProperties(solicitudCreadaAdministrativo, solicitudCreadaAdministrativoDTO);
@@ -243,7 +261,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             }
             alterarSolicitud(solicitud);
             solicitudRepository.save(solicitud);
-            notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre());
+            notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre(), null);
         }
 
         return solicitudIdResponse;
@@ -275,7 +293,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         
         solicitudRepository.save(solicitud);
-        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre());
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre(), solicitud.getFechaCierre());
     }
 
     @Override
@@ -302,7 +320,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitud.setFechaCierre(new Date());
 
         solicitudRepository.save(solicitud);
-        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre());
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre(), solicitud.getFechaCierre());
     }
 
     public void retornarSolicitudPendiente(Integer solicitudId)
@@ -329,7 +347,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
         solicitudRepository.save(solicitud);
-        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre());
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitudId, solicitud.getEstadoSolicitudes().getNombre(), null);
     }
 
     @Override
@@ -413,7 +431,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         }
                         computador.setEstadoDispositivo(estadoComputador);
                         computadorRepository.save(computador);
-                        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+                        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
                         
                         solicitud.setDispositivoPC(dispositivoNuevo);
 
@@ -442,7 +460,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             }
                             computador.setEstadoDispositivo(estadoComputador);
                             computadorRepository.save(computador);
-                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
 
                             solicitud.setSoftwarePC(softwarePcNuevo);
                             solicitud.setComputador(computador);
@@ -517,7 +535,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         }
                         computador.setEstadoDispositivo(estadoComputador);
                         computadorRepository.save(computador);
-                        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+                        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
                         
                         solicitud.setDispositivoPC(dispositivoNuevo);
                         solicitud.setComputador(computador);
@@ -550,7 +568,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             }
                             computador.setEstadoDispositivo(estadoComputador);
                             computadorRepository.save(computador);
-                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
 
                             
 
@@ -608,7 +626,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 }
                 computador.setEstadoDispositivo(estadoComputador);
                 computadorRepository.save(computador);
-                notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+                notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(),null);
                 solicitud.setComputador(computador);
 
             }
@@ -660,7 +678,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         solicitudRepository.save(solicitud);
 
-        notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre());
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre(), null);
 
         BeanUtils.copyProperties(solicitud, solicitudActualizada);
 
@@ -869,7 +887,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         }
         computador.setEstadoDispositivo(nuevoEstadoComputador);
         computadorRepository.save(computador);
-        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
         solicitudes.setComputador(computador);
 
         return solicitudes;
@@ -920,7 +938,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         historialDispositivoRepository.save(dispositivoVinculado);
                     }
                     dispositivoRepository.save(dispositivo);
-                    notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivo.getId(), dispositivo.getEstadoDispositivo().getNombre());
+                    notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivo.getId(), dispositivo.getEstadoDispositivo().getNombre(), null);
         }
        
         if(solicitud.getEsHardaware() == false){
@@ -974,7 +992,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                     }
 
                     dispositivoRepository.save(dispositivo);
-                    notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivo.getId(), dispositivo.getEstadoDispositivo().getNombre());
+                    notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivo.getId(), dispositivo.getEstadoDispositivo().getNombre(), null);
                 }
 
             }
