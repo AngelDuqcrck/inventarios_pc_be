@@ -338,19 +338,16 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
         Integer rolId = ubicacion.getArea().getRol().getId();
         if(rolId == 2){
-        ubicacion.setEstaOcupada(true);
-        ubicacionRepository.save(ubicacion);
-        antiguaUbicacion.setEstaOcupada(false);
-        ubicacionRepository.save(antiguaUbicacion);
+            ubicacion.setEstaOcupada(true);
+            ubicacionRepository.save(ubicacion);
+            antiguaUbicacion.setEstaOcupada(false);
+            ubicacionRepository.save(antiguaUbicacion);
+        } else if (usuario.getRolId().getId() == 1 && antiguaUbicacion.getEstaOcupada() == true){
+            antiguaUbicacion.setEstaOcupada(false);
+            ubicacionRepository.save(antiguaUbicacion);
         }
-        /* Authentication authentication = new UsernamePasswordAuthenticationToken(
-                usuarioActualizado.getCorreo(), usuarioActualizado.getPassword(),
-                List.of(new SimpleGrantedAuthority(rol.getNombre())));
-        String nuevoToken = jwtGenerador.generarToken(authentication);
-    */
         UsuarioDTO usuarioActualizadoDTO = new UsuarioDTO();
         BeanUtils.copyProperties(usuarioActualizado, usuarioActualizadoDTO);
-        //usuarioActualizadoDTO.setToken(nuevoToken);
 
         return usuarioActualizadoDTO;
 

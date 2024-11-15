@@ -162,6 +162,14 @@ public class TicketServiceImplementation implements ITicketService {
         ticketCreadoDTO.setSolicitudes(ticket.getSolicitudes().getId());
         ticketCreadoDTO.setUsuario(ticket.getUsuario().getId());
         BeanUtils.copyProperties(ticketCreado, ticketCreadoDTO);
+        TicketsResponse ticketCreadoResponse = new TicketsResponse();
+        ticketCreadoResponse.setId(ticketCreado.getId());
+        ticketCreadoResponse.setFechaCierre(ticketCreado.getFechaCierre());
+        ticketCreadoResponse.setFecha_asig(ticketCreado.getFecha_asig());
+        ticketCreadoResponse.setNombre(ticketCreado.getSolicitudes().getTipoSolicitudes().getNombre());
+        ticketCreadoResponse.setUsuario(ticketCreado.getUsuario().getPrimerNombre() + " " + ticketCreado.getUsuario().getPrimerApellido());
+        ticketCreadoResponse.setEstadoTicket(ticketCreado.getEstadoTickets().getNombre());
+        notificationController.notifyNewTicket("NEWTICKET", ticketCreado.getId(), ticketCreadoResponse);
         return ticketCreadoDTO;
     }
 
@@ -376,7 +384,7 @@ public class TicketServiceImplementation implements ITicketService {
                                     }
                                 }
                                 dispositivoRepository.save(dispositivoPC);
-                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre());
+                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre(), null);
 
                             }
                             if (solicitud.getEsHardaware() == false) {
@@ -403,7 +411,7 @@ public class TicketServiceImplementation implements ITicketService {
                                 }
                                 dispositivoPC.setEstadoDispositivo(estadoBaja);
                                 dispositivoRepository.save(dispositivoPC);
-                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre());
+                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre(), null);
                             }
                         }
                         break;
@@ -423,7 +431,7 @@ public class TicketServiceImplementation implements ITicketService {
                             computador.setUbicacion(ubicacionDestino);
 
                             computadorRepository.save(computador);
-                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
 
                         }
                         if (cambiarEstadoTicketRequest.getResuelto() == false) {
@@ -434,7 +442,7 @@ public class TicketServiceImplementation implements ITicketService {
                             computador.setUbicacion(ubicacionOrigen);
 
                             computadorRepository.save(computador);
-                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
                         }
                         
                         break;
@@ -469,7 +477,7 @@ public class TicketServiceImplementation implements ITicketService {
                                     }
                                 }
                                 dispositivoRepository.save(dispositivoPC);
-                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre());
+                                notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre(), null);
 
                             }
                             if (solicitud.getEsHardaware() == false) {
@@ -496,6 +504,9 @@ public class TicketServiceImplementation implements ITicketService {
                             ticket.setEstadoTickets(estadoReasignado);
                         }
                         break;
+                    case 4:
+                        ticket.setEstadoTickets(estadoTickets);
+                        break;
                     default:
                         throw new TypeRequestNotFoundException(
                                 String.format(IS_NOT_FOUND, "EL TIPO DE SOLICITUD").toUpperCase());
@@ -503,7 +514,8 @@ public class TicketServiceImplementation implements ITicketService {
                 solicitud.setEstadoSolicitudes(estadoSolicitudFinalizada);
                 solicitud.setFechaCierre(new Date());
                 solicitudRepository.save(solicitud);
-                notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre());
+                notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre(), solicitud.getFechaCierre());
+                notificationController.notifyNewDate("TICKET", ticket.getId(), ticket.getFechaCierre());
 
                 break;
 
@@ -517,6 +529,7 @@ public class TicketServiceImplementation implements ITicketService {
                 }
 
                 ticket.setFechaCierre(new Date());
+                notificationController.notifyNewDate("TICKET", ticket.getId(), ticket.getFechaCierre());
 
                 EstadoSolicitudes estadoSolicitudCancelada = estadoSolicitudesRepository.findById(4).orElse(null);
                 if (estadoSolicitudCancelada == null) {
@@ -526,8 +539,9 @@ public class TicketServiceImplementation implements ITicketService {
 
                 solicitud.setEstadoSolicitudes(estadoSolicitudCancelada);
                 solicitud.setFechaCierre(new Date());
+                //notificationController.notifyNewDate("SOLICITUD", solicitud.getId(), solicitud.getFechaCierre());
                 solicitudRepository.save(solicitud);
-                notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre());
+                notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre(), solicitud.getFechaCierre());
                 break;
 
             case 4: // Reasignado
@@ -558,7 +572,7 @@ public class TicketServiceImplementation implements ITicketService {
         }
 
         ticketRepository.save(ticket);
-        notificationController.notifyStatusUpdate("TICKET", ticket.getId(), ticket.getEstadoTickets().getNombre());
+        notificationController.notifyStatusUpdate("TICKET", ticket.getId(), ticket.getEstadoTickets().getNombre(), ticket.getFechaCierre());
         crearCambioEstado(ticket, estadoTickets);
     }
 
@@ -588,7 +602,7 @@ public class TicketServiceImplementation implements ITicketService {
         }
         ticket.setEstadoTickets(estadoTickets);
         ticketRepository.save(ticket);
-        notificationController.notifyStatusUpdate("TICKET", ticket.getId(), ticket.getEstadoTickets().getNombre());
+        notificationController.notifyStatusUpdate("TICKET", ticket.getId(), ticket.getEstadoTickets().getNombre(),null);
     }
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
 

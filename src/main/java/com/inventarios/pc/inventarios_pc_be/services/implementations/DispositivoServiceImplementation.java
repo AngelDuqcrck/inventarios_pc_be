@@ -328,7 +328,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
 
         dispositivoPC.setEstadoDispositivo(nuevoEstadoDispositivo);
         dispositivoRepository.save(dispositivoPC);
-        notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre());
+        notificationController.notifyStatusUpdate("DISPOSITIVO", dispositivoPC.getId(), dispositivoPC.getEstadoDispositivo().getNombre(), null);
     }
 
 

@@ -465,6 +465,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             computadorResponse.setArea(computador.getUbicacion().getArea().getNombre());
             computadorResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+            computadorResponse.setMarca(computador.getMarca().getNombre());
 
             computadoresResponses.add(computadorResponse);
         }
@@ -765,7 +766,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         computador.setEstadoDispositivo(nuevoEstadoDispositivo);
         computadorRepository.save(computador);
-        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre());
+        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
     }
 
     @Override
