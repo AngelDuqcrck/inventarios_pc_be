@@ -81,7 +81,9 @@ public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration(); 
     configuration.setAllowedOrigins(List.of(
         "http://192.168.9.152",
-        "http://192.168.9.152:80"
+        "http://192.168.9.152:80",
+        "http://localhost:4200",
+        "http://192.168.1.5:83"
     )); 
     configuration.setAllowedMethods(Arrays.asList(
         "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
