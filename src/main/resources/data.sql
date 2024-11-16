@@ -1,4 +1,4 @@
-ALTER DATABASE inventarios_pc_csa CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+-- ALTER DATABASE inventarios_pc_csa CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 -- Creamos la tabla roles si no existe
 CREATE TABLE IF NOT EXISTS roles
 (
