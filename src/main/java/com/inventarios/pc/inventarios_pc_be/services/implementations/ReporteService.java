@@ -194,7 +194,7 @@ public class ReporteService {
                 { "Serial:", hojaVida.getSerial(), "RAM:", hojaVida.getTipoRam() + " " + hojaVida.getRam() },
                 { "Almacenamiento:", hojaVida.getTipoAlmacenamiento() + " " + hojaVida.getAlmacenamiento(),
                         "Procesador:", hojaVida.getProcesador() },
-                { "Propietario:", hojaVida.getResponsable(), "Sede:", hojaVida.getSede() },
+                { "Propietario:", hojaVida.getPropietario(), "Sede:", hojaVida.getSede() },
                 { "Área:", hojaVida.getArea(), "Ubicación:", hojaVida.getUbicacion() }
         };
 
@@ -328,7 +328,6 @@ public class ReporteService {
         // Crear la tabla
         XWPFTable table = document.createTable();
         table.setTableAlignment(TableRowAlign.CENTER); // Centrar la tabla
-
         // Crear la fila de títulos de columnas y configurarlos
         XWPFTableRow row = table.getRow(0);
         String[] titles = { "Nombre", "Versión", "Tipo", "Empresa" };

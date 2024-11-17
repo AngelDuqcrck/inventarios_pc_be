@@ -429,7 +429,7 @@ public class TicketServiceImplementation implements ITicketService {
                                             + " a la ubicacion " + ubicacionDestino.getNombre());
 
                             computador.setUbicacion(ubicacionDestino);
-
+                            //computador.setResponsable(null);
                             computadorRepository.save(computador);
                             notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
 
