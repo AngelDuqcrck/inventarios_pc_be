@@ -1,5 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.security;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,18 +76,38 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        //configuration.setAllowedOrigins(List.of("http://192.168.9.152:80"));
-        configuration.setAllowedMethods(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 
+    @Bean 
+public CorsConfigurationSource corsConfigurationSource() { 
+    CorsConfiguration configuration = new CorsConfiguration(); 
+    configuration.setAllowedOrigins(List.of(
+        "http://192.168.9.152",
+        "http://192.168.9.152:80",
+        "http://localhost:4200",
+        "http://192.168.1.5:83"
+    )); 
+    configuration.setAllowedMethods(Arrays.asList(
+        "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+    )); 
+    configuration.setAllowedHeaders(Arrays.asList(
+        "Authorization", 
+        "Content-Type", 
+        "X-Requested-With",
+        "Accept",
+        "Origin",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers"
+    )); 
+    configuration.setExposedHeaders(Arrays.asList(
+        "Access-Control-Allow-Origin",
+        "Access-Control-Allow-Credentials"
+    ));
+    configuration.setAllowCredentials(true);
+    configuration.setMaxAge(3600L); // 1 hora de cache para preflight
     
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); 
+    source.registerCorsConfiguration("/**", configuration); 
+    return source; 
+}
+
 }

@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,12 +74,18 @@ public class ReporteService {
         XWPFParagraph logoParagraph = logoCell.getParagraphArray(0);
         XWPFRun logoRun = logoParagraph.createRun();
         String projectRoot = System.getProperty("user.dir");
-        String logoPath = projectRoot + "/src/main/resources/reportes/images/logo_csa.png";
-        FileInputStream logoStream = new FileInputStream(new File(logoPath));
-        logoRun.addPicture(logoStream, XWPFDocument.PICTURE_TYPE_PNG, "logo_csa.png",
+        // String logoPath = "/reportes/images/logo_csa.png";
+        InputStream logoInputStream = getClass().getResourceAsStream("/static/reportes/images/logo_csa.png");
+
+
+        if (logoInputStream == null) {
+            throw new FileNotFoundException("Logo not found at: " + logoInputStream);
+        }
+        // FileInputStream logoStream = new FileInputStream(new File(logoPath));
+        logoRun.addPicture(logoInputStream, XWPFDocument.PICTURE_TYPE_PNG, "logo_csa.png",
                 Units.toEMU(126.2362), Units.toEMU(75.5906));
         logoParagraph.setAlignment(ParagraphAlignment.CENTER);
-        logoStream.close();
+        logoInputStream.close();
 
         // Segunda columna: Título
         XWPFTableCell titleCell = headerTable.getRow(0).getCell(1);
