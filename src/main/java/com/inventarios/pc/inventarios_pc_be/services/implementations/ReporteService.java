@@ -14,6 +14,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblGrid;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
@@ -76,7 +78,6 @@ public class ReporteService {
         String projectRoot = System.getProperty("user.dir");
         // String logoPath = "/reportes/images/logo_csa.png";
         InputStream logoInputStream = getClass().getResourceAsStream("/static/reportes/images/logo_csa.png");
-
 
         if (logoInputStream == null) {
             throw new FileNotFoundException("Logo not found at: " + logoInputStream);
@@ -247,41 +248,66 @@ public class ReporteService {
         paragraphRun.setFontFamily("Tahoma");
         paragraphRun.setFontSize(11);
         paragraph.setAlignment(ParagraphAlignment.CENTER);
-        paragraph.setSpacingAfter(300); // Eliminar espaciado después del título
-
+        paragraph.setSpacingAfter(300);
+    
         // Crear la tabla para los dispositivos
         XWPFTable table = document.createTable();
-        table.setTableAlignment(TableRowAlign.CENTER); // Centrar la tabla en el documento
-
+        table.setTableAlignment(TableRowAlign.CENTER);
+    
         // Crear la primera fila con los títulos y configurarlos
         XWPFTableRow row = table.getRow(0);
         String[] titles = { "Dispositivo", "Marca", "Modelo", "Serial", "Placa" };
-
+    
         for (int i = 0; i < titles.length; i++) {
+            XWPFTableCell cell;
             if (row.getCell(i) == null) {
-                row.addNewTableCell(); // Crear celda si no existe
+                cell = row.addNewTableCell();
+            } else {
+                cell = row.getCell(i);
             }
-            XWPFRun titleRun = row.getCell(i).getParagraphArray(0).createRun();
+    
+            // Configurar márgenes de la celda
+            CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+            CTTcMar tcMar = tcPr.addNewTcMar();
+            
+            // Margen superior
+            CTTblWidth topMargin = tcMar.addNewTop();
+            topMargin.setType(STTblWidth.DXA);
+            topMargin.setW(BigInteger.valueOf(120));
+            
+            // Margen inferior
+            CTTblWidth bottomMargin = tcMar.addNewBottom();
+            bottomMargin.setType(STTblWidth.DXA);
+            bottomMargin.setW(BigInteger.valueOf(120));
+            
+            // Margen izquierdo
+            CTTblWidth leftMargin = tcMar.addNewLeft();
+            leftMargin.setType(STTblWidth.DXA);
+            leftMargin.setW(BigInteger.valueOf(120));
+            
+            // Margen derecho
+            CTTblWidth rightMargin = tcMar.addNewRight();
+            rightMargin.setType(STTblWidth.DXA);
+            rightMargin.setW(BigInteger.valueOf(120));
+    
+            XWPFRun titleRun = cell.getParagraphArray(0).createRun();
             titleRun.setText(titles[i]);
             titleRun.setBold(true);
             titleRun.setFontFamily("Tahoma");
             titleRun.setFontSize(11);
-            row.getCell(i).getParagraphArray(0).setAlignment(ParagraphAlignment.CENTER); // Centrar título de la columna
-            row.getCell(i).getCTTc().addNewTcPr().addNewVAlign().setVal(STVerticalJc.CENTER); // Alinear verticalmente
-                                                                                              // al centro
-            row.getCell(i).getParagraphArray(0).setSpacingAfter(0); // Eliminar espaciado después del párrafo en los
-                                                                    // títulos
+            cell.getParagraphArray(0).setAlignment(ParagraphAlignment.CENTER);
+            cell.getCTTc().addNewTcPr().addNewVAlign().setVal(STVerticalJc.CENTER);
+            cell.getParagraphArray(0).setSpacingAfter(0);
         }
-
+    
         // Filtrar dispositivos y agregar solo los que tienen dispositivo, marca y placa
         for (DispositivosVinculadosResponse dispositivo : dispositivos) {
             if (dispositivo.getTipoDispositivo() != null && !dispositivo.getTipoDispositivo().isEmpty() &&
                     dispositivo.getMarca() != null && !dispositivo.getMarca().isEmpty() &&
                     dispositivo.getPlaca() != null && !dispositivo.getPlaca().isEmpty()) {
-
+    
                 row = table.createRow();
-
-                // Agregar datos en las celdas
+    
                 String[] deviceData = {
                         dispositivo.getTipoDispositivo(),
                         dispositivo.getMarca(),
@@ -289,25 +315,50 @@ public class ReporteService {
                         dispositivo.getSerial(),
                         dispositivo.getPlaca()
                 };
-
+    
                 for (int i = 0; i < deviceData.length; i++) {
+                    XWPFTableCell cell;
                     if (row.getCell(i) == null) {
-                        row.addNewTableCell(); // Crear celda si no existe
+                        cell = row.addNewTableCell();
+                    } else {
+                        cell = row.getCell(i);
                     }
-                    XWPFRun dataRun = row.getCell(i).getParagraphArray(0).createRun();
+    
+                    // Configurar márgenes de la celda
+                    CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+                    CTTcMar tcMar = tcPr.addNewTcMar();
+                    
+                    // Margen superior
+                    CTTblWidth topMargin = tcMar.addNewTop();
+                    topMargin.setType(STTblWidth.DXA);
+                    topMargin.setW(BigInteger.valueOf(120));
+                    
+                    // Margen inferior
+                    CTTblWidth bottomMargin = tcMar.addNewBottom();
+                    bottomMargin.setType(STTblWidth.DXA);
+                    bottomMargin.setW(BigInteger.valueOf(120));
+                    
+                    // Margen izquierdo
+                    CTTblWidth leftMargin = tcMar.addNewLeft();
+                    leftMargin.setType(STTblWidth.DXA);
+                    leftMargin.setW(BigInteger.valueOf(120));
+                    
+                    // Margen derecho
+                    CTTblWidth rightMargin = tcMar.addNewRight();
+                    rightMargin.setType(STTblWidth.DXA);
+                    rightMargin.setW(BigInteger.valueOf(120));
+    
+                    XWPFRun dataRun = cell.getParagraphArray(0).createRun();
                     dataRun.setText(deviceData[i]);
                     dataRun.setFontFamily("Tahoma");
                     dataRun.setFontSize(11);
-                    row.getCell(i).getParagraphArray(0).setAlignment(ParagraphAlignment.CENTER); // Centrar datos de la
-                                                                                                 // columna
-                    row.getCell(i).getCTTc().addNewTcPr().addNewVAlign().setVal(STVerticalJc.CENTER); // Alinear
-                                                                                                      // verticalmente
-                                                                                                      // al centro
-                    row.getCell(i).getParagraphArray(0).setSpacingAfter(0); // Eliminar espaciado después del párrafo en
-                                                                            // los datos
+                    cell.getParagraphArray(0).setAlignment(ParagraphAlignment.CENTER);
+                    cell.getCTTc().addNewTcPr().addNewVAlign().setVal(STVerticalJc.CENTER);
+                    cell.getParagraphArray(0).setSpacingAfter(0);
                 }
             }
         }
+    
 
         // Configurar bordes para la tabla
         table.setInsideHBorder(XWPFTable.XWPFBorderType.SINGLE, 1, 0, "000000");
@@ -330,33 +381,57 @@ public class ReporteService {
         paragraphRun.setBold(true);
         paragraphRun.setFontFamily("Tahoma");
         paragraphRun.setFontSize(11);
-        paragraph.setAlignment(ParagraphAlignment.CENTER); // Centrar el título
-        paragraph.setSpacingAfter(300); // Eliminar espaciado después del título
+        paragraph.setAlignment(ParagraphAlignment.CENTER);
+        paragraph.setSpacingAfter(300);
 
         // Crear la tabla
         XWPFTable table = document.createTable();
-        table.setTableAlignment(TableRowAlign.CENTER); // Centrar la tabla
+        table.setTableAlignment(TableRowAlign.CENTER);
+
         // Crear la fila de títulos de columnas y configurarlos
         XWPFTableRow row = table.getRow(0);
         String[] titles = { "Nombre", "Versión", "Tipo", "Empresa" };
 
         for (int i = 0; i < titles.length; i++) {
+            XWPFTableCell cell;
             if (row.getCell(i) == null) {
-                row.addNewTableCell();
+                cell = row.addNewTableCell();
+            } else {
+                cell = row.getCell(i);
             }
-            XWPFRun titleRun = row.getCell(i).getParagraphArray(0).createRun();
+
+            // Configurar márgenes de la celda
+            CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+            CTTcMar tcMar = tcPr.addNewTcMar();
+
+            // Margen izquierdo (120 twips = aproximadamente 6 puntos)
+            CTTblWidth leftMargin = tcMar.addNewLeft();
+            leftMargin.setType(STTblWidth.DXA);
+            leftMargin.setW(BigInteger.valueOf(120));
+
+            // Margen derecho
+            CTTblWidth rightMargin = tcMar.addNewRight();
+            rightMargin.setType(STTblWidth.DXA);
+            rightMargin.setW(BigInteger.valueOf(120));
+
+            // Margen superior
+            CTTblWidth topMargin = tcMar.addNewTop();
+            topMargin.setType(STTblWidth.DXA);
+            topMargin.setW(BigInteger.valueOf(120));
+
+            // Margen inferior
+            CTTblWidth bottomMargin = tcMar.addNewBottom();
+            bottomMargin.setType(STTblWidth.DXA);
+            bottomMargin.setW(BigInteger.valueOf(120));
+
+            XWPFRun titleRun = cell.getParagraphArray(0).createRun();
             titleRun.setText(titles[i]);
-            titleRun.setBold(true); // Títulos en negrilla
+            titleRun.setBold(true);
             titleRun.setFontFamily("Tahoma");
             titleRun.setFontSize(11);
-            row.getCell(i).getParagraphArray(0).setAlignment(ParagraphAlignment.CENTER); // Centrar contenido de los
-                                                                                         // títulos
-
-            // Alinear verticalmente en el centro
-            row.getCell(i).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-
-            // Eliminar espaciado después del párrafo en los títulos
-            row.getCell(i).getParagraphArray(0).setSpacingAfter(0);
+            cell.getParagraphArray(0).setAlignment(ParagraphAlignment.CENTER);
+            cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+            cell.getParagraphArray(0).setSpacingAfter(0);
         }
 
         // Rellenar la tabla con el contenido de los softwares
@@ -370,21 +445,44 @@ public class ReporteService {
             };
 
             for (int i = 0; i < softwareData.length; i++) {
+                XWPFTableCell cell;
                 if (row.getCell(i) == null) {
-                    row.addNewTableCell();
+                    cell = row.addNewTableCell();
+                } else {
+                    cell = row.getCell(i);
                 }
-                XWPFRun dataRun = row.getCell(i).getParagraphArray(0).createRun();
+
+                // Configurar márgenes de la celda
+                CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+                CTTcMar tcMar = tcPr.addNewTcMar();
+
+                // Margen izquierdo
+                CTTblWidth leftMargin = tcMar.addNewLeft();
+                leftMargin.setType(STTblWidth.DXA);
+                leftMargin.setW(BigInteger.valueOf(120));
+
+                // Margen derecho
+                CTTblWidth rightMargin = tcMar.addNewRight();
+                rightMargin.setType(STTblWidth.DXA);
+                rightMargin.setW(BigInteger.valueOf(120));
+
+                // Margen superior
+                CTTblWidth topMargin = tcMar.addNewTop();
+                topMargin.setType(STTblWidth.DXA);
+                topMargin.setW(BigInteger.valueOf(120));
+
+                // Margen inferior
+                CTTblWidth bottomMargin = tcMar.addNewBottom();
+                bottomMargin.setType(STTblWidth.DXA);
+                bottomMargin.setW(BigInteger.valueOf(120));
+
+                XWPFRun dataRun = cell.getParagraphArray(0).createRun();
                 dataRun.setText(softwareData[i]);
                 dataRun.setFontFamily("Tahoma");
                 dataRun.setFontSize(11);
-                row.getCell(i).getParagraphArray(0).setAlignment(ParagraphAlignment.CENTER); // Centrar el contenido de
-                                                                                             // cada celda
-
-                // Alinear verticalmente en el centro
-                row.getCell(i).setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
-
-                // Eliminar espaciado después del párrafo en los datos
-                row.getCell(i).getParagraphArray(0).setSpacingAfter(0);
+                cell.getParagraphArray(0).setAlignment(ParagraphAlignment.CENTER);
+                cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+                cell.getParagraphArray(0).setSpacingAfter(0);
             }
         }
     }
