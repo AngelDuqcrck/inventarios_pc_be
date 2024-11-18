@@ -144,7 +144,7 @@ INSERT IGNORE INTO usuarios (
     'CSA', -- segundo_apellido
     1, -- tipo_documento_id, 1 representa 'Cédula de Ciudadanía'
     '1000000000', -- cédula
-    'sistemas@clinicasantanasa.com', -- correo
+    'sistemas@clinicasantaanasa.com', -- correo
     '$2a$10$O/RsohdsFehWq1UsTsuD.OCJbc/QIAy407wvaEPlBYILegt5kZ.JS', -- password encriptada (P@ssword123)
     '3001234567', -- teléfono (debe comenzar con '3' y tener 10 dígitos)
     '1995-01-01', -- fecha_nacimiento (ejemplo)

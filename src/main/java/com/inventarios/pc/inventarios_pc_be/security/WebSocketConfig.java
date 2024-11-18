@@ -36,7 +36,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 "http://192.168.9.152",
                 "http://192.168.9.152:80",
                 "http://localhost:4200",
-                "http://192.168.1.5:83"
+                "http://192.168.1.5:83",
+                "http://inventariopc.com"
             )
             .setAllowedOriginPatterns("*")
             .withSockJS()
@@ -72,6 +73,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 if (accessor != null) {
                     accessor.addNativeHeader("Access-Control-Allow-Origin", 
                         "http://192.168.9.152");
+                    accessor.addNativeHeader("Access-Control-Allow-Origin",
+                        "http://inventariopc.com");
                     accessor.addNativeHeader("Access-Control-Allow-Credentials", 
                         "true");
                 }
@@ -91,7 +94,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 
                 if (accessor != null) {
                     accessor.addNativeHeader("Access-Control-Allow-Origin", 
-                        "http://192.168.9.152");
+                        "http://192.168.9.152"
+                        );
+                        accessor.addNativeHeader("Access-Control-Allow-Origin",
+                        "http://inventariopc.com");
                     accessor.addNativeHeader("Access-Control-Allow-Credentials", 
                         "true");
                 }
