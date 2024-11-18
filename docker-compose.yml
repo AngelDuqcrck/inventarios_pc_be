@@ -24,7 +24,7 @@ services:
     image: inventariospcbe
     build:
       context: .  # asume que tienes un Dockerfile en la raíz
-    container_name: spring-app-container
+    container_name: inventariopc-container
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/inventariospc?allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: user
