@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.TipoPC;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoPcRepository;
@@ -26,8 +27,11 @@ public class TipoPcServiceImplementation implements ITipoPcService {
     TipoPcRepository tipoPcRepository;
 
     @Override
-    public TipoComputadorDTO crearTipoPC(TipoComputadorDTO tipoComputadorDTO) {
+    public TipoComputadorDTO crearTipoPC(TipoComputadorDTO tipoComputadorDTO) throws DuplicateEntityException {
         TipoPC tipoPC = new TipoPC();
+        if(tipoPcRepository.existsByNombreIgnoreCase(tipoComputadorDTO.getNombre())){
+            throw new DuplicateEntityException("Ya existe un tipo de pc con el nombre " + tipoComputadorDTO.getNombre());
+        }
         BeanUtils.copyProperties(tipoComputadorDTO, tipoPC);
         tipoPC.setDeleteFlag(false);
         TipoPC tipoPcCreado = tipoPcRepository.save(tipoPC);
@@ -44,7 +48,7 @@ public class TipoPcServiceImplementation implements ITipoPcService {
 
     @Override
     public TipoComputadorDTO actualizarTipoPC(Integer id, TipoComputadorDTO tipoComputadorDTO)
-            throws TypePcNotFoundException, UpdateNotAllowedException {
+            throws TypePcNotFoundException, UpdateNotAllowedException, DuplicateEntityException {
         TipoPC tipoPC = tipoPcRepository.findById(id).orElse(null);
         if (tipoPC == null) {
             throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE PC").toUpperCase());
@@ -52,6 +56,9 @@ public class TipoPcServiceImplementation implements ITipoPcService {
 
         if (tipoPC.getDeleteFlag() == true) {
             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TIPO DE PC").toUpperCase());
+        }
+        if(tipoPcRepository.existsByNombreIgnoreCaseAndIdNot(tipoComputadorDTO.getNombre(), id)){
+            throw new DuplicateEntityException("Ya existe un tipo de pc con el nombre " + tipoComputadorDTO.getNombre());
         }
         BeanUtils.copyProperties(tipoComputadorDTO, tipoPC);
         tipoPC.setDeleteFlag(false);

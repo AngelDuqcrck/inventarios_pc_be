@@ -15,6 +15,7 @@ import com.inventarios.pc.inventarios_pc_be.entities.HistorialDispositivo;
 import com.inventarios.pc.inventarios_pc_be.entities.SedePC;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
@@ -73,10 +74,13 @@ public class SedeServiceImplementation implements ISedeService {
      */
 
     @Override
-    public SedeDTO crearSede(SedeDTO sedeDTO) {
+    public SedeDTO crearSede(SedeDTO sedeDTO)  throws DuplicateEntityException{
         SedePC sedePC = new SedePC();
         BeanUtils.copyProperties(sedeDTO, sedePC);
         sedePC.setDeleteFlag(false);
+        if(sedeRepository.existsByNombreIgnoreCase(sedePC.getNombre())){
+            throw new DuplicateEntityException("Ya existe una sede con el nombre " + sedePC.getNombre());
+        }
         SedePC sedeCreada = sedeRepository.save(sedePC);
         SedeDTO sedeCreadaDto = new SedeDTO();
         BeanUtils.copyProperties(sedeCreada, sedeCreadaDto);
@@ -124,7 +128,7 @@ public class SedeServiceImplementation implements ISedeService {
      */
     @Override
     public SedeDTO actualizarSede(Integer id, SedeDTO sedeDTO)
-            throws LocationNotFoundException, UpdateNotAllowedException {
+            throws LocationNotFoundException, UpdateNotAllowedException , DuplicateEntityException{
         SedePC sedePC = sedeRepository.findById(id).orElse(null);
 
         if (sedePC == null) {
@@ -133,6 +137,9 @@ public class SedeServiceImplementation implements ISedeService {
         if (sedePC.getDeleteFlag() == true) {
             throw new UpdateNotAllowedException(
                     String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SEDE PORQUE ESTA INACTIVA").toUpperCase());
+        }
+        if(sedeRepository.existsByNombreIgnoreCaseAndIdNot(sedeDTO.getNombre(), id)){
+            throw new DuplicateEntityException("Ya existe una sede con el nombre " + sedeDTO.getNombre());
         }
         BeanUtils.copyProperties(sedeDTO, sedePC);
         SedePC sedeActualizada = sedeRepository.save(sedePC);

@@ -3,7 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.StateNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.SedeServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ISedeService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SedeDTO;
@@ -45,7 +41,7 @@ public class SedeController {
      */
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearSede(@RequestBody SedeDTO sedeDTO) {
+    public ResponseEntity<HttpResponse> crearSede(@RequestBody SedeDTO sedeDTO) throws DuplicateEntityException {
         sedeServiceImplementation.crearSede(sedeDTO);
 
         return new ResponseEntity<>(
@@ -89,7 +85,7 @@ public class SedeController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{sedeId}")
     public ResponseEntity<HttpResponse> actualizarSede(@PathVariable Integer sedeId, @RequestBody SedeDTO sedeDTO)
-            throws LocationNotFoundException, UpdateNotAllowedException {
+            throws LocationNotFoundException, UpdateNotAllowedException, DuplicateEntityException {
         sedeServiceImplementation.actualizarSede(sedeId, sedeDTO);
 
         return new ResponseEntity<>(

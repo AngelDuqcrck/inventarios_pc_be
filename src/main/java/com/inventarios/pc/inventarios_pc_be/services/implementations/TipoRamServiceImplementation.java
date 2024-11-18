@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoRam;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeRamNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoRamRepository;
@@ -26,8 +27,11 @@ public class TipoRamServiceImplementation implements ITipoRamService{
     public static final String IS_NOT_ALLOWED = "no esta permitido %s ";
 
     @Override
-    public void crearTipoRam(TipoRamDTO tipoRamDTO){
+    public void crearTipoRam(TipoRamDTO tipoRamDTO)throws DuplicateEntityException{
         TipoRam tipoRam = new TipoRam();
+        if(tipoRamRepository.existsByNombreIgnoreCase(tipoRamDTO.getNombre())){
+            throw new DuplicateEntityException("Ya existe un tipo de ram con el nombre " + tipoRamDTO.getNombre());
+        }
         BeanUtils.copyProperties(tipoRamDTO, tipoRam);
         tipoRam.setDeleteFlag(false);
         tipoRamRepository.save(tipoRam);
@@ -53,7 +57,7 @@ public class TipoRamServiceImplementation implements ITipoRamService{
     }
 
     @Override
-    public void actualizarTipoRam(Integer id, TipoRamDTO tipoRamDTO)throws TypeRamNotFoundException, UpdateNotAllowedException{
+    public void actualizarTipoRam(Integer id, TipoRamDTO tipoRamDTO)throws TypeRamNotFoundException, UpdateNotAllowedException, DuplicateEntityException{
         TipoRam tipoRam = tipoRamRepository.findById(id).orElse(null);
 
         if(tipoRam == null){
@@ -62,6 +66,9 @@ public class TipoRamServiceImplementation implements ITipoRamService{
 
         if(tipoRam.getDeleteFlag() == true){
             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL TIPO DE MEMORIA RAM "+tipoRam.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
+        }
+        if(tipoRamRepository.existsByNombreIgnoreCaseAndIdNot(tipoRamDTO.getNombre(), id)){
+            throw new DuplicateEntityException("Ya existe un tipo de ram con el nombre " + tipoRamDTO.getNombre());
         }
 
         BeanUtils.copyProperties(tipoRamDTO, tipoRam);

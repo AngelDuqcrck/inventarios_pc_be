@@ -18,6 +18,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeviceNotFoundException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.OwnerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
@@ -72,7 +73,11 @@ public class DispositivoServiceImplementation implements IDispositivoService {
     public DispositivoRequest crearDispositivo(DispositivoRequest dispositivoRequest) throws SelectNotAllowedException,
             TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException, OwnerNotFoundException {
         DispositivoPC dispositivoPC = new DispositivoPC();
+        if(dispositivoRepository.existsByPlacaIgnoreCase(dispositivoRequest.getPlaca())){
+            throw new DuplicateEntityException("Ya existe un dispositivo registrado con la placa "+dispositivoRequest.getPlaca());
+        }
         BeanUtils.copyProperties(dispositivoRequest, dispositivoPC);
+
         TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(dispositivoRequest.getTipoDispositivo())
                 .orElse(null);
         if (tipoDispositivo == null) {
@@ -149,6 +154,10 @@ public class DispositivoServiceImplementation implements IDispositivoService {
             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR UN DISPOSITIVO DE TIPO TORRE").toUpperCase());
         }
 
+        if(dispositivoRepository.existsByPlacaIgnoreCaseAndIdNot(dispositivoRequest.getPlaca(), id)){
+            throw new DuplicateEntityException("Ya existe un dispositivo registrado con la placa "+dispositivoRequest.getPlaca());
+        }
+        
         BeanUtils.copyProperties(dispositivoRequest, dispositivoPC);
 
         if (dispositivoRequest.getEstadoDispositivo() != null) {

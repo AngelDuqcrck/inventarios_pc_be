@@ -3,7 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypePcNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoPcService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoComputadorDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoDispositivoDTO;
@@ -36,7 +32,7 @@ public class TipoPcController {
 
         @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/crear")
-        public ResponseEntity<HttpResponse> crearTipoPc(@RequestBody TipoComputadorDTO tipoPC) {
+        public ResponseEntity<HttpResponse> crearTipoPc(@RequestBody TipoComputadorDTO tipoPC) throws  DuplicateFormatFlagsException {
                 tipoPcService.crearTipoPC(tipoPC);
 
                 return new ResponseEntity<>(
@@ -61,7 +57,7 @@ public class TipoPcController {
         @PreAuthorize("hasAuthority('ADMIN')")
         @PutMapping("/actualizar/{id}")
         public ResponseEntity<HttpResponse> actualizarTipoPc(@PathVariable Integer id,
-                        @RequestBody TipoComputadorDTO tipoComputadorDTO) throws UpdateNotAllowedException, TypePcNotFoundException {
+                        @RequestBody TipoComputadorDTO tipoComputadorDTO) throws DuplicateEntityException,UpdateNotAllowedException, TypePcNotFoundException {
                 tipoPcService.actualizarTipoPC(id, tipoComputadorDTO);
 
                 return new ResponseEntity<>(

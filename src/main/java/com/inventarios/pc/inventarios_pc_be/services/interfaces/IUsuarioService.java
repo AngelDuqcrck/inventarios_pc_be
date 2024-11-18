@@ -28,7 +28,7 @@ public interface IUsuarioService {
          */
         public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO)
                         throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException,
-                        EmailExistException, SelectNotAllowedException;
+                        EmailExistException, SelectNotAllowedException, DuplicateEntityException;
 
         /**
          * Restablece la contraseña de un usuario utilizando un token de recuperación.
@@ -93,7 +93,7 @@ public interface IUsuarioService {
          */
         public UsuarioDTO actualizarUsuario(Integer id, ActualizarUsuarioRequest usuarioDTO)
                         throws UserNotFoundException, RolNotFoundException, LocationNotFoundException,
-                        DocumentNotFoundException, UpdateNotAllowedException, SelectNotAllowedException;
+                        DocumentNotFoundException, UpdateNotAllowedException, SelectNotAllowedException, DuplicateEntityException;
 
         /**
          * Elimina (marca como eliminada) un usuario en el sistema.

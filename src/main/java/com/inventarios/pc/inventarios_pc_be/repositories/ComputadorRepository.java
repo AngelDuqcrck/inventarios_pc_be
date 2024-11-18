@@ -20,11 +20,14 @@ public interface ComputadorRepository extends JpaRepository<Computador, Integer>
     
     List<Computador> findByEstadoDispositivo_Id(Integer id);
 
-    boolean existsByNombre(String nombre);
+    boolean existsByNombreIgnoreCase(String nombre);
+    boolean existsByNombreIgnoreCaseAndIdNot(String nombre, Integer id);
 
-    boolean existsByPlaca(String placa);
+    boolean existsByPlacaIgnoreCase(String placa);
+    boolean existsByPlacaIgnoreCaseAndIdNot(String placa, Integer id);
 
-    boolean existsByIpAsignada(String ipAsignada);
+    boolean existsByIpAsignadaIgnoreCase(String ipAsignada);
+    boolean existsByIpAsignadaIgnoreCaseAndIdNot(String ipAsignada, Integer id);
 
     
 }

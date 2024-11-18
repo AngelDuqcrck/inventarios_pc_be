@@ -8,6 +8,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ChangeNotAllowedException
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComputerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MiscellaneousNotFoundException;
@@ -123,8 +124,20 @@ public class ComputadorServiceImplementation implements IComputadorService {
     public ComputadorDTO crearComputador(ComputadorDTO computadorDTO)
             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-            StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException, OwnerNotFoundException {
+            StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException, OwnerNotFoundException, DuplicateEntityException {
         Computador computador = new Computador();
+        if(computadorRepository.existsByNombreIgnoreCase(computadorDTO.getNombre())){
+            throw new DuplicateEntityException("Ya existe un computador registrado con el nombre "+computadorDTO.getNombre());
+        }
+
+        if(computadorRepository.existsByPlacaIgnoreCase(computadorDTO.getPlaca())){
+            throw new DuplicateEntityException("Ya existe un computador registrado con la placa "+computadorDTO.getPlaca());
+        }
+
+        if(computadorRepository.existsByIpAsignadaIgnoreCase(computadorDTO.getIpAsignada())){
+            throw new DuplicateEntityException("Ya existe un computador registrado con la ip "+computadorDTO.getIpAsignada());
+        }
+        
         BeanUtils.copyProperties(computadorDTO, computador);
 
         TipoPC tipoPC = tipoPcRepository.findById(computadorDTO.getTipoPC()).orElse(null);
@@ -806,7 +819,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
             LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
             StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
-            ChangeNotAllowedException, TypeDeviceNotFoundException, OwnerNotFoundException {
+            ChangeNotAllowedException, TypeDeviceNotFoundException, OwnerNotFoundException, DuplicateEntityException {
 
         Computador computador = computadorRepository.findById(computadorId).orElse(null);
 
@@ -820,6 +833,15 @@ public class ComputadorServiceImplementation implements IComputadorService {
                             .toUpperCase());
         }
 
+        if(computadorRepository.existsByNombreIgnoreCaseAndIdNot(computadorDTO.getNombre(), computadorId)){
+            throw new DuplicateEntityException("Ya existe un computador registrado con el nombre "+computadorDTO.getNombre());
+        }
+        if(computadorRepository.existsByPlacaIgnoreCaseAndIdNot(computadorDTO.getPlaca(), computadorId)){
+            throw new DuplicateEntityException("Ya existe un computador registrado con la placa "+computadorDTO.getPlaca());
+        }
+        if(computadorRepository.existsByIpAsignadaIgnoreCaseAndIdNot(computadorDTO.getIpAsignada(), computadorId)){
+            throw new DuplicateEntityException("Ya existe un computador registrado con la ip "+computadorDTO.getIpAsignada());
+        }
         Ubicacion ubicacionActual = computador.getUbicacion();
         BeanUtils.copyProperties(computadorDTO, computador);
         computador.setId(computadorId);

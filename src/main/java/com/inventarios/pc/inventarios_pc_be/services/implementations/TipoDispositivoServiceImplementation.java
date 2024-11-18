@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDispositivo;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoDispositivoRepository;
@@ -26,8 +27,11 @@ public class TipoDispositivoServiceImplementation implements ITipoDispositivoSer
     private TipoDispositivoRepository tipoDispositivoRepository;
 
     @Override
-    public TipoDispositivoDTO creaDispositivoDTO(TipoDispositivoDTO tipoDispositivoDTO) {
+    public TipoDispositivoDTO creaDispositivoDTO(TipoDispositivoDTO tipoDispositivoDTO) throws DuplicateEntityException {
         TipoDispositivo tipoDispositivo = new TipoDispositivo();
+        if(tipoDispositivoRepository.existsByNombreIgnoreCase(tipoDispositivoDTO.getNombre())){
+            throw new DuplicateEntityException("Ya existe un tipo de dispositivo con el nombre " + tipoDispositivoDTO.getNombre());
+        }
         BeanUtils.copyProperties(tipoDispositivoDTO, tipoDispositivo);
         tipoDispositivo.setDeleteFlag(false);
         TipoDispositivo tipoDispCreado = tipoDispositivoRepository.save(tipoDispositivo);
@@ -51,6 +55,9 @@ public class TipoDispositivoServiceImplementation implements ITipoDispositivoSer
         if (tipoDispositivo.getDeleteFlag() == true) {
             throw new UpdateNotAllowedException(
                     String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TIPO DE DISPOSITIVO").toUpperCase());
+        }
+        if(tipoDispositivoRepository.existsByNombreIgnoreCaseAndIdNot(tipoDispositivoDTO.getNombre(), id)){
+            throw new DuplicateEntityException("Ya existe un tipo de dispositivo con el nombre " + tipoDispositivoDTO.getNombre());
         }
         BeanUtils.copyProperties(tipoDispositivoDTO, tipoDispositivo);
         tipoDispositivo.setDeleteFlag(false);
