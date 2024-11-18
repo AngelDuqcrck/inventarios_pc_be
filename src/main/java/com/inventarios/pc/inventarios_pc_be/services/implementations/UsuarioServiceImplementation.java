@@ -80,12 +80,20 @@ public class UsuarioServiceImplementation implements IUsuarioService {
      */
     @Override
     public UsuarioDTO registrarUsuario(UsuarioDTO usuarioDTO)
-            throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException,
+            throws DuplicateEntityException,LocationNotFoundException, RolNotFoundException, DocumentNotFoundException, EmailExistException,
             SelectNotAllowedException {
         if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
             throw new EmailExistException(String.format(IS_ALREADY_USE, "EL CORREO").toUpperCase());
         }
         Usuario usuario = new Usuario();
+        if(usuarioRepository.existsByCorreoIgnoreCase(usuarioDTO.getCorreo())){
+            throw new DuplicateEntityException("Ya existe un usuario con el correo " + usuarioDTO.getCorreo());
+        }
+
+        if(usuarioRepository.existsByCedulaIgnoreCase(usuarioDTO.getCedula())){
+            throw new DuplicateEntityException("Ya existe un usuario con el número de documento " + usuarioDTO.getCedula());
+        }
+        
         BeanUtils.copyProperties(usuarioDTO, usuario);
         Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);
         TipoDocumento tipoDocumento = tipoDocumentoRepository.findById(usuarioDTO.getTipoDocumento()).orElse(null);
@@ -277,7 +285,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     @Override
     public UsuarioDTO actualizarUsuario(Integer id, ActualizarUsuarioRequest usuarioDTO)
             throws UserNotFoundException, RolNotFoundException, LocationNotFoundException, DocumentNotFoundException,
-            UpdateNotAllowedException, SelectNotAllowedException {
+            UpdateNotAllowedException, SelectNotAllowedException, DuplicateEntityException {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
         if (usuario == null) {
             throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
@@ -287,6 +295,14 @@ public class UsuarioServiceImplementation implements IUsuarioService {
             throw new UpdateNotAllowedException(String
                     .format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
+
+        if(usuarioRepository.existsByCedulaIgnoreCaseAndIdNot(usuarioDTO.getCedula(), id)){
+            throw new DuplicateEntityException("Ya existe un usuario con el número de documento " + usuarioDTO.getCedula());
+        }
+        if(usuarioRepository.existsByCorreoIgnoreCaseAndIdNot(usuarioDTO.getCorreo(), id)){
+            throw new DuplicateEntityException("Ya existe un usuario con el correo " + usuarioDTO.getCorreo());
+        }
+
         Ubicacion ubicacionActual = usuario.getUbicacionId();
 
         Rol rol = rolRepository.findById(usuarioDTO.getRol()).orElse(null);

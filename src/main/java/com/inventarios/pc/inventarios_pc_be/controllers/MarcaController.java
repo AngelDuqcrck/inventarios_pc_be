@@ -3,7 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IMarcaService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.MarcaDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
@@ -34,7 +31,7 @@ public class MarcaController {
 
         @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/crear")
-        public ResponseEntity<HttpResponse> crearMarca(@RequestBody MarcaDTO marcaDTO) {
+        public ResponseEntity<HttpResponse> crearMarca(@RequestBody MarcaDTO marcaDTO) throws DuplicateEntityException {
                 marcaService.crearMarca(marcaDTO);
 
                 return new ResponseEntity<>(
@@ -67,7 +64,7 @@ public class MarcaController {
         @PreAuthorize("hasAuthority('ADMIN')")
         @PutMapping("/actualizar/{marcaId}")
         public ResponseEntity<HttpResponse> actualizarMarca(@PathVariable Integer marcaId,
-                        @RequestBody MarcaDTO marcaDTO) throws MarcaNotFoundException, UpdateNotAllowedException {
+                        @RequestBody MarcaDTO marcaDTO) throws MarcaNotFoundException, UpdateNotAllowedException, DuplicateFormatFlagsException {
                 marcaService.actualizarMarca(marcaId, marcaDTO);
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),

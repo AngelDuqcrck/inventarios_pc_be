@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,11 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.PropietarioDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoAlmacenamientoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
-import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.OwnerNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypeStorageNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.IPropietarioService;
 
 @RestController
@@ -36,7 +32,7 @@ public class PropietarioController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearPropietario(@RequestBody PropietarioDTO propietarioDTO) {
+    public ResponseEntity<HttpResponse> crearPropietario(@RequestBody PropietarioDTO propietarioDTO) throws  DuplicateEntityException {
         propietarioService.crearPropietario(propietarioDTO);
 
         return new ResponseEntity<>(
@@ -70,7 +66,7 @@ public class PropietarioController {
      @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<HttpResponse> actualizarPropietario(@PathVariable Integer id,
-            @RequestBody PropietarioDTO propietarioDTO) throws OwnerNotFoundException, UpdateNotAllowedException {
+            @RequestBody PropietarioDTO propietarioDTO) throws OwnerNotFoundException, UpdateNotAllowedException, DuplicateEntityException {
         propietarioService.actualizarPropietario(id, propietarioDTO);
 
         return new ResponseEntity<>(

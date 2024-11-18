@@ -117,7 +117,7 @@ public class UserController {
         public ResponseEntity<HttpResponse> actualizarUsuario(@PathVariable Integer usuarioId,
                         @RequestBody ActualizarUsuarioRequest actualizarUsuarioRequest)
                         throws SelectNotAllowedException, UpdateNotAllowedException, RolNotFoundException,
-                        LocationNotFoundException, DocumentNotFoundException, UserNotFoundException {
+                        LocationNotFoundException, DocumentNotFoundException, UserNotFoundException, DuplicateEntityException {
                 //UsuarioDTO usuarioDTO = usuarioServiceImplementation.actualizarUsuario(usuarioId, actualizarUsuarioRequest);
                 //return new ResponseEntity<>( usuarioDTO, HttpStatus.OK);
 

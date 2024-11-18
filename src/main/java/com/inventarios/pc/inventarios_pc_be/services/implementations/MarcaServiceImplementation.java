@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.inventarios.pc.inventarios_pc_be.entities.Marca;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.MarcaNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.MarcaRepository;
@@ -25,13 +26,17 @@ public class MarcaServiceImplementation implements IMarcaService {
     private MarcaRepository marcaRepository;
 
     @Override
-    public MarcaDTO crearMarca(MarcaDTO marcaDTO) {
+    public MarcaDTO crearMarca(MarcaDTO marcaDTO) throws DuplicateEntityException {
         Marca marca = new Marca();
         BeanUtils.copyProperties(marcaDTO, marca);
         marca.setDeleteFlag(false);
+        if (marcaRepository.existsByNombreIgnoreCase(marcaDTO.getNombre())) {
+            throw new DuplicateEntityException("Ya existe una marca con el nombre " + marcaDTO.getNombre());
+        }
         Marca marcaCreada = marcaRepository.save(marca);
         MarcaDTO marcaCreadaDTO = new MarcaDTO();
         BeanUtils.copyProperties(marcaCreada, marcaCreadaDTO);
+
         return marcaCreadaDTO;
     }
 
@@ -42,13 +47,21 @@ public class MarcaServiceImplementation implements IMarcaService {
 
     @Override
     public MarcaDTO actualizarMarca(Integer id, MarcaDTO marcaDTO)
-            throws MarcaNotFoundException, UpdateNotAllowedException {
+            throws MarcaNotFoundException, UpdateNotAllowedException, DuplicateEntityException {
         Marca marca = marcaRepository.findById(id).orElse(null);
         if (marca == null) {
             throw new MarcaNotFoundException(String.format(IS_NOT_FOUND_F, "LA MARCA").toUpperCase());
         }
         if (marca.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR LA MARCA "+marca.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
+            throw new UpdateNotAllowedException(String
+                    .format(IS_NOT_ALLOWED,
+                            "ACTUALIZAR LA MARCA " + marca.getNombre() + " PORQUE SE ENCUENTRA INACTIVA")
+                    .toUpperCase());
+        }
+
+        if(marcaRepository.existsByNombreIgnoreCaseAndIdNot(marcaDTO.getNombre(), id)){
+            throw new DuplicateEntityException("Ya existe una marca con el nombre " + marcaDTO.getNombre());
+        
         }
         BeanUtils.copyProperties(marcaDTO, marca);
         marca.setDeleteFlag(false);
@@ -65,7 +78,9 @@ public class MarcaServiceImplementation implements IMarcaService {
             throw new MarcaNotFoundException(String.format(IS_NOT_FOUND_F, "LA MARCA").toUpperCase());
         }
         if (marca.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR LA MARCA "+marca.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
+            throw new DeleteNotAllowedException(String
+                    .format(IS_NOT_ALLOWED, "ELIMINAR LA MARCA " + marca.getNombre() + " PORQUE SE ENCUENTRA INACTIVA")
+                    .toUpperCase());
         }
         marca.setDeleteFlag(true);
         marcaRepository.save(marca);
@@ -77,7 +92,9 @@ public class MarcaServiceImplementation implements IMarcaService {
             throw new MarcaNotFoundException(String.format(IS_NOT_FOUND_F, "LA MARCA").toUpperCase());
         }
         if (marca.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR LA MARCA"+marca.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
+            throw new ActivateNotAllowedException(String
+                    .format(IS_NOT_ALLOWED, "ACTIVAR LA MARCA" + marca.getNombre() + " PORQUE SE ENCUENTRA INACTIVA")
+                    .toUpperCase());
         }
         marca.setDeleteFlag(false);
         marcaRepository.save(marca);

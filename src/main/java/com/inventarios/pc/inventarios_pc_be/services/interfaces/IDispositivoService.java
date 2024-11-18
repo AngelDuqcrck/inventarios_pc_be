@@ -12,7 +12,7 @@ public interface IDispositivoService {
 
         public DispositivoRequest crearDispositivo(DispositivoRequest dispositivoRequest)
                         throws SelectNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
-                        StateNotFoundException, OwnerNotFoundException;
+                        StateNotFoundException, OwnerNotFoundException, DuplicateEntityException;
 
         public List<DispositivoPC> listarDispositivos();
 
@@ -20,7 +20,7 @@ public interface IDispositivoService {
 
         public DispositivoRequest actualizarDispositivo(Integer id, DispositivoRequest dispositivoRequest)
                         throws UpdateNotAllowedException, TypeDeviceNotFoundException, MarcaNotFoundException,
-                        StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException, OwnerNotFoundException;
+                        StateNotFoundException, DeviceNotFoundException, SelectNotAllowedException, OwnerNotFoundException, DuplicateEntityException;
 
         public DispositivoResponse listarDispositivoById(Integer id) throws DeviceNotFoundException;
 

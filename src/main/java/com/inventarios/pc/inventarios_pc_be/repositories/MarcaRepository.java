@@ -6,6 +6,8 @@ import com.inventarios.pc.inventarios_pc_be.entities.Marca;
 
 public interface MarcaRepository extends JpaRepository <Marca, Integer> {
 
-    boolean existsByNombreAndDeleteFlagFalse(String nombre);
+    boolean existsByNombreIgnoreCase(String nombre);
+
+    boolean existsByNombreIgnoreCaseAndIdNot(String nombre, Integer id);
 
 }
