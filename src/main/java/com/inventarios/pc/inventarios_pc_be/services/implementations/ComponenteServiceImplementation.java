@@ -78,6 +78,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
         }
         ComponenteResponse componenteResponse = new ComponenteResponse();
         BeanUtils.copyProperties(componente, componenteResponse);
+        componenteResponse.setNombre(componente.getNombre()+" "+componente.getCantidad());
         componenteResponse.setTipoComponente(componente.getTipoComponente().getNombre());
         return componenteResponse;
     }

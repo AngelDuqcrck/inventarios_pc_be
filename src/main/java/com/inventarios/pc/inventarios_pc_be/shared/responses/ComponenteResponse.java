@@ -13,6 +13,6 @@ public class ComponenteResponse {
 
     private Boolean deleteFlag;
 
-    
+
     private String tipoComponente;
 }

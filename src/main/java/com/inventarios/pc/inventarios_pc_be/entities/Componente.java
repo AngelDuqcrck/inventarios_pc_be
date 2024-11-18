@@ -31,6 +31,8 @@ public class Componente {
 
     private Boolean deleteFlag;
 
+    private String cantidad;
+
     @ManyToOne
     @JoinColumn(name = "tipo_componente_id")
     private TipoComponente tipoComponente;
