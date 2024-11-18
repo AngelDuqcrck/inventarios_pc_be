@@ -512,6 +512,38 @@ public class ComputadorServiceImplementation implements IComputadorService {
     }
 
     @Override
+    public List<ComputadoresResponse>  listarComputadoresByEstadoId(Integer estadoId){
+        List<Computador> computadores = computadorRepository.findByEstadoDispositivo_Id(estadoId);
+        List<ComputadoresResponse> computadoresResponses = new ArrayList<>();
+
+        for (Computador computador : computadores) {
+            ComputadoresResponse computadorResponse = new ComputadoresResponse();
+            BeanUtils.copyProperties(computador, computadorResponse);
+            if (computador.getResponsable() != null) {
+                computadorResponse.setResponsable(
+                        computador.getResponsable().getPrimerNombre() + " "
+                                + computador.getResponsable().getSegundoNombre()
+                                + " " + computador.getResponsable().getPrimerApellido() + " "
+                                + computador.getResponsable().getSegundoApellido());
+                // campo añadido para ubicar al usuario al momento de autocompletar el dropdown
+                // usuarios al cambiar de lugar un pc
+                computadorResponse.setPrimerNombreUser(computador.getResponsable().getPrimerNombre());
+            } else {
+                computadorResponse.setResponsable(null);
+                computadorResponse.setPrimerNombreUser(null);
+            }
+            computadorResponse.setMarca(computador.getMarca().getNombre());
+            computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+            computadorResponse.setSede(computador.getUbicacion().getArea().getSede().getNombre());
+            computadorResponse.setArea(computador.getUbicacion().getArea().getNombre());
+            computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
+            computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+
+            computadoresResponses.add(computadorResponse);
+        }
+        return computadoresResponses;
+    }
+    @Override
     public List<ComputadoresResponse> listarComputadores() {
         List<Computador> computadores = computadorRepository.findAll();
 

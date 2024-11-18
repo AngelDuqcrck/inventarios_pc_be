@@ -7,4 +7,5 @@ import java.util.*;
 public interface TipoDispositivoRepository extends JpaRepository<TipoDispositivo, Integer>{
     
     List<TipoDispositivo> findAllByDeleteFlagFalse();
+    boolean existsByNombre(String nombre);
 }

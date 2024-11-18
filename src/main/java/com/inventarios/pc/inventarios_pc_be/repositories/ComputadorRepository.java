@@ -18,6 +18,13 @@ public interface ComputadorRepository extends JpaRepository<Computador, Integer>
     List<Computador> findByResponsable(Usuario responsable);
     boolean existsByProcesadorOrRamOrAlmacenamiento(Componente procesador, Componente ram, Componente almacenamiento);
     
-    
+    List<Computador> findByEstadoDispositivo_Id(Integer id);
+
+    boolean existsByNombre(String nombre);
+
+    boolean existsByPlaca(String placa);
+
+    boolean existsByIpAsignada(String ipAsignada);
+
     
 }

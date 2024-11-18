@@ -70,6 +70,14 @@ public class ComputadorController {
         }
 
         @PreAuthorize("hasAuthority('ADMIN')")
+        @GetMapping("/estado")
+        public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByEstadoId() {
+                List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadoresByEstadoId(1);
+
+                return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
+        }
+
+        @PreAuthorize("hasAuthority('ADMIN')")
         @GetMapping
         public ResponseEntity<List<ComputadoresResponse>> listarComputadores() {
                 List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadores();

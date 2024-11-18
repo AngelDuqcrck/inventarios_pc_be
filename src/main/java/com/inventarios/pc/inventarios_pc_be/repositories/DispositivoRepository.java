@@ -13,4 +13,6 @@ public interface DispositivoRepository extends JpaRepository<DispositivoPC, Inte
     
     List<DispositivoPC> findByTipoDispositivo(TipoDispositivo tipoDispositivo);
     List<DispositivoPC> findByTipoDispositivoAndEstadoDispositivo(TipoDispositivo tipoDispositivo, EstadoDispositivo estadoDispositivo);
+
+    boolean existsByPlaca(String placa);
 }

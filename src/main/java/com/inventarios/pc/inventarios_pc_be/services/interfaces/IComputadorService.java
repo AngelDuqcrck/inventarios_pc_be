@@ -18,6 +18,8 @@ public interface IComputadorService {
 
      public List<ComputadoresResponse> listarComputadores();
 
+     public List<ComputadoresResponse>  listarComputadoresByEstadoId(Integer estadoId);
+
      public ComputadorIdResponse listarComputadorById(Integer id) throws ComputerNotFoundException;
 
      public void darBajaComputador(Integer id) throws ComputerNotFoundException, DeleteNotAllowedException;

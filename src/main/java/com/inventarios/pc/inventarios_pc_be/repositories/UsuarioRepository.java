@@ -27,4 +27,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByCorreoAndRolId(String correo, Rol rol);
 
     List<Usuario> findByUbicacionId(Ubicacion ubicacionId);
+
+    boolean existsByCedula(String cedula);
+
+
 }
