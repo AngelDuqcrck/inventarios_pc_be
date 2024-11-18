@@ -3,6 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,11 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypeRamNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypeStorageNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoRamService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoAlmacenamientoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoRamDTO;
@@ -36,7 +32,7 @@ public class TipoRamController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/crear")
-    public ResponseEntity<HttpResponse> crearTipoAlmacenamiento(@RequestBody TipoRamDTO tipoRamDTO) {
+    public ResponseEntity<HttpResponse> crearTipoAlmacenamiento(@RequestBody TipoRamDTO tipoRamDTO) throws DuplicateEntityException {
         tipoRamService.crearTipoRam(tipoRamDTO);
 
         return new ResponseEntity<>(
@@ -69,7 +65,7 @@ public class TipoRamController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<HttpResponse> actualizarTipoRam(@PathVariable Integer id,
-            @RequestBody TipoRamDTO tipoRamDTO) throws TypeRamNotFoundException, UpdateNotAllowedException {
+            @RequestBody TipoRamDTO tipoRamDTO) throws TypeRamNotFoundException, UpdateNotAllowedException, DuplicateEntityException {
         tipoRamService.actualizarTipoRam(id, tipoRamDTO);
 
         return new ResponseEntity<>(

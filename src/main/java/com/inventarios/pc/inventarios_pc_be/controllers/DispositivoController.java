@@ -38,7 +38,7 @@ public class DispositivoController {
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearDispositivo(@RequestBody DispositivoRequest dispositivoRequest)
                         throws TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException,
-                        SelectNotAllowedException, OwnerNotFoundException {
+                        SelectNotAllowedException, OwnerNotFoundException, DuplicateEntityException {
                 dispositivoService.crearDispositivo(dispositivoRequest);
                 return new ResponseEntity<>(
                                 new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
@@ -87,7 +87,7 @@ public class DispositivoController {
         public ResponseEntity<HttpResponse> actualizarDispositivo(@PathVariable Integer dispositivoId,
                         @RequestBody DispositivoRequest dispositivoRequest) throws TypeDeviceNotFoundException,
                         MarcaNotFoundException, StateNotFoundException, DeviceNotFoundException,
-                        SelectNotAllowedException, UpdateNotAllowedException, OwnerNotFoundException {
+                        SelectNotAllowedException, UpdateNotAllowedException, OwnerNotFoundException, DuplicateEntityException {
                 dispositivoService.actualizarDispositivo(dispositivoId, dispositivoRequest);
 
                 return new ResponseEntity<>(

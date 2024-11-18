@@ -7,5 +7,6 @@ import java.util.*;
 public interface TipoDispositivoRepository extends JpaRepository<TipoDispositivo, Integer>{
     
     List<TipoDispositivo> findAllByDeleteFlagFalse();
-    boolean existsByNombre(String nombre);
+    boolean existsByNombreIgnoreCase(String nombre);
+    boolean existsByNombreIgnoreCaseAndIdNot(String nombre, Integer id);
 }

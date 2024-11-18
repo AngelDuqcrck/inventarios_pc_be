@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoAlmacenamiento;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeStorageNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.TipoAlmacenamientoRepository;
@@ -27,8 +28,11 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
     private TipoAlmacenamientoRepository tipoAlmacenamientoRepository;
 
     @Override
-    public void crearTipoAlmacenamiento(TipoAlmacenamientoDTO tipoAlmacenamientoDTO){
+    public void crearTipoAlmacenamiento(TipoAlmacenamientoDTO tipoAlmacenamientoDTO)throws DuplicateEntityException{
         TipoAlmacenamiento tipoAlmacenamiento = new TipoAlmacenamiento();
+        if(tipoAlmacenamientoRepository.existsByNombreIgnoreCase(tipoAlmacenamientoDTO.getNombre())){
+            throw new DuplicateEntityException("Ya existe un tipo de almacenamiento con el nombre " + tipoAlmacenamientoDTO.getNombre());
+        }
         BeanUtils.copyProperties(tipoAlmacenamientoDTO, tipoAlmacenamiento);
         tipoAlmacenamiento.setDeleteFlag(false);
         tipoAlmacenamientoRepository.save(tipoAlmacenamiento);
@@ -40,7 +44,7 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
     }
 
     @Override
-    public void actualizarTipoAlmacenamiento(Integer id, TipoAlmacenamientoDTO tipoAlmacenamientoDTO) throws TypeStorageNotFoundException, UpdateNotAllowedException{
+    public void actualizarTipoAlmacenamiento(Integer id, TipoAlmacenamientoDTO tipoAlmacenamientoDTO) throws DuplicateEntityException,TypeStorageNotFoundException, UpdateNotAllowedException{
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
@@ -50,7 +54,9 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         if(tipoAlmacenamiento.getDeleteFlag() == true){
               throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL TIPO DE ALMACENAMIENTO "+tipoAlmacenamiento.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
         }
-
+        if(tipoAlmacenamientoRepository.existsByNombreIgnoreCaseAndIdNot(tipoAlmacenamientoDTO.getNombre(), id)){
+            throw new DuplicateEntityException("Ya existe un tipo de almacenamiento con el nombre " + tipoAlmacenamientoDTO.getNombre());
+        }
         BeanUtils.copyProperties(tipoAlmacenamientoDTO, tipoAlmacenamiento);
         tipoAlmacenamiento.setDeleteFlag(false);
 

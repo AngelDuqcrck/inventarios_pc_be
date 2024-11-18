@@ -397,8 +397,8 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         hojadeVidaPc.setMarca(computador.getMarca().getNombre());
         hojadeVidaPc.setProcesador(computador.getProcesador().getNombre());
         hojadeVidaPc.setPropietario(computador.getPropietario().getNombre());
-        hojadeVidaPc.setRam(computador.getRam().getNombre());
-        hojadeVidaPc.setAlmacenamiento(computador.getAlmacenamiento().getNombre());
+        hojadeVidaPc.setRam(computador.getRam().getNombre()+" "+computador.getRam().getCantidad());
+        hojadeVidaPc.setAlmacenamiento(computador.getAlmacenamiento().getNombre()+" "+computador.getAlmacenamiento().getCantidad());
         hojadeVidaPc.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
         hojadeVidaPc.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
         hojadeVidaPc.setTipoRam(computador.getTipoRam().getNombre());

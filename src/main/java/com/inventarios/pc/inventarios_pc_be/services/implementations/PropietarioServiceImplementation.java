@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.inventarios.pc.inventarios_pc_be.entities.Propietario;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.OwnerNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.repositories.PropietarioRepository;
@@ -26,10 +27,13 @@ public class PropietarioServiceImplementation implements IPropietarioService  {
     private PropietarioRepository propietarioRepository;
 
     @Override
-    public void crearPropietario(PropietarioDTO propietarioDTO){
+    public void crearPropietario(PropietarioDTO propietarioDTO)throws DuplicateEntityException{
         Propietario propietario = new Propietario();
         BeanUtils.copyProperties(propietarioDTO, propietario);
         propietario.setDeleteFlag(false);
+        if(propietarioRepository.existsByNombreIgnoreCase(propietarioDTO.getNombre())){
+            throw new DuplicateEntityException("Ya existe un propietario registrado con el nombre "+propietarioDTO.getNombre());
+        }
         propietarioRepository.save(propietario);
 
     }
@@ -53,7 +57,7 @@ public class PropietarioServiceImplementation implements IPropietarioService  {
     }
 
     @Override
-    public void actualizarPropietario(Integer id, PropietarioDTO propietarioDTO)throws OwnerNotFoundException, UpdateNotAllowedException{
+    public void actualizarPropietario(Integer id, PropietarioDTO propietarioDTO)throws OwnerNotFoundException, UpdateNotAllowedException, DuplicateEntityException{
         Propietario propietario = propietarioRepository.findById(id).orElse(null);
 
         if(propietario == null){
@@ -64,6 +68,9 @@ public class PropietarioServiceImplementation implements IPropietarioService  {
             throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL PROPIETARIO "+propietario.getNombre()+" PORQUE SE ENCUENTRA INACTIVO").toUpperCase());
         }
 
+        if(propietarioRepository.existsByNombreIgnoreCaseAndIdNot(propietarioDTO.getNombre(), id)){
+            throw new DuplicateEntityException("Ya existe un propietario registrado con el nombre "+propietarioDTO.getNombre());
+        }
         BeanUtils.copyProperties(propietarioDTO, propietario);
         propietario.setDeleteFlag(false);
         propietarioRepository.save(propietario);

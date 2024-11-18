@@ -14,7 +14,7 @@ public interface IComputadorService {
      public ComputadorDTO crearComputador(ComputadorDTO computadorDTO)
              throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
              LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
-             StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException, OwnerNotFoundException;
+             StateNotFoundException, MarcaNotFoundException, TypeDeviceNotFoundException, OwnerNotFoundException, DuplicateEntityException;
 
      public List<ComputadoresResponse> listarComputadores();
 
@@ -31,7 +31,7 @@ public interface IComputadorService {
              throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
              LocationNotFoundException, ComponentNotFoundException, MiscellaneousNotFoundException,
              StateNotFoundException, MarcaNotFoundException, UpdateNotAllowedException, ComputerNotFoundException,
-             ChangeNotAllowedException, TypeDeviceNotFoundException, OwnerNotFoundException;
+             ChangeNotAllowedException, TypeDeviceNotFoundException, OwnerNotFoundException, DuplicateEntityException;
 
      public List<ComputadoresResponse> listarComputadoresByUbicacion(Integer ubicacionId)
                throws LocationNotFoundException;

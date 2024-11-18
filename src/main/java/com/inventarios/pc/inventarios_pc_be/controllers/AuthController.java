@@ -1,5 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.controllers;
 
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenRefreshRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenRefreshResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TokenValidationResponse;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,14 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.DocumentNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.EmailExistException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.EmailNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.LocationNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.PasswordNotEqualsException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.RolNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TokenNotValidException;
 import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.LoginDTO;
@@ -153,9 +147,10 @@ public class AuthController {
          *         ocurrió un error.
          */
         @PostMapping("/register")
+        @PreAuthorize("hasAuthority('ADMIN')")
         public ResponseEntity<HttpResponse> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO)
                         throws LocationNotFoundException, RolNotFoundException, DocumentNotFoundException,
-                        EmailExistException, SelectNotAllowedException {
+                        EmailExistException, SelectNotAllowedException, DuplicateEntityException {
                 usuarioService.registrarUsuario(usuarioDTO);
 
                 return new ResponseEntity<>(

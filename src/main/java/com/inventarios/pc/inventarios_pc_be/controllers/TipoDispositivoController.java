@@ -3,7 +3,7 @@ package com.inventarios.pc.inventarios_pc_be.controllers;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.TypeDeviceNotFoundException;
-import com.inventarios.pc.inventarios_pc_be.exceptions.UpdateNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.services.interfaces.ITipoDispositivoService;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TipoDispositivoDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.HttpResponse;
@@ -34,7 +31,7 @@ public class TipoDispositivoController {
 
         @PreAuthorize("hasAuthority('ADMIN')")
         @PostMapping("/crear")
-        public ResponseEntity<HttpResponse> crearTipoDispositivo(@RequestBody TipoDispositivoDTO tipoDispositivoDTO) {
+        public ResponseEntity<HttpResponse> crearTipoDispositivo(@RequestBody TipoDispositivoDTO tipoDispositivoDTO) throws DuplicateEntityException {
                 tipoDispositivoService.creaDispositivoDTO(tipoDispositivoDTO);
 
                 return new ResponseEntity<>(
@@ -59,7 +56,7 @@ public class TipoDispositivoController {
         @PreAuthorize("hasAuthority('ADMIN')")
         @PutMapping("/actualizar/{id}")
         public ResponseEntity<HttpResponse> actualizarTipoDispositivo(@PathVariable Integer id,
-                        @RequestBody TipoDispositivoDTO tipoDispositivoDTO) throws UpdateNotAllowedException , TypeDeviceNotFoundException {
+                        @RequestBody TipoDispositivoDTO tipoDispositivoDTO) throws DuplicateEntityException,UpdateNotAllowedException , TypeDeviceNotFoundException {
                 tipoDispositivoService.actualizarTipoDispositivo(id, tipoDispositivoDTO);
 
                 return new ResponseEntity<>(
