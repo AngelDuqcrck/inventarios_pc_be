@@ -58,6 +58,11 @@ public class ExceptionHandling {
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
+    @ExceptionHandler(DuplicateEntityException.class)
+    public ResponseEntity<HttpResponse> duplicateEntityException(DuplicateEntityException exception) {
+        return createHttpResponse(HttpStatus.CONFLICT, exception.getMessage());
+    }
+
     @ExceptionHandler(EmailNotFoundException.class)
     public ResponseEntity<HttpResponse> emailNotFoundException(EmailNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
@@ -130,23 +135,22 @@ public class ExceptionHandling {
     }
 
     @ExceptionHandler(ComputerNotFoundException.class)
-    public ResponseEntity<HttpResponse> computerNotFoundException(ComputerNotFoundException exception){
+    public ResponseEntity<HttpResponse> computerNotFoundException(ComputerNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
-
 
     @ExceptionHandler(RequestNotFoundException.class)
-    public ResponseEntity<HttpResponse> requestNotFoundException(RequestNotFoundException exception){
+    public ResponseEntity<HttpResponse> requestNotFoundException(RequestNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
-    
+
     @ExceptionHandler(TypeRequestNotFoundException.class)
-    public ResponseEntity<HttpResponse> typeRequestNotFoundException(TypeRequestNotFoundException exception){
+    public ResponseEntity<HttpResponse> typeRequestNotFoundException(TypeRequestNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
     @ExceptionHandler(TicketNotFoundException.class)
-    public ResponseEntity<HttpResponse> ticketNotFoundException(TicketNotFoundException exception){
+    public ResponseEntity<HttpResponse> ticketNotFoundException(TicketNotFoundException exception) {
         return createHttpResponse(HttpStatus.NOT_FOUND, exception.getMessage());
     }
 
@@ -182,7 +186,7 @@ public class ExceptionHandling {
     }
 
     @ExceptionHandler(SelectNotAllowedException.class)
-    public ResponseEntity<HttpResponse> selectNotAllowedException(SelectNotAllowedException exception){
+    public ResponseEntity<HttpResponse> selectNotAllowedException(SelectNotAllowedException exception) {
         return createHttpResponse(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
     }
 

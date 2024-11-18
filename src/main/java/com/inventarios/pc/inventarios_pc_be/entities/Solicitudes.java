@@ -26,7 +26,7 @@ public class Solicitudes {
 
     private Date fechaCierre;
     
-    @NotEmpty
+    
     private String titulo;
 
     @ManyToOne
