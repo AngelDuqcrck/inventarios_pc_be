@@ -119,6 +119,17 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         }
         dispositivoPC.setPropietario(propietario);
         DispositivoPC dispositivoCreado = dispositivoRepository.save(dispositivoPC);
+        DispositivoResponse dispositivoResponse = new DispositivoResponse();
+        dispositivoResponse.setId(dispositivoCreado.getId());
+        dispositivoResponse.setTipoDispositivo(dispositivoCreado.getTipoDispositivo().getNombre());
+        dispositivoResponse.setMarca(dispositivoCreado.getMarca().getNombre());
+        dispositivoResponse.setModelo(dispositivoCreado.getModelo());
+        dispositivoResponse.setNombre(dispositivoCreado.getNombre());
+        dispositivoResponse.setPlaca(dispositivoCreado.getPlaca());
+        dispositivoResponse.setSerial(dispositivoCreado.getSerial());
+        dispositivoResponse.setPropietario(dispositivoCreado.getPropietario().getNombre());
+        dispositivoResponse.setEstadoDispositivo(dispositivoCreado.getEstadoDispositivo().getNombre());
+        notificationController.sendNotification("DISPOSITIVO", dispositivoCreado.getId(), dispositivoResponse);
         DispositivoRequest dispositivoCreadoRequest = new DispositivoRequest();
         BeanUtils.copyProperties(dispositivoCreado, dispositivoCreadoRequest);
         return dispositivoCreadoRequest;

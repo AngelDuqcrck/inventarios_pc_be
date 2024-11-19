@@ -7,6 +7,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.SoftwareResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoSoftware;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
@@ -35,6 +36,9 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
 
     @Autowired
     private TipoSoftwareRepository tipoSoftwareRepository;
+
+    @Autowired
+    private NotificationController notificationController;
 
     /**
      * Crea un nuevo software en el sistema.
@@ -66,6 +70,13 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
         softwarePC.setDeleteFlag(false);
 
         SoftwarePC softwareCreado = softwarePcRepository.save(softwarePC);
+        SoftwareResponse softwareResponse = new SoftwareResponse();
+        softwareResponse.setId(softwareCreado.getId());
+        softwareResponse.setNombre(softwareCreado.getNombre());
+        softwareResponse.setVersion(softwareCreado.getVersion());
+        softwareResponse.setEmpresa(softwareCreado.getEmpresa());
+        softwareResponse.setTipoSoftware(softwareCreado.getTipoSoftware().getNombre());
+        notificationController.sendNotification("SOFTWARE", softwareCreado.getId(), softwareResponse);
         SoftwarePcDTO softwareCreadoDto = new SoftwarePcDTO();
         BeanUtils.copyProperties(softwareCreado, softwareCreadoDto);
 

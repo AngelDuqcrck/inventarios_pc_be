@@ -6,6 +6,7 @@ import com.inventarios.pc.inventarios_pc_be.exceptions.ActivateNotAllowedExcepti
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import com.inventarios.pc.inventarios_pc_be.entities.CambioUbicacionPc;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
@@ -66,6 +67,9 @@ public class SedeServiceImplementation implements ISedeService {
     @Autowired
     private HistorialDispositivoRepository historialDispositivoRepository;
 
+    @Autowired
+    private NotificationController notificationController;
+
     /**
      * Crea una nueva sede en el sistema.
      * 
@@ -84,6 +88,8 @@ public class SedeServiceImplementation implements ISedeService {
         SedePC sedeCreada = sedeRepository.save(sedePC);
         SedeDTO sedeCreadaDto = new SedeDTO();
         BeanUtils.copyProperties(sedeCreada, sedeCreadaDto);
+        sedeCreadaDto.setId(sedeCreada.getId());
+        notificationController.sendNotification("SEDE", sedeCreada.getId(), sedeCreadaDto);
         return sedeCreadaDto;
 
     }

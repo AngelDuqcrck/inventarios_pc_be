@@ -100,19 +100,18 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             TypeRequestNotFoundException, SoftwareNotFoundException {
         Solicitudes solicitudCreadaAsistencial = crearSolicitud(solicitudDTO, tipoSolicitudId);
 
-        solicitudRepository.save(solicitudCreadaAsistencial);
+        Solicitudes solicitudAsistencial = solicitudRepository.save(solicitudCreadaAsistencial);
 
         SolicitudDTO solicitudAsistencialCreadaDTO = new SolicitudDTO();
         SolicitudesResponse solicitudesResponse = new SolicitudesResponse();
-        solicitudesResponse.setId(solicitudCreadaAsistencial.getId());
+        solicitudesResponse.setId(solicitudAsistencial.getId());
         solicitudesResponse.setEstadoSolicitud(solicitudCreadaAsistencial.getEstadoSolicitudes().getNombre());
         solicitudesResponse.setFechaCreacion(solicitudCreadaAsistencial.getFechaCreacion());
         solicitudesResponse.setFechaCierre(solicitudCreadaAsistencial.getFechaCierre());
         solicitudesResponse.setResponsable(solicitudCreadaAsistencial.getUsuario().getPrimerNombre() + " " + solicitudCreadaAsistencial.getUsuario().getPrimerApellido());
         solicitudesResponse.setTipoSolicitud(solicitudCreadaAsistencial.getTipoSolicitudes().getNombre());
         solicitudesResponse.setTitulo(solicitudCreadaAsistencial.getTipoSolicitudes().getNombre());
-        //notificationController.sendNotification("NEWSOLICITUD", solicitudCreadaAsistencial.getId(), solicitudesResponse);
-        notificationController.notifyNewRequest("NEWSOLICITUD", solicitudCreadaAsistencial.getId(), solicitudesResponse);
+        notificationController.sendNotification("NEWSOLICITUD", solicitudAsistencial.getId(), solicitudesResponse);
         BeanUtils.copyProperties(solicitudCreadaAsistencial, solicitudAsistencialCreadaDTO);
         
         return solicitudAsistencialCreadaDTO;
@@ -130,17 +129,16 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         solicitudCreadaAdministrativo.setUbicacionOrigen(ubicacion);
 
-        solicitudRepository.save(solicitudCreadaAdministrativo);
+        Solicitudes solicitudAdministrativo = solicitudRepository.save(solicitudCreadaAdministrativo);
         SolicitudesResponse solicitudesResponse = new SolicitudesResponse();
-        solicitudesResponse.setId(solicitudCreadaAdministrativo.getId());
+        solicitudesResponse.setId(solicitudAdministrativo.getId());
         solicitudesResponse.setEstadoSolicitud(solicitudCreadaAdministrativo.getEstadoSolicitudes().getNombre());
         solicitudesResponse.setFechaCreacion(solicitudCreadaAdministrativo.getFechaCreacion());
         solicitudesResponse.setFechaCierre(solicitudCreadaAdministrativo.getFechaCierre());
         solicitudesResponse.setResponsable(solicitudCreadaAdministrativo.getUsuario().getPrimerNombre() + " " + solicitudCreadaAdministrativo.getUsuario().getPrimerApellido());
         solicitudesResponse.setTipoSolicitud(solicitudCreadaAdministrativo.getTipoSolicitudes().getNombre());
         solicitudesResponse.setTitulo(solicitudCreadaAdministrativo.getTipoSolicitudes().getNombre());
-        notificationController.notifyNewRequest("NEWSOLICITUD", solicitudCreadaAdministrativo.getId(), solicitudesResponse);
-        //notificationController.sendNotification("NEWSOLICITUD", solicitudCreadaAdministrativo.getId(), solicitudesResponse);
+        notificationController.sendNotification("NEWSOLICITUD", solicitudAdministrativo.getId(), solicitudesResponse);
         SolicitudDTO solicitudCreadaAdministrativoDTO = new SolicitudDTO();
         BeanUtils.copyProperties(solicitudCreadaAdministrativo, solicitudCreadaAdministrativoDTO);
         

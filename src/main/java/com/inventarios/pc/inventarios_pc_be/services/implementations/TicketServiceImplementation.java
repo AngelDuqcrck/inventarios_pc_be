@@ -158,6 +158,7 @@ public class TicketServiceImplementation implements ITicketService {
 
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
         solicitudRepository.save(solicitud);
+        notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre(), null);
 
         TicketDTO ticketCreadoDTO = new TicketDTO();
         ticketCreadoDTO.setSolicitudes(ticket.getSolicitudes().getId());

@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.Componente;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoComponente;
 import com.inventarios.pc.inventarios_pc_be.exceptions.ComponentNotFoundException;
@@ -36,6 +37,9 @@ public class ComponenteServiceImplementation implements IComponenteService {
     @Autowired
     private TipoComponenteRepository tipoComponenteRepository;
 
+    @Autowired
+    private NotificationController notificationController;
+
     @Override
     public ComponenteDTO crearComponente(ComponenteDTO componenteDTO)
             throws ComponentNotFoundException, SelectNotAllowedException {
@@ -63,6 +67,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
         
 
         Componente componenteCreado = componenteRepository.save(componente);
+        notificationController.sendNotification("COMPONENTE", componenteCreado.getId(), componenteCreado);
         ComponenteDTO componenteCreadoDTO = new ComponenteDTO();
         BeanUtils.copyProperties(componenteCreado, componenteCreadoDTO);
         return componenteCreadoDTO;

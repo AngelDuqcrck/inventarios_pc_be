@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import com.inventarios.pc.inventarios_pc_be.entities.CambioUbicacionPc;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
@@ -69,6 +70,9 @@ public class AreaServiceImplementation implements IAreaService {
     @Autowired
     private HistorialDispositivoRepository historialDispositivoRepository;
 
+    @Autowired
+    private NotificationController notificationController;
+
 
     /**
      * Crea una nueva área en el sistema.
@@ -116,6 +120,14 @@ public class AreaServiceImplementation implements IAreaService {
         areaPC.setDeleteFlag(false);
 
         AreaPC areaCreada = areaRepository.save(areaPC);
+        AreaResponse areaResponse = new AreaResponse();
+        areaResponse.setId(areaCreada.getId());
+        areaResponse.setNombre(areaCreada.getNombre());
+        areaResponse.setDesc(areaCreada.getNombre());
+        areaResponse.setRol(areaCreada.getRol().getNombre());
+        areaResponse.setSede(areaCreada.getSede().getNombre());
+        areaResponse.setDeleteFlag(areaCreada.getDeleteFlag());
+        notificationController.sendNotification("AREA", areaCreada.getId(), areaResponse);
         AreaDTO areaCreadaDTO = new AreaDTO();
         BeanUtils.copyProperties(areaCreada, areaCreadaDTO);
 
