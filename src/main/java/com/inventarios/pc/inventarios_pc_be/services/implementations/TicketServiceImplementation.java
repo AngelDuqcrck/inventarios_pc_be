@@ -533,14 +533,13 @@ public class TicketServiceImplementation implements ITicketService {
                 ticket.setFechaCierre(new Date());
                 notificationController.notifyNewDate("TICKET", ticket.getId(), ticket.getFechaCierre());
 
-                EstadoSolicitudes estadoSolicitudCancelada = estadoSolicitudesRepository.findById(4).orElse(null);
-                if (estadoSolicitudCancelada == null) {
+                EstadoSolicitudes estadoEnRevision = estadoSolicitudesRepository.findById(6).orElse(null);
+                if (estadoEnRevision == null) {
                     throw new StateNotFoundException(
                             String.format(IS_NOT_FOUND, "EL ESTADO DE LA SOLICITUD").toUpperCase());
                 }
 
-                solicitud.setEstadoSolicitudes(estadoSolicitudCancelada);
-                solicitud.setFechaCierre(new Date());
+                solicitud.setEstadoSolicitudes(estadoEnRevision);
                 //notificationController.notifyNewDate("SOLICITUD", solicitud.getId(), solicitud.getFechaCierre());
                 solicitudRepository.save(solicitud);
                 notificationController.notifyStatusUpdate("SOLICITUD", solicitud.getId(), solicitud.getEstadoSolicitudes().getNombre(), solicitud.getFechaCierre());
