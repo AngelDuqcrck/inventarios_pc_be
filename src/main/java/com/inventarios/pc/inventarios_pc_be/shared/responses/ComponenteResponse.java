@@ -13,6 +13,7 @@ public class ComponenteResponse {
 
     private Boolean deleteFlag;
 
+    private String unidad;
 
     private String tipoComponente;
 }

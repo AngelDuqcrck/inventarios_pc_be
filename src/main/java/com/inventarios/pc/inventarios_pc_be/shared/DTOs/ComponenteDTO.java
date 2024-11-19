@@ -13,6 +13,8 @@ public class ComponenteDTO {
 
     private String nombre;
 
+    private String unidad;
+
     private Boolean deleteFlag;
 
     private Integer tipoComponente;

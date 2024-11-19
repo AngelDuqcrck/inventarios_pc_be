@@ -58,6 +58,8 @@ public class ComponenteServiceImplementation implements IComponenteService {
         }
         componente.setTipoComponente(tipoComponente);
         componente.setDeleteFlag(false);
+        componente.setUnidad(componenteDTO.getUnidad());
+        
 
         Componente componenteCreado = componenteRepository.save(componente);
         ComponenteDTO componenteCreadoDTO = new ComponenteDTO();
@@ -78,7 +80,7 @@ public class ComponenteServiceImplementation implements IComponenteService {
         }
         ComponenteResponse componenteResponse = new ComponenteResponse();
         BeanUtils.copyProperties(componente, componenteResponse);
-        componenteResponse.setNombre(componente.getNombre()+" "+componente.getCantidad());
+        componenteResponse.setNombre(componente.getNombre()+" "+componente.getUnidad());
         componenteResponse.setTipoComponente(componente.getTipoComponente().getNombre());
         return componenteResponse;
     }
