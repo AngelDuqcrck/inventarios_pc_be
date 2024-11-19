@@ -249,7 +249,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
 
         if (estadoDispositivo == null) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_FOUND, "ESTADO EN USO").toUpperCase());
+                    String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
         }
         computador.setEstadoDispositivo(estadoDispositivo);
 

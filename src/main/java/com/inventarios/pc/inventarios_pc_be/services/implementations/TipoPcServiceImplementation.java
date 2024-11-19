@@ -51,11 +51,11 @@ public class TipoPcServiceImplementation implements ITipoPcService {
             throws TypePcNotFoundException, UpdateNotAllowedException, DuplicateEntityException {
         TipoPC tipoPC = tipoPcRepository.findById(id).orElse(null);
         if (tipoPC == null) {
-            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE PC").toUpperCase());
+            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE PC").toUpperCase());
         }
 
         if (tipoPC.getDeleteFlag() == true) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TIPO DE PC").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL TIPO DE PC "+tipoPC.getNombre()+" PORQUE SE ENCUENTRA INACTIVO").toUpperCase());
         }
         if(tipoPcRepository.existsByNombreIgnoreCaseAndIdNot(tipoComputadorDTO.getNombre(), id)){
             throw new DuplicateEntityException("Ya existe un tipo de pc con el nombre " + tipoComputadorDTO.getNombre());
@@ -72,10 +72,10 @@ public class TipoPcServiceImplementation implements ITipoPcService {
     public void eliminarTipoPc(Integer id) throws TypePcNotFoundException, DeleteNotAllowedException {
         TipoPC tipoPC = tipoPcRepository.findById(id).orElse(null);
         if (tipoPC == null) {
-            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE PC").toUpperCase());
+            throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE PC").toUpperCase());
         }
         if (tipoPC.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE TIPO DE PC").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR EL TIPO DE PC "+tipoPC.getNombre()+" PORQUE YA SE ENCUENTRA INACTIVO").toUpperCase());
         }
 
         tipoPC.setDeleteFlag(true);
@@ -89,7 +89,7 @@ public class TipoPcServiceImplementation implements ITipoPcService {
             throw new TypePcNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE PC").toUpperCase());
         }
         if (tipoPC.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE TIPO DE PC").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR EL TIPO DE PC "+tipoPC.getNombre()+" PORQUE YA SE ENCUENTRA ACTIVO").toUpperCase());
         }
 
         tipoPC.setDeleteFlag(false);

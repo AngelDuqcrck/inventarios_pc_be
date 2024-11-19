@@ -112,7 +112,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
 
         Propietario propietario = propietarioRepository.findById(dispositivoRequest.getPropietario()).orElse(null);
         if (propietario == null) {
-            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND_F, "EL PROPIETARIO").toUpperCase());
+            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO").toUpperCase());
         }
         if (propietario.getDeleteFlag() == true) {
             throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL PROPIETARIO "+propietario.getNombre()+" PORQUE ESTA DESACTIVADA").toUpperCase());
@@ -209,7 +209,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         if(dispositivoRequest.getPropietario() != null){
             Propietario propietario = propietarioRepository.findById(dispositivoRequest.getPropietario()).orElse(null);
             if (propietario == null) {
-                throw new OwnerNotFoundException(String.format(IS_NOT_FOUND_F, "EL PROPIETARIO").toUpperCase());
+                throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO").toUpperCase());
             }
             if (propietario.getDeleteFlag() == true) {
                 throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL PROPIETARIO "+propietario.getNombre()+" PORQUE ESTA DESACTIVADA").toUpperCase());

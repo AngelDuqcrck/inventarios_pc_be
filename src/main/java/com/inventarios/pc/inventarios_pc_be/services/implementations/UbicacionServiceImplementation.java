@@ -44,6 +44,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
     public static final String IS_NOT_ALLOWED = "%s no esta permitido";
 
     @Autowired
@@ -96,7 +97,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         AreaPC areaPC = areaRepository.findById(ubicacionDTO.getArea()).orElse(null);
 
         if (areaPC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "EL AREA").toUpperCase());
         }
 
         if (areaPC.getDeleteFlag() == true) {
@@ -151,7 +152,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
             throws UpdateNotAllowedException, SelectNotAllowedException, LocationNotFoundException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
         if (ubicacion == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA UBICACION").toUpperCase());
 
         }
 
@@ -163,7 +164,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         if (ubicacionDTO.getArea() != null) {
             AreaPC areaPC = areaRepository.findById(ubicacionDTO.getArea()).orElse(null);
             if (areaPC == null) {
-                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+                throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "EL AREA").toUpperCase());
             }
             if (areaPC.getDeleteFlag() == true) {
                 throw new
@@ -211,7 +212,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 
         if (ubicacion == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LA UBICACION").toUpperCase());
 
         }
         if (ubicacion.getDeleteFlag() == true) {
@@ -284,7 +285,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     public UbicacionResponse listarUbicacionById(Integer id) throws LocationNotFoundException {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
         if (ubicacion == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA UBICACION").toUpperCase());
         }
         UbicacionResponse ubicacionResponse = new UbicacionResponse();
         BeanUtils.copyProperties(ubicacion, ubicacionResponse);
@@ -298,7 +299,7 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     public List<UbicacionResponse> listarUbicacionesPorAreaYOcupadaIsFalse(Integer areaId) throws LocationNotFoundException {
         AreaPC areaPC = areaRepository.findById(areaId).orElse(null);
         if (areaPC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "EL AREA").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "EL AREA").toUpperCase());
         }
         List<Ubicacion> ubicaciones = ubicacionRepository.findByAreaAndEstaOcupadaIsFalse(areaPC);
         List<UbicacionResponse> ubicacionesResponses = new ArrayList<>();
@@ -318,17 +319,17 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         AreaPC areaPC = areaRepository.findById(areaId).orElse(null);
 
         if (areaPC == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "AREA").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "EL AREA").toUpperCase());
         }
 
         if (areaPC.getDeleteFlag() == true) {
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA AREA").toUpperCase());
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR EL AREA "+areaPC.getNombre()+" PORQUE YA ESTA DESACTIVADA").toUpperCase());
         }
 
         List<Ubicacion> ubicaciones = ubicacionRepository.findByArea(areaPC);
 
         if (ubicaciones.isEmpty()) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LAUBICACION").toUpperCase());
         }
         return ubicaciones;
     }
@@ -338,12 +339,12 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         Ubicacion ubicacion = ubicacionRepository.findById(id).orElse(null);
 
         if (ubicacion == null) {
-            throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACION").toUpperCase());
+            throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA UBICACION").toUpperCase());
 
         }
         if (ubicacion.getDeleteFlag() == false) {
             throw new ActivateNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "ACTIVAR ESTA UBICACION").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "ACTIVAR LA UBICACION "+ubicacion.getNombre()+" PORQUE YA ESTA ACTIVADA").toUpperCase());
 
         }
         ubicacion.setDeleteFlag(false);

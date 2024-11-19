@@ -47,7 +47,7 @@ public class TipoRamServiceImplementation implements ITipoRamService{
         TipoRam tipoRam = tipoRamRepository.findById(id).orElse(null);
 
         if(tipoRam == null){
-            throw new TypeRamNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeRamNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE MEMORIA RAM").toUpperCase());
         }
 
         TipoRamDTO tipoRamDTO = new TipoRamDTO();
@@ -61,7 +61,7 @@ public class TipoRamServiceImplementation implements ITipoRamService{
         TipoRam tipoRam = tipoRamRepository.findById(id).orElse(null);
 
         if(tipoRam == null){
-            throw new TypeRamNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeRamNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE MEMORIA RAM").toUpperCase());
         }
 
         if(tipoRam.getDeleteFlag() == true){
@@ -81,11 +81,11 @@ public class TipoRamServiceImplementation implements ITipoRamService{
         TipoRam tipoRam = tipoRamRepository.findById(id).orElse(null);
 
         if(tipoRam == null){
-            throw new TypeRamNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeRamNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE MEMORIA RAM").toUpperCase());
         }
 
         if(tipoRam.getDeleteFlag() == true){
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR EL TIPO DE MEMORIA RAM "+tipoRam.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR EL TIPO DE MEMORIA RAM "+tipoRam.getNombre()+" PORQUE YA SE ENCUENTRA INACTIVA").toUpperCase());
         }
 
         tipoRam.setDeleteFlag(true);
@@ -97,7 +97,7 @@ public class TipoRamServiceImplementation implements ITipoRamService{
         TipoRam tipoRam = tipoRamRepository.findById(id).orElse(null);
 
         if(tipoRam == null){
-            throw new TypeRamNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeRamNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE MEMORIA RAM").toUpperCase());
         }
 
         if(tipoRam.getDeleteFlag() == false){

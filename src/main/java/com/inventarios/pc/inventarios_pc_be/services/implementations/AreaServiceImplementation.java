@@ -37,6 +37,7 @@ public class AreaServiceImplementation implements IAreaService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND ="%s no fue encontrada";
+    public static final String IS_NOT_FOUND_M ="%s no fue encontrado";
     public static final String IS_NOT_ALLOWED ="no esta permitido %s ";
 
     @Autowired
@@ -104,7 +105,7 @@ public class AreaServiceImplementation implements IAreaService {
         Rol rol = rolRepository.findById(areaDTO.getRol()).orElse(null);
 
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND_M, "EL ROL").toUpperCase());
         }
 
         if(rol.getDeleteFlag()==true){
@@ -161,7 +162,7 @@ public class AreaServiceImplementation implements IAreaService {
         Rol rolPC = rolRepository.findById(rol).orElse(null);
         SedePC sedePC = sedeRepository.findById(sedeId).orElse(null);
         if (rolPC == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND_M, "EL ROL").toUpperCase());
         }
         if (sedePC == null) {
             throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "LA SEDE").toUpperCase());
@@ -246,7 +247,7 @@ public class AreaServiceImplementation implements IAreaService {
             Rol rol = rolRepository.findById(areaDTO.getRol()).orElse(null);
 
             if (rol == null) {
-                throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL").toUpperCase());
+                throw new RolNotFoundException(String.format(IS_NOT_FOUND_M, "EL ROL").toUpperCase());
             }
 
             if(rol.getDeleteFlag()==true){
