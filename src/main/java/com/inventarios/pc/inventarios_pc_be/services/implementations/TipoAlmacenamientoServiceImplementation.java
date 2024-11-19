@@ -48,11 +48,11 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
-            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO").toUpperCase());
         }
 
         if(tipoAlmacenamiento.getDeleteFlag() == true){
-              throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL TIPO DE ALMACENAMIENTO "+tipoAlmacenamiento.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
+              throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL TIPO DE ALMACENAMIENTO "+tipoAlmacenamiento.getNombre()+" PORQUE SE ENCUENTRA INACTIVO").toUpperCase());
         }
         if(tipoAlmacenamientoRepository.existsByNombreIgnoreCaseAndIdNot(tipoAlmacenamientoDTO.getNombre(), id)){
             throw new DuplicateEntityException("Ya existe un tipo de almacenamiento con el nombre " + tipoAlmacenamientoDTO.getNombre());
@@ -69,11 +69,11 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
-            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO").toUpperCase());
         }
 
         if(tipoAlmacenamiento.getDeleteFlag() == true){
-              throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR EL TIPO DE ALMACENAMIENTO "+tipoAlmacenamiento.getNombre()+" PORQUE SE ENCUENTRA INACTIVA").toUpperCase());
+              throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR EL TIPO DE ALMACENAMIENTO "+tipoAlmacenamiento.getNombre()+" PORQUE YA SE ENCUENTRA INACTIVO").toUpperCase());
         }
 
         tipoAlmacenamiento.setDeleteFlag(true);
@@ -85,11 +85,11 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
-            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO").toUpperCase());
         }
 
         if(tipoAlmacenamiento.getDeleteFlag() == false){
-              throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR EL TIPO DE ALMACENAMIENTO "+tipoAlmacenamiento.getNombre()+" PORQUE SE ENCUENTRA ACTIVO").toUpperCase());
+              throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR EL TIPO DE ALMACENAMIENTO "+tipoAlmacenamiento.getNombre()+" PORQUE YA SE ENCUENTRA ACTIVO").toUpperCase());
         }
 
         tipoAlmacenamiento.setDeleteFlag(false);
@@ -100,7 +100,7 @@ public class TipoAlmacenamientoServiceImplementation implements ITipoAlmacenamie
         TipoAlmacenamiento tipoAlmacenamiento = tipoAlmacenamientoRepository.findById(id).orElse(null);
 
         if(tipoAlmacenamiento == null){
-            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO NO FUE ENCONTRADO").toUpperCase());
+            throw new TypeStorageNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE ALMACENAMIENTO").toUpperCase());
         }
 
         TipoAlmacenamientoDTO tipoAlmacenamientoDTO = new TipoAlmacenamientoDTO();

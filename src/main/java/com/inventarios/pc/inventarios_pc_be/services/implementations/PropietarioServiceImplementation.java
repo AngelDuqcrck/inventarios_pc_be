@@ -48,7 +48,7 @@ public class PropietarioServiceImplementation implements IPropietarioService  {
         Propietario propietario = propietarioRepository.findById(id).orElse(null);
 
         if(propietario == null){
-            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO NO FUE ENCONTRADO").toUpperCase());
+            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO").toUpperCase());
         }
 
         PropietarioDTO propietarioDTO = new PropietarioDTO();
@@ -61,7 +61,7 @@ public class PropietarioServiceImplementation implements IPropietarioService  {
         Propietario propietario = propietarioRepository.findById(id).orElse(null);
 
         if(propietario == null){
-            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO NO FUE ENCONTRADO").toUpperCase());
+            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO").toUpperCase());
         }
 
         if(propietario.getDeleteFlag() == true){
@@ -81,7 +81,7 @@ public class PropietarioServiceImplementation implements IPropietarioService  {
         Propietario propietario = propietarioRepository.findById(id).orElse(null);
 
         if(propietario == null){
-            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO NO FUE ENCONTRADO").toUpperCase());
+            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO").toUpperCase());
         }
 
         if(propietario.getDeleteFlag() == true){
@@ -97,7 +97,7 @@ public class PropietarioServiceImplementation implements IPropietarioService  {
         Propietario propietario = propietarioRepository.findById(id).orElse(null);
 
         if(propietario == null){
-            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO NO FUE ENCONTRADO").toUpperCase());
+            throw new OwnerNotFoundException(String.format(IS_NOT_FOUND, "EL PROPIETARIO").toUpperCase());
         }
 
         if(propietario.getDeleteFlag() == false){
