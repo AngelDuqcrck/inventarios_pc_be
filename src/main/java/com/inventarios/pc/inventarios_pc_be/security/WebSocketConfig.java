@@ -1,5 +1,6 @@
 package com.inventarios.pc.inventarios_pc_be.security;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -9,6 +10,8 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -40,7 +43,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 "http://192.168.1.5:83",
                 "http://inventariopc.com"
             )
-            .setAllowedOriginPatterns("*")
             .withSockJS()
             .setWebSocketEnabled(true)
             .setSessionCookieNeeded(true)
@@ -70,16 +72,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                     // accessor.setUser(new Principal(...));
                 }
                 
-                // Agregar headers CORS
-                if (accessor != null) {
-                    accessor.addNativeHeader("Access-Control-Allow-Origin", 
-                        "http://192.168.9.152");
-                    accessor.addNativeHeader("Access-Control-Allow-Origin",
-                        "http://inventariopc.com");
-                    accessor.addNativeHeader("Access-Control-Allow-Credentials", 
-                        "true");
-                }
-                
                 return message;
             }
         });
@@ -87,25 +79,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientOutboundChannel(ChannelRegistration registration) {
-        registration.interceptors(new ChannelInterceptor() {
-            @Override
-            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-                StompHeaderAccessor accessor = 
-                    MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-                
-                if (accessor != null) {
-                    accessor.addNativeHeader("Access-Control-Allow-Origin", 
-                        "http://192.168.9.152"
-                        );
-                        accessor.addNativeHeader("Access-Control-Allow-Origin",
-                        "http://inventariopc.com");
-                    accessor.addNativeHeader("Access-Control-Allow-Credentials", 
-                        "true");
-                }
-                
-                return message;
-            }
-        });
         
         // Configurar tamaño del pool de hilos para mensajes salientes
         registration.taskExecutor()
@@ -114,6 +87,24 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .queueCapacity(25);
     }
      
-    
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/ws/**")
+                    .allowedOrigins(
+                        "http://192.168.9.152",
+                        "http://192.168.9.152:80",
+                        "http://localhost:4200",
+                        "http://192.168.1.5:83",
+                        "http://inventariopc.com"
+                    )
+                    .allowedMethods("GET", "POST")
+                    .allowCredentials(true)
+                    .maxAge(3600);
+            }
+        };
+    }
      
 }

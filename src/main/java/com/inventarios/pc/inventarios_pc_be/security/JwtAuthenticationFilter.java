@@ -48,7 +48,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Verificar si el token es el último válido para este usuario
             if (!sessionManager.isTokenValid(correo, token)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Sesión iniciada en otro dispositivo");
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                String jsonResponse = "{\"message\": \"Sesión iniciada en otro dispositivo, se cerrará la sesión\"}";
+                response.getWriter().write(jsonResponse);
                 return;
             }
             
