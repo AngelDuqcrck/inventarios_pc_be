@@ -301,8 +301,6 @@ public class ComputadorServiceImplementation implements IComputadorService {
         ComputadoresResponse computadorResponse = new ComputadoresResponse();
         computadorResponse.setId(computadorCreado.getId());
         computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
-        computadorResponse.setResponsable(computadorCreado.getResponsable().getPrimerNombre() + " " + computadorCreado.getResponsable().getSegundoNombre() + " " + computadorCreado.getResponsable().getPrimerApellido() + " " + computadorCreado.getResponsable().getSegundoApellido());
-        computadorResponse.setPrimerNombreUser(computadorCreado.getResponsable().getPrimerNombre());
         computadorResponse.setSede(computadorCreado.getUbicacion().getArea().getSede().getNombre());
         computadorResponse.setArea(computadorCreado.getUbicacion().getArea().getNombre());
         computadorResponse.setUbicacion(computadorCreado.getUbicacion().getNombre());
@@ -441,6 +439,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computador.setEstadoDispositivo(estadoDispositivo);
 
         computadorRepository.save(computador);
+        notificationController.sendNotification("COMPUTADORNEWUSER", computador.getId(), computador);
     }
 
     @Override
