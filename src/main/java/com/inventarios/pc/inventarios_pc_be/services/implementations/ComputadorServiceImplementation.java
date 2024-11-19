@@ -617,8 +617,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorIdResponse.setUbicacion(computador.getUbicacion().getNombre());
         computadorIdResponse.setMarca(computador.getMarca().getNombre());
         computadorIdResponse.setProcesador(computador.getProcesador().getNombre());
-        computadorIdResponse.setRam(computador.getRam().getNombre()+" "+computador.getRam().getCantidad());
-        computadorIdResponse.setAlmacenamiento(computador.getAlmacenamiento().getNombre()+" "+computador.getAlmacenamiento().getCantidad());
+        computadorIdResponse.setRam(computador.getRam().getNombre()+" "+computador.getRam().getUnidad());
+        computadorIdResponse.setAlmacenamiento(computador.getAlmacenamiento().getNombre()+" "+computador.getAlmacenamiento().getUnidad());
         computadorIdResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
         computadorIdResponse.setTipoAlmacenamiento(computador.getTipoAlmacenamiento().getNombre());
         computadorIdResponse.setTipoRam(computador.getTipoRam().getNombre());
