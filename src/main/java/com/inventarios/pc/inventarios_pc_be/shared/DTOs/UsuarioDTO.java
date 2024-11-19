@@ -43,8 +43,7 @@ public class UsuarioDTO {
 
     @NotEmpty
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres.")
-     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).+$",
-             message = "La contraseña debe contener al menos una letra mayuscula, una letra minuscula, un numero y un caracter especial.")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).+$", message = "La contraseña debe contener al menos una letra mayuscula, una letra minuscula, un numero y un caracter especial.")
     private String password;
 
     @Pattern(regexp = "^[3-6]\\d{9}$", message = "El número de teléfono debe tener 10 dígitos y comenzar con 3 o 6")
