@@ -53,7 +53,7 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
         TipoSoftware tipoSoftware = tipoSoftwareRepository.findById(softwarePcDTO.getTipoSoftware()).orElse(null);
 
         if (tipoSoftware == null) {
-            throw new TypeSoftwareNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE SOFTWARE").toUpperCase());
+            throw new TypeSoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE SOFTWARE").toUpperCase());
         }
         if (tipoSoftware.getDeleteFlag() == true) {
             throw new
@@ -95,7 +95,7 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
         SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);
 
         if (softwarePC == null) {
-            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL SOFTWARE").toUpperCase());
         }
         SoftwareResponse softwareResponse = new SoftwareResponse();
         BeanUtils.copyProperties(softwarePC, softwareResponse);
@@ -120,12 +120,12 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
         SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);
 
         if (softwarePC == null) {
-            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL SOFTWARE").toUpperCase());
         }
 
         if (softwarePC.getDeleteFlag() == true) {
             throw new UpdateNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE SOFTWARE").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL SOFTWARE "+softwarePC.getNombre()+" PORQUE SE ENCUENTRA INACTIVO").toUpperCase());
         }
 
         BeanUtils.copyProperties(softwarePcDTO, softwarePC);
@@ -134,7 +134,7 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
             TipoSoftware tipoSoftware = tipoSoftwareRepository.findById(softwarePcDTO.getTipoSoftware()).orElse(null);
 
             if (tipoSoftware == null) {
-                throw new TypeSoftwareNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE SOFTWARE").toUpperCase());
+                throw new TypeSoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE SOFTWARE").toUpperCase());
             }
 
             if (tipoSoftware.getDeleteFlag() == true) {
@@ -166,11 +166,11 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
         SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);
 
         if (softwarePC == null) {
-            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL SOFTWARE").toUpperCase());
         }
 
         if (softwarePC.getDeleteFlag() == true) {
-            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR ESTE SOFTWARE").toUpperCase());
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "ELIMINAR EL SOFTWARE "+softwarePC.getNombre()+" PORQUE YA SE ENCUENTRA INACTIVO").toUpperCase());
         }
         softwarePC.setDeleteFlag(true);
         softwarePcRepository.save(softwarePC);
@@ -181,11 +181,11 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
         SoftwarePC softwarePC = softwarePcRepository.findById(id).orElse(null);
 
         if (softwarePC == null) {
-            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+            throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL SOFTWARE").toUpperCase());
         }
 
         if (softwarePC.getDeleteFlag() == false) {
-            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE SOFTWARE").toUpperCase());
+            throw new ActivateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTIVAR ESTE SOFTWARE "+softwarePC.getNombre()+" PORQUE YA SE ENCUENTRA ACTIVO").toUpperCase());
         }
         softwarePC.setDeleteFlag(false);
         softwarePcRepository.save(softwarePC);

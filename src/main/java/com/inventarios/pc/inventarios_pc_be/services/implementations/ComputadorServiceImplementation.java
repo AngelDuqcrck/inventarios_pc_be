@@ -160,7 +160,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         if (bodegaSistemas == null) {
             throw new StateNotFoundException(String
-                    .format(IS_NOT_FOUND, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
+                    .format(IS_NOT_FOUND_F, "LA BODEGA DE SISTEMAS DE LA SEDE PRINCIPAL").toUpperCase());
         }
         computador.setUbicacion(bodegaSistemas);
 
@@ -224,7 +224,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         if (almacenamiento == null) {
             throw new ComponentNotFoundException(
-                    String.format(IS_NOT_FOUND, "DISPOSITIVO DE ALMACENAMIENTO").toUpperCase());
+                    String.format(IS_NOT_FOUND, "EL DISPOSITIVO DE ALMACENAMIENTO").toUpperCase());
         }
 
         if (!almacenamiento.getTipoComponente().getNombre().equals("Cantidad de disco duro")) {
@@ -372,7 +372,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
                 && !computador.getEstadoDispositivo().getNombre().equals("En uso")) {
             throw new SelectNotAllowedException(String
                     .format(IS_NOT_ALLOWED,
-                            "SELECCIONAR ESTE COMPUTADOR PORQUE SU ESTADO ES DIFERENTE A DISPONIBLE O EN USO")
+                            "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE SU ESTADO ES DIFERENTE A DISPONIBLE O EN USO")
                     .toUpperCase());
         }
         Ubicacion ubicacionActual = computador.getUbicacion();
@@ -1082,7 +1082,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         TipoDispositivo tipoDispositivo = tipoDispositivoRepository.findById(8).orElse(null);
 
         if (tipoDispositivo == null) {
-            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE DISPOSITIVO").toUpperCase());
+            throw new TypeDeviceNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE DISPOSITIVO").toUpperCase());
         }
 
         HistorialDispositivo historialDispositivo = historialDispositivoRepository

@@ -58,6 +58,7 @@ public class TicketServiceImplementation implements ITicketService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
     public static final String IS_NOT_ALLOWED = "%s no esta permitido";
     public static final String IS_NOT_VALID = "%s no es valido";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
@@ -113,13 +114,13 @@ public class TicketServiceImplementation implements ITicketService {
         Solicitudes solicitud = solicitudRepository.findById(ticketDTO.getSolicitudes()).orElse(null);
 
         if (solicitud == null) {
-            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND_F, "LA SOLICITUD").toUpperCase());
         }
 
         if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision")
                 && !solicitud.getEstadoSolicitudes().getNombre().equals("En Proceso")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA SOLICITUD PORQUE SU ESTADO ACTUAL NO ES EN REVISION").toUpperCase());
         }
 
         ticketRepository.findBySolicitudesAndEstadoTicketsNombreNot(solicitud, "Cancelado")
@@ -142,17 +143,17 @@ public class TicketServiceImplementation implements ITicketService {
         EstadoTickets estadoTickets = estadoTicketsRepository.findByNombre("En Proceso").orElse(null);
 
         if (estadoTickets == null) {
-            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DEL TICKET").toUpperCase());
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO EN PROCESO").toUpperCase());
         }
 
         ticket.setEstadoTickets(estadoTickets);
 
         Tickets ticketCreado = ticketRepository.save(ticket);
-        crearCambioEstado(ticketCreado, estadoTickets);
+        //crearCambioEstado(ticketCreado, estadoTickets);
 
         EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findById(2).orElse(null);
         if (estadoSolicitudes == null) {
-            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO EN PROCESO").toUpperCase());
         }
 
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
@@ -203,7 +204,7 @@ public class TicketServiceImplementation implements ITicketService {
         Tickets ticket = ticketRepository.findById(ticketId).orElse(null);
 
         if (ticket == null) {
-            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "TICKET").toUpperCase());
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "EL TICKET").toUpperCase());
 
         }
 
@@ -227,13 +228,13 @@ public class TicketServiceImplementation implements ITicketService {
         Rol rol = rolRepository.findByNombre("TECNICO_SISTEMAS").orElse(null);
 
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL TECNICO").toUpperCase());
         }
 
         Usuario usuario = usuarioRepository.findByCorreoAndRolId(correo, rol).orElse(null);
 
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
         }
 
         List<Tickets> tickets = ticketRepository.findByUsuario(usuario);
@@ -267,12 +268,12 @@ public class TicketServiceImplementation implements ITicketService {
         Tickets ticket = ticketRepository.findById(ticketId).orElse(null);
 
         if (ticket == null) {
-            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "TICKET").toUpperCase());
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "EL TICKET").toUpperCase());
 
         }
 
         if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TICKET").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE TICKET PORQUE SU ESTADO ACTUAL NO ES EN PROCESO").toUpperCase());
         }
 
         BeanUtils.copyProperties(ticketDTO, ticket);
@@ -303,12 +304,12 @@ public class TicketServiceImplementation implements ITicketService {
         Tickets ticket = ticketRepository.findById(observacionRequest.getTicketId()).orElse(null);
 
         if (ticket == null) {
-            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "TICKET").toUpperCase());
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "EL TICKET").toUpperCase());
 
         }
 
         if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
-            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET").toUpperCase());
+            throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET PORQUE SU ESTADO ACTUAL NO ES EN PROCESO").toUpperCase());
         }
 
         ticket.setObservacion(observacionRequest.getObservacion());
@@ -323,7 +324,7 @@ public class TicketServiceImplementation implements ITicketService {
         Tickets ticket = ticketRepository.findById(cambiarEstadoTicketRequest.getTicketId()).orElse(null);
 
         if (ticket == null) {
-            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "TICKET").toUpperCase());
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "EL TICKET").toUpperCase());
 
         }
 
@@ -340,7 +341,7 @@ public class TicketServiceImplementation implements ITicketService {
             case 2: // Finalizado
                 if (!ticket.getEstadoTickets().getNombre().equals("En Proceso")) {
                     throw new SelectNotAllowedException(
-                            String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET").toUpperCase());
+                            String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TICKET PORQUE SU ESTADO ACTUAL NO ES EN PROCESO").toUpperCase());
                 }
 
                 ticket.setFechaCierre(new Date());
@@ -348,7 +349,7 @@ public class TicketServiceImplementation implements ITicketService {
                 EstadoSolicitudes estadoSolicitudFinalizada = estadoSolicitudesRepository.findById(3).orElse(null);
                 if (estadoSolicitudFinalizada == null) {
                     throw new StateNotFoundException(
-                            String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+                            String.format(IS_NOT_FOUND, "EL ESTADO COMPLETADO").toUpperCase());
                 }
 
                 Integer tipoSolicitud = solicitud.getTipoSolicitudes().getId();
@@ -573,7 +574,7 @@ public class TicketServiceImplementation implements ITicketService {
 
         ticketRepository.save(ticket);
         notificationController.notifyStatusUpdate("TICKET", ticket.getId(), ticket.getEstadoTickets().getNombre(), ticket.getFechaCierre());
-        crearCambioEstado(ticket, estadoTickets);
+        //crearCambioEstado(ticket, estadoTickets);
     }
 
     @Override
@@ -582,7 +583,7 @@ public class TicketServiceImplementation implements ITicketService {
         Tickets ticket = ticketRepository.findById(ticketId).orElse(null);
 
         if (ticket == null) {
-            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, " EL TICKET").toUpperCase());
+            throw new TicketNotFoundException(String.format(IS_NOT_FOUND, "EL TICKET").toUpperCase());
 
         }
         if (!ticket.getEstadoTickets().getNombre().equals("Reasignado")) {
@@ -625,7 +626,7 @@ public class TicketServiceImplementation implements ITicketService {
 
     }
 
-    public void crearCambioEstado(Tickets tickets, EstadoTickets estadoTickets) {
+    /*public void crearCambioEstado(Tickets tickets, EstadoTickets estadoTickets) {
         CambioEstadoTickets cambioEstadoTickets = new CambioEstadoTickets();
         cambioEstadoTickets.setTickets(tickets);
         cambioEstadoTickets.setEstadoTickets(estadoTickets);
@@ -633,4 +634,5 @@ public class TicketServiceImplementation implements ITicketService {
 
         cambioEstadoTicketsRepository.save(cambioEstadoTickets);
     }
+        */
 }

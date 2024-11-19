@@ -52,7 +52,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
-    public static final String IS_NOT_FOUND_F = "%s no fue encontradA";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
     public static final String IS_NOT_ALLOWED = "%s no esta permitido";
     public static final String IS_NOT_VALID = "%s no es valido";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
@@ -177,7 +177,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         if (usuario == null) {
 
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
 
         }
 
@@ -207,7 +207,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
         if (solicitud == null) {
-            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND_F, "LA SOLICITUD").toUpperCase());
         }
 
         SolicitudIdResponse solicitudIdResponse = new SolicitudIdResponse();
@@ -242,7 +242,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
 
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
         }
 
         Integer rol = usuario.getRolId().getId();
@@ -255,7 +255,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findById(6).orElse(null);
                 if (estadoSolicitudes == null) {
                     throw new StateNotFoundException(
-                            String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+                            String.format(IS_NOT_FOUND, "EL ESTADO DE LA SOLICITUD").toUpperCase());
                 }
 
                 solicitud.setEstadoSolicitudes(estadoSolicitudes);
@@ -276,18 +276,18 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
         if (solicitud == null) {
-            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND_F, "LA SOLICITUD").toUpperCase());
         }
 
         if (!solicitud.getEstadoSolicitudes().getNombre().equals("En Revision")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
+                    String.format(IS_NOT_FOUND, "RECHAZAR ESTA SOLICITUD PORQUE NO TIENE EL ESTADO EN REVISION").toUpperCase());                                   
         }
 
         EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Rechazada").orElse(null);
 
         if (estadoSolicitudes == null) {
-            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO RECHAZADO").toUpperCase());
         }
         retornarModificacionesSolicitud(solicitud);
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
@@ -305,18 +305,18 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
         if (solicitud == null) {
-            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND_F, "LASOLICITUD").toUpperCase());
         }
 
         if (!solicitud.getEstadoSolicitudes().getNombre().equals("Pendiente")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD").toUpperCase());
+                    String.format(IS_NOT_FOUND, "SELECCIONAR ESTA SOLICITUD PORQUE NO TIENE EL ESTADO PENDIENTE").toUpperCase());
         }
 
         EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Cancelada").orElse(null);
 
         if (estadoSolicitudes == null) {
-            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO DE LA SOLICITUD").toUpperCase());
+            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO CANCELADO").toUpperCase());
         }
         solicitud.setEstadoSolicitudes(estadoSolicitudes);
         solicitud.setFechaCierre(new Date());
@@ -330,7 +330,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
         if (solicitud == null) {
-            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "LA SOLICITUD").toUpperCase());
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND_F, "LA SOLICITUD").toUpperCase());
         }
 
         if (solicitud.getEstadoSolicitudes().getId() != 6) {
@@ -359,7 +359,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
 
         if (solicitud == null) {
-            throw new RequestNotFoundException(String.format(IS_NOT_FOUND, "SOLICITUD").toUpperCase());
+            throw new RequestNotFoundException(String.format(IS_NOT_FOUND_F, "LA SOLICITUD").toUpperCase());
         }
 
         Integer rol = solicitud.getUsuario().getRolId().getId();
@@ -368,8 +368,8 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             if (!solicitud.getEstadoSolicitudes().getNombre().equals("Pendiente")) {
 
                 throw new UpdateNotAllowedException(
-                        String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SOLICITUD PORQUE SU ESTADO NO ES PENDIENTE")
-                                .toUpperCase());
+                        String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SOLICITUD PORQUE SU ESTADO ACTUAL NO ES PENDIENTE").toUpperCase());
+                                
 
             }
         } else {
@@ -377,7 +377,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                     && !solicitud.getEstadoSolicitudes().getNombre().equals("Pendiente")) {
 
                 throw new UpdateNotAllowedException(
-                        String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SOLICITUD PORQUE SU ESTADO NO ES EN REVISIÓN")
+                        String.format(IS_NOT_ALLOWED, "ACTUALIZAR ESTA SOLICITUD PORQUE SU ESTADO ACTUAL NO ES EN REVISIÓN")
                                 .toUpperCase());
             }
         }
@@ -395,13 +395,13 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 if (solicitudRequest.getComputador() != null) {
                     computador = computadorRepository.findById(solicitudRequest.getComputador()).orElse(null);
                     if (computador == null) {
-                        throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+                        throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EL EQUIPO").toUpperCase());
                     }
 
                     if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                             && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
                         throw new SelectNotAllowedException(
-                                String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
+                                String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR PORQUE TIENE UN ESTADO DIFERENTE A EN USO O DISPONIBLE").toUpperCase());
                     }
                 }
 
@@ -413,7 +413,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
                         if (dispositivoNuevo == null) {
                             throw new SelectNotAllowedException(
-                                    String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+                                    String.format(IS_NOT_FOUND, "EL DISPOSITIVO").toUpperCase());
                         }
 
                         
@@ -429,7 +429,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         EstadoDispositivo estadoComputador = estadoDispositivoRepository.findByNombre("En uso")
                                 .orElse(null);
                         if (estadoComputador == null) {
-                            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO").toUpperCase());
+                            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
                         }
                         computador.setEstadoDispositivo(estadoComputador);
                         computadorRepository.save(computador);
@@ -458,7 +458,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             EstadoDispositivo estadoComputador = estadoDispositivoRepository.findByNombre("En uso")
                                     .orElse(null);
                             if (estadoComputador == null) {
-                                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO").toUpperCase());
+                                throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
                             }
                             computador.setEstadoDispositivo(estadoComputador);
                             computadorRepository.save(computador);
@@ -477,12 +477,12 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             .orElse(null);
                     if (ubicacionOrigen == null) {
                         throw new LocationNotFoundException(
-                                String.format(IS_NOT_FOUND, "UBICACIÓN DE ORIGEN").toUpperCase());
+                                String.format(IS_NOT_FOUND_F, "LA UBICACIÓN DE ORIGEN").toUpperCase());
                     }
 
                     if (ubicacionOrigen.getDeleteFlag() == true) {
                         throw new SelectNotAllowedException(
-                                String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+                                String.format(IS_NOT_ALLOWED, "SELECCIONAR LA UBICACION "+ubicacionOrigen.getNombre()+"COMO UBICACION DE ORIGEN PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
                     }
 
                     solicitud.setUbicacionOrigen(ubicacionOrigen);
@@ -496,13 +496,13 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                             .orElse(null);
                     if (computador == null) {
                         throw new SelectNotAllowedException(
-                                String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+                                String.format(IS_NOT_FOUND, "EL EQUIPO").toUpperCase());
                     }
 
                     if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                             && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
                         throw new SelectNotAllowedException(
-                                String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
+                                String.format(IS_NOT_ALLOWED, "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTE A EN USO O DISPONIBLE").toUpperCase());
                     }
                 } else {
                     computador = solicitud.getComputador();
@@ -516,7 +516,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         if (dispositivoNuevo == null) {
 
                             throw new SelectNotAllowedException(
-                                    String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+                                    String.format(IS_NOT_FOUND, "EL DISPOSITIVO").toUpperCase());
 
                         }
 
@@ -533,7 +533,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         EstadoDispositivo estadoComputador = estadoDispositivoRepository.findByNombre("En uso")
                                 .orElse(null);
                         if (estadoComputador == null) {
-                            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO").toUpperCase());
+                            throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
                         }
                         computador.setEstadoDispositivo(estadoComputador);
                         computadorRepository.save(computador);
@@ -566,7 +566,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                                     .orElse(null);
                             if (estadoComputador == null) {
                                 throw new StateNotFoundException(
-                                        String.format(IS_NOT_FOUND, "ESTADO").toUpperCase());
+                                        String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
                             }
                             computador.setEstadoDispositivo(estadoComputador);
                             computadorRepository.save(computador);
@@ -598,7 +598,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 if (ubicacionDestino.getDeleteFlag() == true) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED,
-                                    "SELECCIONAR ESTA UBICACION PORQUE SE ENCUENTRA DESACTIVADA")
+                                    "SELECCIONAR LA UBICACION "+ubicacionDestino.getNombre()+"COMO UBICACION DE DESTINO PORQUE SE ENCUENTRA DESACTIVADA")
                                     .toUpperCase());
                 }
                 solicitud.setUbicacionDestino(ubicacionDestino);
@@ -617,7 +617,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED,
-                                    "SELECCIONAR ESTE COMPUTADOR PORQUE TIENE UN ESTADO DIFERENTE A EN USO O DISPONIBLE")
+                                    "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTE A EN USO O DISPONIBLE")
                                     .toUpperCase());
                 }
                 EstadoDispositivo estadoComputador = estadoDispositivoRepository.findByNombre("En uso")
@@ -639,14 +639,14 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         .orElse(null);
                 if (computador == null) {
                     throw new SelectNotAllowedException(
-                            String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+                            String.format(IS_NOT_FOUND, "EL EQUIPO").toUpperCase());
                 }
 
                 if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                         && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED,
-                                    "SELECCIONAR ESTE COMPUTADOR PORQUE TIENE UN ESTADO DIFERENTE A EN USO O DISPONIBLE")
+                                    "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTE A EN USO O DISPONIBLE")
                                     .toUpperCase());
                 }
                 solicitud.setComputador(computador);
@@ -660,13 +660,13 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                         .orElse(null);
                 if (ubicacionOrigen == null) {
                     throw new LocationNotFoundException(
-                            String.format(IS_NOT_FOUND, "UBICACIÓN DE ORIGEN").toUpperCase());
+                            String.format(IS_NOT_FOUND_F, "LA UBICACIÓN DE ORIGEN").toUpperCase());
                 }
 
                 if (ubicacionOrigen.getDeleteFlag() == true) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED,
-                                    "SELECCIONAR ESTA UBICACION PORQUE SE ENCUENTRA DESACTIVADA")
+                                    "SELECCIONAR LA UBICACION "+ubicacionOrigen.getNombre()+"COMO UBICACION DE ORIGEN PORQUE SE ENCUENTRA DESACTIVADA")
                                     .toUpperCase());
                 }
                 solicitud.setUbicacionOrigen(ubicacionOrigen);
@@ -675,7 +675,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             }
 
         } else {
-            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ROL").toUpperCase());
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "EL ROL").toUpperCase());
         }
 
         solicitudRepository.save(solicitud);
@@ -697,28 +697,28 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         Usuario usuario = usuarioRepository.findByCorreo(solicitudDTO.getUsuario()).orElse(null);
 
         if (usuario == null) {
-            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "USUARIO").toUpperCase());
+            throw new UserNotFoundException(String.format(IS_NOT_FOUND, "EL USUARIO").toUpperCase());
         }
 
         if (usuario.getDeleteFlag() == true) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE USUARIO").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
 
         TipoSolicitudes tipoSolicitud = tipoSolicitudRepository.findById(tipoSolicitudId).orElse(null);
         if (tipoSolicitud == null) {
-            throw new TypeRequestNotFoundException(String.format(IS_NOT_FOUND, "TIPO DE SOLICITUD").toUpperCase());
+            throw new TypeRequestNotFoundException(String.format(IS_NOT_FOUND, "EL TIPO DE SOLICITUD").toUpperCase());
         }
 
         if (solicitudDTO.getUbicacionOrigen() != null) {
             Ubicacion ubicacionOrigen = ubicacionRepository.findById(solicitudDTO.getUbicacionOrigen()).orElse(null);
             if (ubicacionOrigen == null) {
-                throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACIÓN DE ORIGEN").toUpperCase());
+                throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LAUBICACIÓN DE ORIGEN").toUpperCase());
             }
 
             if (ubicacionOrigen.getDeleteFlag() == true) {
                 throw new SelectNotAllowedException(
-                        String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+                        String.format(IS_NOT_ALLOWED, "SELECCIONAR LA UBICACION "+ubicacionOrigen.getNombre()+"COMO UBICACION DE ORIGEN PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
             }
 
             solicitudes.setUbicacionOrigen(ubicacionOrigen);
@@ -730,14 +730,14 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
                 Computador computador = computadorRepository.findById(solicitudDTO.getComputador()).orElse(null);
                 if (computador == null) {
-                    throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+                    throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EL EQUIPO").toUpperCase());
                 }
 
                 if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                         && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED,
-                                    "SELECCIONAR ESTE COMPUTADOR PORQUE TIENE UN ESTADO DIFERENTE A EN USO Y DISPONIBLE")
+                                    "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTE A EN USO Y DISPONIBLE")
                                     .toUpperCase());
                 }
                 if (solicitudDTO.getEsHardaware() == true) {
@@ -747,7 +747,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                     if (dispositivo == null) {
 
                         throw new SelectNotAllowedException(
-                                String.format(IS_NOT_FOUND, "DISPOSITIVO").toUpperCase());
+                                String.format(IS_NOT_FOUND, "EL DISPOSITIVO").toUpperCase());
 
                     }
                     HistorialDispositivo dispositivoVinculado = historialDispositivoRepository
@@ -755,7 +755,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
                     if (dispositivoVinculado == null) {
                         throw new SelectNotAllowedException(
-                                String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
+                                String.format(IS_NOT_VINCULATED, "EL DISPOSITIVO").toUpperCase());
                     }
 
 
@@ -767,7 +767,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 if (solicitudDTO.getEsHardaware() == false) {
                     SoftwarePC softwarePC = softwarePcRepository.findById(solicitudDTO.getSoftwarePC()).orElse(null);
                     if (softwarePC == null) {
-                        throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+                        throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL SOFTWARE").toUpperCase());
                     }
 
                     SoftwareCSA softwareVinculado = softwareCsaRepository
@@ -786,12 +786,12 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 Ubicacion ubicacionDestino = ubicacionRepository.findById(solicitudDTO.getUbicacionDestino())
                         .orElse(null);
                 if (ubicacionDestino == null) {
-                    throw new LocationNotFoundException(String.format(IS_NOT_FOUND, "UBICACIÓN DESTINO").toUpperCase());
+                    throw new LocationNotFoundException(String.format(IS_NOT_FOUND_F, "LA UBICACIÓN DE DESTINO").toUpperCase());
                 }
 
                 if (ubicacionDestino.getDeleteFlag() == true) {
                     throw new SelectNotAllowedException(
-                            String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTA UBICACION").toUpperCase());
+                            String.format(IS_NOT_ALLOWED, "SELECCIONAR LA UBICACION "+ubicacionDestino.getNombre()+"COMO UBICACION DE DESTINO PORQUE SE ENCUENTRA DESACTIVADA").toUpperCase());
                 }
                 solicitudes.setUbicacionDestino(ubicacionDestino);
                 solicitudes.setDispositivoPC(null);
@@ -799,14 +799,14 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             case 3:// Solicitud de mantenimiento preventivo
                 computador = computadorRepository.findById(solicitudDTO.getComputador()).orElse(null);
                 if (computador == null) {
-                    throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+                    throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EL EQUIPO").toUpperCase());
                 }
 
                 if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                         && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
                     throw new SelectNotAllowedException(
                             String.format(IS_NOT_ALLOWED,
-                                    "SELECCIONAR ESTE COMPUTADOR PORQUE TIENE UN ESTADO DIFERENTE A EN USO Y DISPONIBLE")
+                                    "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTE A EN USO Y DISPONIBLE")
                                     .toUpperCase());
                 }
                 if (solicitudDTO.getEsHardaware() == true) {
@@ -834,7 +834,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 if (solicitudDTO.getEsHardaware() == false) {
                     SoftwarePC softwarePC = softwarePcRepository.findById(solicitudDTO.getSoftwarePC()).orElse(null);
                     if (softwarePC == null) {
-                        throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "SOFTWARE").toUpperCase());
+                        throw new SoftwareNotFoundException(String.format(IS_NOT_FOUND, "EL SOFTWARE").toUpperCase());
                     }
 
                     SoftwareCSA softwareVinculado = softwareCsaRepository
@@ -854,14 +854,14 @@ public class SolicitudServiceImplementation implements ISolicitudService {
             case 4:// Solicitud general
                 break;
             default:
-                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "TIPO DE SOLICITUD").toUpperCase());
+                throw new SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "ELTIPO DE SOLICITUD").toUpperCase());
 
         }
 
         EstadoSolicitudes estadoSolicitudes = estadoSolicitudesRepository.findByNombre("Pendiente").orElse(null);
 
         if (estadoSolicitudes == null || estadoSolicitudes.getDeleteFlag() != false) {
-            throw new StateNotFoundException(String.format(IS_NOT_ALLOWED, "ESTADO DE LA SOLICITUD").toUpperCase());
+            throw new StateNotFoundException(String.format(IS_NOT_ALLOWED, "EL ESTADO PENDIENTE").toUpperCase());
         }
 
         BeanUtils.copyProperties(solicitudDTO, solicitudes);
@@ -872,20 +872,20 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudes.setFechaCreacion(new Date());
         Computador computador = computadorRepository.findById(solicitudDTO.getComputador()).orElse(null);
         if (computador == null) {
-            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EQUIPO").toUpperCase());
+            throw new SelectNotAllowedException(String.format(IS_NOT_FOUND, "EL EQUIPO").toUpperCase());
         }
 
         if (!computador.getEstadoDispositivo().getNombre().equals("En uso")
                 && !computador.getEstadoDispositivo().getNombre().equals("Disponible")) {
             throw new SelectNotAllowedException(
-                    String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE COMPUTADOR").toUpperCase());
+                    String.format(IS_NOT_ALLOWED, "SELECCIONAR EL COMPUTADOR "+computador.getNombre()+" PORQUE TIENE UN ESTADO DIFERENTE A EN USO O DISPONIBLE").toUpperCase());
         }
 
         EstadoDispositivo nuevoEstadoComputador = estadoDispositivoRepository.findByNombre("En uso")
                 .orElse(null);
         if (nuevoEstadoComputador == null) {
             throw new StateNotFoundException(
-                    String.format(IS_NOT_ALLOWED, "ESTADO DEL DISPOSITIVO").toUpperCase());
+                    String.format(IS_NOT_FOUND, "eL ESTADO EN USO").toUpperCase());
         }
         computador.setEstadoDispositivo(nuevoEstadoComputador);
         computadorRepository.save(computador);
@@ -907,7 +907,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
                     if (dispositivoVinculado == null) {
                         throw new SelectNotAllowedException(
-                                String.format(IS_NOT_VINCULATED, " DISPOSITIVO").toUpperCase());
+                                String.format(IS_NOT_VINCULATED, "EL DISPOSITIVO").toUpperCase());
                     }
                     EstadoDispositivo nuevoEstadoDispositivo = new EstadoDispositivo();
 
@@ -973,7 +973,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
                 if (solicitud.getDispositivoPC() != null) {
                     EstadoDispositivo estadoEnUso = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
                     if (estadoEnUso == null) {
-                        throw new StateNotFoundException(String.format(IS_NOT_FOUND, "ESTADO EN USO").toUpperCase());
+                        throw new StateNotFoundException(String.format(IS_NOT_FOUND, "EL ESTADO EN USO").toUpperCase());
                     }
                     DispositivoPC dispositivo = solicitud.getDispositivoPC();
                     dispositivo.setEstadoDispositivo(estadoEnUso);

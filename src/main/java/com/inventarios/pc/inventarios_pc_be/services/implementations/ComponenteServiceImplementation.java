@@ -25,6 +25,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.responses.ComponenteResponse;
 public class ComponenteServiceImplementation implements IComponenteService {
     public static final String IS_ALREADY_USE = "%s ya esta en uso";
     public static final String IS_NOT_FOUND = "%s no fue encontrado";
+    public static final String IS_NOT_FOUND_F = "%s no fue encontrada";
     public static final String IS_NOT_ALLOWED = "no esta permitido %s";
 
     @Autowired
