@@ -202,8 +202,8 @@ CREATE TABLE IF NOT EXISTS tipo_componentes
 -- Insertamos los tipos de componentes si no existen en el sistema
 INSERT IGNORE INTO tipo_componentes (id, nombre, delete_flag) VALUES
     (1, "Procesador", 0),
-    (2, "Cantidad de memoria RAM", 0),
-    (3, "Cantidad de disco duro", 0);
+    (2, "Capacidad de memoria RAM", 0),
+    (3, "Capacidad de disco duro", 0);
 
     -- Creamos la tabla estado_dispositivos si no existe
 CREATE TABLE IF NOT EXISTS estado_dispositivos
