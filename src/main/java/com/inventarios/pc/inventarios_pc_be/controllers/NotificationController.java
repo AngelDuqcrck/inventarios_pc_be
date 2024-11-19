@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventarios.pc.inventarios_pc_be.entities.StatusUpdateMessage;
+import com.inventarios.pc.inventarios_pc_be.entities.WebSocketMessage;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.SolicitudDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TicketDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.SolicitudesResponse;
@@ -59,5 +60,10 @@ public class NotificationController {
         message.setTickets(newTicket);
 
         messagingTemplate.convertAndSend("/topic/status-updates", message);
+    }
+
+    public <T> void sendNotification(String type, Integer id, T data) {
+        WebSocketMessage<T> message = new WebSocketMessage<>(type, id, data);
+        messagingTemplate.convertAndSend("/topic/notifications", message);
     }
 }
