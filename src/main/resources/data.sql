@@ -135,8 +135,9 @@ CREATE TABLE IF NOT EXISTS usuarios (
 -- Insertamos un usuario ADMIN si no existe
 -- Insertamos un usuario ADMIN si no existe
 INSERT IGNORE INTO usuarios (
-    rol_id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, tipo_documento_id, cedula, correo, password, telefono, fecha_nacimiento, ubicacion_id, delete_flag
+    id, rol_id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, tipo_documento_id, cedula, correo, password, telefono, fecha_nacimiento, ubicacion_id, delete_flag
 ) VALUES (
+    1,
     1, -- rol_id para ADMIN
     'Admin', -- primer_nombre
     'Super', -- segundo_nombre

@@ -18,7 +18,8 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    @Override
+    
+     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker(
             "/topic",  // Para mensajes de difusión
@@ -112,5 +113,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .maxPoolSize(10)
             .queueCapacity(25);
     }
-
+     
+    
+     
 }

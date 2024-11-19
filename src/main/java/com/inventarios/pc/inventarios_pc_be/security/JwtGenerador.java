@@ -3,6 +3,8 @@ package com.inventarios.pc.inventarios_pc_be.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,9 @@ import java.util.Date;
 
 @Component
 public class JwtGenerador {
+
+     @Autowired
+    private SessionManager sessionManager;
 
     // Metodo para crear un token por medio de la autenticación
     public String generarToken(Authentication authentication) {
@@ -33,6 +38,8 @@ public class JwtGenerador {
                 .setExpiration(expiracionToken)
                 .signWith(SignatureAlgorithm.HS512, ConstantesSeguridad.JWT_FIRMA)
                 .compact();
+            
+                sessionManager.registerUserSession(correo, token);
 
         return token;
     }
