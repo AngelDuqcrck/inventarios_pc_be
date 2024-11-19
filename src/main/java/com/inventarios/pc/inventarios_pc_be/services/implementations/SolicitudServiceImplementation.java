@@ -111,8 +111,10 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudesResponse.setResponsable(solicitudCreadaAsistencial.getUsuario().getPrimerNombre() + " " + solicitudCreadaAsistencial.getUsuario().getPrimerApellido());
         solicitudesResponse.setTipoSolicitud(solicitudCreadaAsistencial.getTipoSolicitudes().getNombre());
         solicitudesResponse.setTitulo(solicitudCreadaAsistencial.getTipoSolicitudes().getNombre());
+        //notificationController.sendNotification("NEWSOLICITUD", solicitudCreadaAsistencial.getId(), solicitudesResponse);
         notificationController.notifyNewRequest("NEWSOLICITUD", solicitudCreadaAsistencial.getId(), solicitudesResponse);
         BeanUtils.copyProperties(solicitudCreadaAsistencial, solicitudAsistencialCreadaDTO);
+        
         return solicitudAsistencialCreadaDTO;
 
     }
@@ -138,10 +140,10 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudesResponse.setTipoSolicitud(solicitudCreadaAdministrativo.getTipoSolicitudes().getNombre());
         solicitudesResponse.setTitulo(solicitudCreadaAdministrativo.getTipoSolicitudes().getNombre());
         notificationController.notifyNewRequest("NEWSOLICITUD", solicitudCreadaAdministrativo.getId(), solicitudesResponse);
-
+        //notificationController.sendNotification("NEWSOLICITUD", solicitudCreadaAdministrativo.getId(), solicitudesResponse);
         SolicitudDTO solicitudCreadaAdministrativoDTO = new SolicitudDTO();
         BeanUtils.copyProperties(solicitudCreadaAdministrativo, solicitudCreadaAdministrativoDTO);
-
+        
         return solicitudCreadaAdministrativoDTO;
 
     }
