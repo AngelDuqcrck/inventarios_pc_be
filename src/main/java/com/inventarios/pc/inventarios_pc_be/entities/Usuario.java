@@ -84,10 +84,10 @@ public class Usuario {
     @Column(nullable = false)
     private String password;
 
-    @Pattern(regexp = "3\\d{9}", message = "El número de teléfono debe tener 10 dígitos y comenzar con el número 3")
+    @Pattern(regexp = "^[6-3]\\d{9}$", message = "El número de teléfono debe tener 10 digitos y comenzar con 3 o 6")
     private String telefono;
 
-    @MayorDeEdad(message = "El usuario debe ser mayor de 18 años")
+    @MayorDeEdad(message = "El usuario debe ser mayor de 18 años y menor a 125 años")
     private Date fechaNacimiento;
 
     @ManyToOne

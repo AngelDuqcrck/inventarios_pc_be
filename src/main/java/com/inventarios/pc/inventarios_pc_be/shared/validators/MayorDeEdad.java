@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MayorDeEdad {
-    String message() default "El usuario debe ser mayor de 15 años";
+    String message() default "La edad debe estar entre 15 y 125 años";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

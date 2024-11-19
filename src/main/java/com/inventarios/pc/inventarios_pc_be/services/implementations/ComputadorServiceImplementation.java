@@ -207,7 +207,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             throw new ComponentNotFoundException(String.format(IS_NOT_FOUND_F, "LA MEMORIA RAM").toUpperCase());
         }
 
-        if (!ram.getTipoComponente().getNombre().equals("Cantidad de memoria RAM")) {
+        if (!ram.getTipoComponente().getNombre().equals("Capacidad de memoria RAM")) {
             throw new SelectNotAllowedException(String
                     .format(IS_NOT_VALID, "EL COMPONENTE SELECCIONADO PORQUE NO ES UNA MEMORIA RAM").toUpperCase());
         }
@@ -228,7 +228,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
                     String.format(IS_NOT_FOUND, "EL DISPOSITIVO DE ALMACENAMIENTO").toUpperCase());
         }
 
-        if (!almacenamiento.getTipoComponente().getNombre().equals("Cantidad de disco duro")) {
+        if (!almacenamiento.getTipoComponente().getNombre().equals("Capacidad de disco duro")) {
             throw new SelectNotAllowedException(String
                     .format(IS_NOT_VALID, "EL COMPONENTE SELECCIONADO PORQUE NO ES UN DISPOSITIVO DE ALMACENAMIENTO")
                     .toUpperCase());
@@ -983,7 +983,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
                 throw new ComponentNotFoundException(String.format(IS_NOT_FOUND_F, "LA MEMORIA RAM").toUpperCase());
             }
 
-            if (!ram.getTipoComponente().getNombre().equals("Cantidad de memoria RAM")) {
+            if (!ram.getTipoComponente().getNombre().equals("Capacidad de memoria RAM")) {
                 throw new SelectNotAllowedException(
                         String.format(IS_NOT_VALID, "EL COMPONENTE SELECCIONADO PORQUE NO ES UNA MEMORIA RAM")
                                 .toUpperCase());
@@ -1008,7 +1008,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
                         String.format(IS_NOT_FOUND, "EL DISPOSITIVO DE ALMACENAMIENTO").toUpperCase());
             }
 
-            if (!almacenamiento.getTipoComponente().getNombre().equals("Cantidad de disco duro")) {
+            if (!almacenamiento.getTipoComponente().getNombre().equals("Capacidad de disco duro")) {
                 throw new SelectNotAllowedException(
                         String.format(IS_NOT_VALID,
                                 "EL COMPONENTE SELECCIONADO PORQUE NO ES UN DISPOSITIVO DE ALMACENAMIENTO")

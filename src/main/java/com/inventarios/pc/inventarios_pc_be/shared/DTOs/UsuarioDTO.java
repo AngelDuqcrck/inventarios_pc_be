@@ -47,7 +47,7 @@ public class UsuarioDTO {
              message = "La contraseña debe contener al menos una letra mayuscula, una letra minuscula, un numero y un caracter especial.")
     private String password;
 
-     @Pattern(regexp = "3\\d{9}", message = "El número de teléfono debe tener 10 dígitos y comenzar con el número 3")
+    @Pattern(regexp = "^[3-6]\\d{9}$", message = "El número de teléfono debe tener 10 dígitos y comenzar con 3 o 6")
     @Column(nullable = true) // Si es opcional, puedes dejarlo como nullable = true
     private String telefono;
 
