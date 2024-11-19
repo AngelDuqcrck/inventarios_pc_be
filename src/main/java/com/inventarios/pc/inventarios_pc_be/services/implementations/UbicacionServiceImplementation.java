@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.AreaPC;
 import com.inventarios.pc.inventarios_pc_be.entities.CambioUbicacionPc;
 import com.inventarios.pc.inventarios_pc_be.entities.Computador;
@@ -77,6 +78,9 @@ public class UbicacionServiceImplementation implements IUbicacionService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private NotificationController notificationController;
+
     /**
      * Crea una nueva ubicación en el sistema a partir de los datos proporcionados.
      * 
@@ -120,6 +124,15 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         ubicacion.setEstaOcupada(false);
 
         Ubicacion ubicacionCreada = ubicacionRepository.save(ubicacion);
+        UbicacionResponse ubicacionResponse = new UbicacionResponse();
+        ubicacionResponse.setId(ubicacionCreada.getId());
+        ubicacionResponse.setNombre(ubicacionCreada.getNombre());
+        ubicacionResponse.setDesc(ubicacionCreada.getNombre());
+        ubicacionResponse.setArea(ubicacionCreada.getArea().getNombre());
+        ubicacionResponse.setSede(ubicacionCreada.getArea().getSede().getNombre());
+        ubicacionResponse.setDeleteFlag(ubicacionCreada.getDeleteFlag());
+        ubicacionResponse.setEstaOcupada(ubicacionCreada.getEstaOcupada());
+        notificationController.sendNotification("UBICACION", ubicacionCreada.getId(), ubicacionResponse);
         UbicacionDTO ubicacionCreadaDTO = new UbicacionDTO();
         BeanUtils.copyProperties(ubicacionCreada, ubicacionCreadaDTO);
         return ubicacionCreadaDTO;

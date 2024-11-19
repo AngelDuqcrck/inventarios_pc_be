@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.Rol;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoDocumento;
 import com.inventarios.pc.inventarios_pc_be.entities.Ubicacion;
@@ -61,6 +63,9 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
     @Autowired
     private JwtGenerador jwtGenerador;
+
+    @Autowired
+    private NotificationController notificationController;
 
     /**
      * Registra un nuevo usuario en el sistema, asignándole su rol, tipo de
@@ -143,6 +148,18 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         
         Usuario usuarioCreado = usuarioRepository.save(usuario);
+        UsuarioResponse usuarioResponse = new UsuarioResponse();
+        usuarioResponse.setId(usuarioCreado.getId());
+        usuarioResponse.setRol(usuarioCreado.getRolId().getNombre());
+        usuarioResponse.setTipoDocumento(usuarioCreado.getTipoDocumento().getNombre());
+        usuarioResponse.setSede(usuarioCreado.getUbicacionId().getArea().getSede().getNombre());
+        usuarioResponse.setArea(usuarioCreado.getUbicacionId().getArea().getNombre());
+        usuarioResponse.setUbicacion(usuarioCreado.getUbicacionId().getNombre());
+        usuarioResponse.setPrimerNombre(usuarioCreado.getPrimerNombre());
+        usuarioResponse.setSegundoNombre(usuarioCreado.getSegundoNombre());
+        usuarioResponse.setPrimerApellido(usuarioCreado.getPrimerApellido());
+        usuarioResponse.setSegundoApellido(usuarioCreado.getSegundoApellido());
+        notificationController.sendNotification("USUARIO", usuarioCreado.getId(), usuarioResponse);
         Integer rolId = ubicacion.getArea().getRol().getId();
         if(rolId == 2){
         ubicacion.setEstaOcupada(true);

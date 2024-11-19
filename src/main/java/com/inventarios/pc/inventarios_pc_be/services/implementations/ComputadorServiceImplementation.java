@@ -62,6 +62,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.ComputadorDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.UbicarPcRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadorIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.DispositivoResponse;
 
 @Service
 public class ComputadorServiceImplementation implements IComputadorService {
@@ -297,6 +298,22 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computador.setPropietario(propietario);
 
         Computador computadorCreado = computadorRepository.save(computador);
+        ComputadoresResponse computadorResponse = new ComputadoresResponse();
+        computadorResponse.setId(computadorCreado.getId());
+        computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+        computadorResponse.setResponsable(computadorCreado.getResponsable().getPrimerNombre() + " " + computadorCreado.getResponsable().getSegundoNombre() + " " + computadorCreado.getResponsable().getPrimerApellido() + " " + computadorCreado.getResponsable().getSegundoApellido());
+        computadorResponse.setPrimerNombreUser(computadorCreado.getResponsable().getPrimerNombre());
+        computadorResponse.setSede(computadorCreado.getUbicacion().getArea().getSede().getNombre());
+        computadorResponse.setArea(computadorCreado.getUbicacion().getArea().getNombre());
+        computadorResponse.setUbicacion(computadorCreado.getUbicacion().getNombre());
+        computadorResponse.setNombre(computadorCreado.getNombre());
+        computadorResponse.setPlaca(computadorCreado.getPlaca());
+        computadorResponse.setModelo(computadorCreado.getModelo());
+        computadorResponse.setSerial(computadorCreado.getSerial());
+        computadorResponse.setMarca(computadorCreado.getMarca().getNombre());
+        computadorResponse.setEstadoDispositivo(computadorCreado.getEstadoDispositivo().getNombre());
+        computadorResponse.setIpAsignada(computadorCreado.getIpAsignada());
+        notificationController.sendNotification("COMPUTADOR", computadorCreado.getId(), computadorResponse);
         DispositivoPC dispositivoPc = new DispositivoPC();
 
         EstadoDispositivo estadoTorre = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
@@ -318,8 +335,18 @@ public class ComputadorServiceImplementation implements IComputadorService {
         dispositivoPc.setPlaca(computadorCreado.getPlaca());
         dispositivoPc.setSerial(computadorCreado.getSerial());
         dispositivoPc.setPropietario(computadorCreado.getPropietario());
-        dispositivoRepository.save(dispositivoPc);
-
+        DispositivoPC dispoisitivoPC = dispositivoRepository.save(dispositivoPc);
+        DispositivoResponse dispoisitivoPCResponse = new DispositivoResponse();
+        dispoisitivoPCResponse.setId(dispoisitivoPC.getId());
+        dispoisitivoPCResponse.setTipoDispositivo(dispoisitivoPC.getTipoDispositivo().getNombre());
+        dispoisitivoPCResponse.setMarca(dispoisitivoPC.getMarca().getNombre());
+        dispoisitivoPCResponse.setModelo(dispoisitivoPC.getModelo());
+        dispoisitivoPCResponse.setNombre(dispoisitivoPC.getNombre());
+        dispoisitivoPCResponse.setPlaca(dispoisitivoPC.getPlaca());
+        dispoisitivoPCResponse.setSerial(dispoisitivoPC.getSerial());        
+        dispoisitivoPCResponse.setPropietario(dispoisitivoPC.getPropietario().getNombre());
+        dispoisitivoPCResponse.setEstadoDispositivo(dispoisitivoPC.getEstadoDispositivo().getNombre());
+        notificationController.sendNotification("DISPOSITIVO", dispoisitivoPC.getId(), dispoisitivoPCResponse);
         HistorialDispositivo historialDispositivo = new HistorialDispositivo();
         historialDispositivo.setComputador(computadorCreado);
         boolean existeDispositivoMismoTipo = historialDispositivoRepository
