@@ -135,8 +135,10 @@ public class ComputadorServiceImplementation implements IComputadorService {
             throw new DuplicateEntityException("Ya existe un computador registrado con la placa "+computadorDTO.getPlaca());
         }
 
-        if(computadorRepository.existsByIpAsignadaIgnoreCase(computadorDTO.getIpAsignada())){
-            throw new DuplicateEntityException("Ya existe un computador registrado con la ip "+computadorDTO.getIpAsignada());
+        if(computadorDTO.getIpAsignada() != null){
+            if(computadorRepository.existsByIpAsignadaIgnoreCase(computadorDTO.getIpAsignada())){
+                throw new DuplicateEntityException("Ya existe un computador registrado con la ip "+computadorDTO.getIpAsignada());
+            }
         }
         
         BeanUtils.copyProperties(computadorDTO, computador);

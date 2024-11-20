@@ -370,12 +370,16 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
         Integer rolId = ubicacion.getArea().getRol().getId();
-        if(rolId == 2){
+        Integer rolId2 = antiguaUbicacion.getArea().getRol().getId();
+        if(rolId == 2 ){
             ubicacion.setEstaOcupada(true);
             ubicacionRepository.save(ubicacion);
             antiguaUbicacion.setEstaOcupada(false);
             ubicacionRepository.save(antiguaUbicacion);
         } else if (usuario.getRolId().getId() == 1 && antiguaUbicacion.getEstaOcupada() == true){
+            antiguaUbicacion.setEstaOcupada(false);
+            ubicacionRepository.save(antiguaUbicacion);
+        } else if (rolId2 == 2){
             antiguaUbicacion.setEstaOcupada(false);
             ubicacionRepository.save(antiguaUbicacion);
         }

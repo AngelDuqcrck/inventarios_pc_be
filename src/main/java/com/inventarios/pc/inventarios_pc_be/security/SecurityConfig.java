@@ -86,9 +86,7 @@ public CorsConfigurationSource corsConfigurationSource() {
         "http://192.168.9.152",
         "http://192.168.9.152:80",
         "http://localhost:4200",
-        "http://192.168.1.5:83",
-        "http://inventariopc.com",
-        "http://inventariopc.com:80"
+        "http://192.168.1.5:83"
     )); 
     configuration.setAllowedMethods(Arrays.asList(
         "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"

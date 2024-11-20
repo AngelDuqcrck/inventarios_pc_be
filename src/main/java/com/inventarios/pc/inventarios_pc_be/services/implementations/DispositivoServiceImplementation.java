@@ -129,7 +129,7 @@ public class DispositivoServiceImplementation implements IDispositivoService {
         dispositivoResponse.setSerial(dispositivoCreado.getSerial());
         dispositivoResponse.setPropietario(dispositivoCreado.getPropietario().getNombre());
         dispositivoResponse.setEstadoDispositivo(dispositivoCreado.getEstadoDispositivo().getNombre());
-        notificationController.sendNotification("DISPOSITIVO", dispositivoCreado.getId(), dispositivoResponse);
+        notificationController.sendNotification("NEWDISPOSITIVO", dispositivoCreado.getId(), dispositivoResponse);
         DispositivoRequest dispositivoCreadoRequest = new DispositivoRequest();
         BeanUtils.copyProperties(dispositivoCreado, dispositivoCreadoRequest);
         return dispositivoCreadoRequest;

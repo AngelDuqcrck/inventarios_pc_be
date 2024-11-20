@@ -289,6 +289,14 @@ public class TicketServiceImplementation implements ITicketService {
         }
 
         Tickets ticketEditado = ticketRepository.save(ticket);
+        TicketsResponse ticketR = new TicketsResponse();
+        ticketR.setId(ticketEditado.getId());
+        ticketR.setFechaCierre(ticketEditado.getFechaCierre());
+        ticketR.setFecha_asig(ticketEditado.getFecha_asig());
+        ticketR.setNombre(ticketEditado.getSolicitudes().getTipoSolicitudes().getNombre());
+        ticketR.setUsuario(ticketEditado.getUsuario().getPrimerNombre() + " " + ticketEditado.getUsuario().getPrimerApellido());
+        ticketR.setEstadoTicket(ticketEditado.getEstadoTickets().getNombre());
+        notificationController.sendNotification("NEWTECHTICKET", ticketEditado.getId(), ticketR);
         TicketDTO ticketEditadoDTO = new TicketDTO();
         BeanUtils.copyProperties(ticketEditado, ticketEditadoDTO);
         ticketDTO.setSolicitudes(ticketEditado.getSolicitudes().getId());
@@ -602,7 +610,15 @@ public class TicketServiceImplementation implements ITicketService {
                     .format(IS_NOT_ALLOWED, "EL ESTADO EN PROCESO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
         ticket.setEstadoTickets(estadoTickets);
-        ticketRepository.save(ticket);
+        Tickets ticketEditado = ticketRepository.save(ticket);
+        TicketsResponse ticketR = new TicketsResponse();
+        ticketR.setId(ticketEditado.getId());
+        ticketR.setFechaCierre(ticketEditado.getFechaCierre());
+        ticketR.setFecha_asig(ticketEditado.getFecha_asig());
+        ticketR.setNombre(ticketEditado.getSolicitudes().getTipoSolicitudes().getNombre());
+        ticketR.setUsuario(ticketEditado.getUsuario().getPrimerNombre() + " " + ticketEditado.getUsuario().getPrimerApellido());
+        ticketR.setEstadoTicket(ticketEditado.getEstadoTickets().getNombre());
+        notificationController.sendNotification("NEWTECHTICKET", ticketEditado.getId(), ticketR);
         notificationController.notifyStatusUpdate("TICKET", ticket.getId(), ticket.getEstadoTickets().getNombre(),null);
     }
     // |--------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -626,13 +642,4 @@ public class TicketServiceImplementation implements ITicketService {
 
     }
 
-    /*public void crearCambioEstado(Tickets tickets, EstadoTickets estadoTickets) {
-        CambioEstadoTickets cambioEstadoTickets = new CambioEstadoTickets();
-        cambioEstadoTickets.setTickets(tickets);
-        cambioEstadoTickets.setEstadoTickets(estadoTickets);
-        cambioEstadoTickets.setFecha_cambio(new Date());
-
-        cambioEstadoTicketsRepository.save(cambioEstadoTickets);
-    }
-        */
 }

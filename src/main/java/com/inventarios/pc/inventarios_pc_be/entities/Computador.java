@@ -74,7 +74,7 @@ public class Computador {
     @Size(max = 15, message = "La placa debe tener como máximo 15 caracteres")
     private String placa;
 
-    @Column(unique = true)
+    
     private String ipAsignada;
 
     @ManyToOne
