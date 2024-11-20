@@ -41,7 +41,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     public static final String IS_NOT_ALLOWED = "no esta permitido %s ";
     public static final String IS_NOT_VALID = "%s no es valido";
     public static final String ARE_NOT_EQUALS = "%s no son iguales";
-    public static final String IS_NOT_CORRECT = "%s no es correcto";
+    public static final String IS_NOT_CORRECT = "%s no es correcta";
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -313,6 +313,9 @@ public class UsuarioServiceImplementation implements IUsuarioService {
                     .format(IS_NOT_ALLOWED, "ACTUALIZAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
         }
 
+        if(usuario.getId()==1){
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL USUARIO CON ID 1").toUpperCase());
+        }
         if(usuarioRepository.existsByCedulaIgnoreCaseAndIdNot(usuarioDTO.getCedula(), id)){
             throw new DuplicateEntityException("Ya existe un usuario con el número de documento " + usuarioDTO.getCedula());
         }
@@ -369,6 +372,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
        
 
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
+        notificationController.sendNotification("USERNAME", usuarioActualizado.getId(), usuarioActualizado.getPrimerNombre()+ " "+ usuarioActualizado.getPrimerApellido());
         Integer rolId = ubicacion.getArea().getRol().getId();
         Integer rolId2 = antiguaUbicacion.getArea().getRol().getId();
         if(rolId == 2 ){
@@ -410,6 +414,10 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         if (usuario.getDeleteFlag() == true) {
             throw new DeleteNotAllowedException(String
                     .format(IS_NOT_ALLOWED, "DESACTIVAR ESTE USUARIO PORQUE SE ENCUENTRA DESACTIVADO").toUpperCase());
+        }
+
+        if(usuario.getId()==1){
+            throw new DeleteNotAllowedException(String.format(IS_NOT_ALLOWED, "DESACTIVAR EL USUARIO CON ID 1").toUpperCase());
         }
 
         usuario.setDeleteFlag(true);

@@ -36,12 +36,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
 
-            .setAllowedOrigins(
-                "http://192.168.9.152",
-                "http://192.168.9.152:80",
-                "http://localhost:4200",
-                "http://192.168.1.5:83"
-            )
+        .setAllowedOrigins(
+            "http://192.168.9.152",
+            "http://192.168.9.152:80",
+            "http://localhost:4200",
+            "http://192.168.1.5:83"
+        )
             .withSockJS()
             .setWebSocketEnabled(true)
             .setSessionCookieNeeded(true)
@@ -56,7 +56,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .setSendTimeLimit(20000)                     // Timeout de envío: 20 segundos
             .setTimeToFirstMessage(30000);               // Tiempo máximo para primer mensaje: 30 segundos
     }
-
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new ChannelInterceptor() {
@@ -104,5 +103,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             }
         };
     }
-     
+    
 }

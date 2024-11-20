@@ -307,19 +307,21 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                     .findFirstByComputadorAndDispositivoPC_TipoDispositivoAndFechaDesvinculacionIsNull(
                             computador, tipo);
 
-            if (historial != null) {
-                DispositivosVinculadosResponse dispositivoVinculado = DispositivosVinculadosResponse.builder()
-                        .id(historial.getDispositivoPC().getId())
-                        .placa(historial.getDispositivoPC().getPlaca())
-                        .marca(historial.getDispositivoPC().getMarca().getNombre())
-                        .modelo(historial.getDispositivoPC().getModelo())
-                        .serial(historial.getDispositivoPC().getSerial())
-                        .nombre(historial.getDispositivoPC().getModelo() + " "
-                                + historial.getDispositivoPC().getMarca().getNombre() + " "
-                                + historial.getDispositivoPC().getPlaca())
-                        .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
-                        .build();
-                dispositivosVinculadosList.add(dispositivoVinculado);
+                            if (historial != null) {
+                                DispositivosVinculadosResponse dispositivoVinculado = new DispositivosVinculadosResponse();
+                                dispositivoVinculado.setId(historial.getDispositivoPC().getId());
+                                dispositivoVinculado.setPlaca(historial.getDispositivoPC().getPlaca());
+                                dispositivoVinculado.setMarca(historial.getDispositivoPC().getMarca().getNombre());
+                                dispositivoVinculado.setModelo(historial.getDispositivoPC().getModelo());
+                                dispositivoVinculado.setSerial(historial.getDispositivoPC().getSerial());
+                                
+                                if(tipo.getId()!= 8){
+                                    dispositivoVinculado.setTipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre());
+                                }else{
+                                    dispositivoVinculado.setTipoDispositivo(historial.getTipoTorre());
+                                }
+                                
+                                dispositivosVinculadosList.add(dispositivoVinculado);
             } else {
                 DispositivosVinculadosResponse dispositivoNoVinculado = DispositivosVinculadosResponse.builder()
                         .id(null).placa(null).serial(null).marca(null).modelo(null).tipoDispositivo(tipo.getNombre())
@@ -384,7 +386,7 @@ public class HistorialComputadorService implements IHistorialComputadorService {
         hojadeVidaPc.setTipoPC(computador.getTipoPC().getNombre());
         if (computador.getResponsable() != null) {
             hojadeVidaPc.setResponsable(
-                    computador.getResponsable().getTipoDocumento().getAbreviatura()+" "+computador.getResponsable().getCedula()+" "+
+                    computador.getResponsable().getTipoDocumento().getAbreviatura()+": "+computador.getResponsable().getCedula()+" - "+
                     computador.getResponsable().getPrimerNombre() + " " + computador.getResponsable().getSegundoNombre()
                             + " " + computador.getResponsable().getPrimerApellido() + " "
                             + computador.getResponsable().getSegundoApellido());
@@ -415,15 +417,21 @@ public class HistorialComputadorService implements IHistorialComputadorService {
                     .findFirstByComputadorAndDispositivoPC_TipoDispositivoAndFechaDesvinculacionIsNull(
                             computador, tipo);
 
+            
             if (historial != null) {
-                DispositivosVinculadosResponse dispositivoVinculado = DispositivosVinculadosResponse.builder()
-                        .id(historial.getDispositivoPC().getId())
-                        .placa(historial.getDispositivoPC().getPlaca())
-                        .marca(historial.getDispositivoPC().getMarca().getNombre())
-                        .modelo(historial.getDispositivoPC().getModelo())
-                        .serial(historial.getDispositivoPC().getSerial())
-                        .tipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre())
-                        .build();
+                DispositivosVinculadosResponse dispositivoVinculado = new DispositivosVinculadosResponse();
+                dispositivoVinculado.setId(historial.getDispositivoPC().getId());
+                dispositivoVinculado.setPlaca(historial.getDispositivoPC().getPlaca());
+                dispositivoVinculado.setMarca(historial.getDispositivoPC().getMarca().getNombre());
+                dispositivoVinculado.setModelo(historial.getDispositivoPC().getModelo());
+                dispositivoVinculado.setSerial(historial.getDispositivoPC().getSerial());
+                
+                if(tipo.getId()!= 8){
+                    dispositivoVinculado.setTipoDispositivo(historial.getDispositivoPC().getTipoDispositivo().getNombre());
+                }else{
+                    dispositivoVinculado.setTipoDispositivo(historial.getTipoTorre());
+                }
+                
                 dispositivosVinculadosList.add(dispositivoVinculado);
             } else {
                 DispositivosVinculadosResponse dispositivoNoVinculado = DispositivosVinculadosResponse.builder()

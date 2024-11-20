@@ -361,7 +361,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         }
 
         historialDispositivo.setDispositivoPC(dispositivoPc);
-
+        historialDispositivo.setTipoTorre(tipoPC.getNombre());
         historialDispositivo.setFechaCambio(new Date());
 
         historialDispositivoRepository.save(historialDispositivo);
@@ -1125,7 +1125,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
             torre.setNombre(computadorActualizado.getNombre());
             torre.setPlaca(computadorActualizado.getPlaca());
             torre.setSerial(computadorActualizado.getPlaca());
-
+            historialDispositivo.setTipoTorre(computadorActualizado.getTipoPC().getNombre());
+            historialDispositivoRepository.save(historialDispositivo);
             dispositivoRepository.save(torre);
         }
         return computadorActualizadoDTO;

@@ -28,4 +28,6 @@ public class HistorialDispositivo {
     private Date fechaDesvinculacion;
 
     private String justificacion;
+
+    private String tipoTorre;
 }

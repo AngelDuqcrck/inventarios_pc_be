@@ -95,19 +95,19 @@ CREATE TABLE IF NOT EXISTS tipo_documento (
 
 -- Insertamos tipos de documento si no existen en el sistema
 INSERT IGNORE INTO tipo_documento (id, nombre, abreviatura) VALUES
-    (1, 'Cedula de Ciudadania', 'CC'),
-    (2, 'Numero de identificacion Tributaria', 'NIT'),
-    (3, 'Pasaporte', 'PA'),
-    (4, 'Tarjeta de Identidad', 'TI'),
-    (5, 'Menor sin identificacion', 'MS'),
-    (6, 'Adulto sin identificacion', 'AS'),
-    (7, 'Numero de Identificacion Personal', 'NIP'),
-    (8, 'Cedula de Extranjeria', 'CE'),
-    (9, 'Carnet Diplomatico', 'CD'),
-    (10, 'Salvo Conducto', 'SC'),
-    (11, 'Permiso Especial de Permanencia', 'PE'),
-    (12, 'Permiso por Proteccion Temporal', 'PT'),
-    (13, 'Documento Extranjero', 'DE');
+    (1, 'Cedula de Ciudadania', 'C.C'),
+    (2, 'Numero de identificacion Tributaria', 'N.I.T'),
+    (3, 'Pasaporte', 'P.A'),
+    (4, 'Tarjeta de Identidad', 'T.I'),
+    (5, 'Menor sin identificacion', 'M.S'),
+    (6, 'Adulto sin identificacion', 'A.S'),
+    (7, 'Numero de Identificacion Personal', 'N.I.P'),
+    (8, 'Cedula de Extranjeria', 'C.E'),
+    (9, 'Carnet Diplomatico', 'C.D'),
+    (10, 'Salvo Conducto', 'S.C'),
+    (11, 'Permiso Especial de Permanencia', 'P.E.P'),
+    (12, 'Permiso por Proteccion Temporal', 'P.T'),
+    (13, 'Documento Extranjero', 'D.E');
 
 
 -- Creamos la tabla usuarios si no existe

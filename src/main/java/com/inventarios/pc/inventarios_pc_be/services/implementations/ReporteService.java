@@ -273,12 +273,12 @@ public class ReporteService {
             // Margen superior
             CTTblWidth topMargin = tcMar.addNewTop();
             topMargin.setType(STTblWidth.DXA);
-            topMargin.setW(BigInteger.valueOf(120));
+            topMargin.setW(BigInteger.valueOf(15));
             
             // Margen inferior
             CTTblWidth bottomMargin = tcMar.addNewBottom();
             bottomMargin.setType(STTblWidth.DXA);
-            bottomMargin.setW(BigInteger.valueOf(120));
+            bottomMargin.setW(BigInteger.valueOf(15));
             
             // Margen izquierdo
             CTTblWidth leftMargin = tcMar.addNewLeft();
@@ -331,12 +331,12 @@ public class ReporteService {
                     // Margen superior
                     CTTblWidth topMargin = tcMar.addNewTop();
                     topMargin.setType(STTblWidth.DXA);
-                    topMargin.setW(BigInteger.valueOf(120));
+                    topMargin.setW(BigInteger.valueOf(15));
                     
                     // Margen inferior
                     CTTblWidth bottomMargin = tcMar.addNewBottom();
                     bottomMargin.setType(STTblWidth.DXA);
-                    bottomMargin.setW(BigInteger.valueOf(120));
+                    bottomMargin.setW(BigInteger.valueOf(15));
                     
                     // Margen izquierdo
                     CTTblWidth leftMargin = tcMar.addNewLeft();
@@ -417,12 +417,12 @@ public class ReporteService {
             // Margen superior
             CTTblWidth topMargin = tcMar.addNewTop();
             topMargin.setType(STTblWidth.DXA);
-            topMargin.setW(BigInteger.valueOf(120));
+            topMargin.setW(BigInteger.valueOf(15));
 
             // Margen inferior
             CTTblWidth bottomMargin = tcMar.addNewBottom();
             bottomMargin.setType(STTblWidth.DXA);
-            bottomMargin.setW(BigInteger.valueOf(120));
+            bottomMargin.setW(BigInteger.valueOf(15));
 
             XWPFRun titleRun = cell.getParagraphArray(0).createRun();
             titleRun.setText(titles[i]);
@@ -469,12 +469,12 @@ public class ReporteService {
                 // Margen superior
                 CTTblWidth topMargin = tcMar.addNewTop();
                 topMargin.setType(STTblWidth.DXA);
-                topMargin.setW(BigInteger.valueOf(120));
+                topMargin.setW(BigInteger.valueOf(15));
 
                 // Margen inferior
                 CTTblWidth bottomMargin = tcMar.addNewBottom();
                 bottomMargin.setType(STTblWidth.DXA);
-                bottomMargin.setW(BigInteger.valueOf(120));
+                bottomMargin.setW(BigInteger.valueOf(15));
 
                 XWPFRun dataRun = cell.getParagraphArray(0).createRun();
                 dataRun.setText(softwareData[i]);
@@ -485,6 +485,16 @@ public class ReporteService {
                 cell.getParagraphArray(0).setSpacingAfter(0);
             }
         }
+        
+        table.setInsideHBorder(XWPFTable.XWPFBorderType.SINGLE, 1, 0, "000000");
+        table.setInsideVBorder(XWPFTable.XWPFBorderType.SINGLE, 1, 0, "000000");
+        BigInteger borderSize = BigInteger.valueOf(8); // Tamaño del borde en unidades
+        table.getCTTbl().getTblPr().getTblBorders().getTop().setSz(borderSize);
+        table.getCTTbl().getTblPr().getTblBorders().getBottom().setSz(borderSize);
+        table.getCTTbl().getTblPr().getTblBorders().getLeft().setSz(borderSize);
+        table.getCTTbl().getTblPr().getTblBorders().getRight().setSz(borderSize);
+        table.getCTTbl().getTblPr().getTblBorders().getInsideH().setSz(borderSize);
+        table.getCTTbl().getTblPr().getTblBorders().getInsideV().setSz(borderSize);
     }
 
     private void responsableSection(XWPFDocument document, HojaVidaPcResponse hojaVida) {
