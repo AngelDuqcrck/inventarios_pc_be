@@ -159,6 +159,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
         usuarioResponse.setSegundoNombre(usuarioCreado.getSegundoNombre());
         usuarioResponse.setPrimerApellido(usuarioCreado.getPrimerApellido());
         usuarioResponse.setSegundoApellido(usuarioCreado.getSegundoApellido());
+        usuarioResponse.setCorreo(usuarioCreado.getCorreo());
         notificationController.sendNotification("USUARIO", usuarioCreado.getId(), usuarioResponse);
         Integer rolId = ubicacion.getArea().getRol().getId();
         if(rolId == 2){
@@ -372,7 +373,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
        
 
         Usuario usuarioActualizado = usuarioRepository.save(usuario);
-        notificationController.sendNotification("USERNAME", usuarioActualizado.getId(), usuarioActualizado.getPrimerNombre()+ " "+ usuarioActualizado.getPrimerApellido());
+        notificationController.sendNotification("USERNAME", usuarioActualizado.getId(), usuario);
         Integer rolId = ubicacion.getArea().getRol().getId();
         Integer rolId2 = antiguaUbicacion.getArea().getRol().getId();
         if(rolId == 2 ){

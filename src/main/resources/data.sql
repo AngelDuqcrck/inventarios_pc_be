@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS sedes_pc
 
 -- Insertamos las sedes si no existen en el sistema
 INSERT IGNORE INTO sedes_pc (id, direccion, descripcion, nombre, delete_flag) VALUES
-    (1, 'Av. 11E# 8-41COLSAG', 'Principal...', 'Sede Principal', 0),
+    (1, 'Av. 11E# 8-41 COLSAG', 'Principal...', 'Sede Principal', 0),
     (2, 'Cl. 8 # 11E-62 COLSAG', 'COLSAG...', 'Sede Colsag', 0),
     (3, 'COLSAG', 'ESPECIALISTAS...', 'Centro de Especialistas', 0);
 

@@ -89,7 +89,6 @@ public class SedeServiceImplementation implements ISedeService {
         SedeDTO sedeCreadaDto = new SedeDTO();
         BeanUtils.copyProperties(sedeCreada, sedeCreadaDto);
         sedeCreadaDto.setId(sedeCreada.getId());
-        notificationController.sendNotification("SEDE", sedeCreada.getId(), sedeCreadaDto);
         return sedeCreadaDto;
 
     }

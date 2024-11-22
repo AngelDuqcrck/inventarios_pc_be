@@ -50,6 +50,7 @@ import com.inventarios.pc.inventarios_pc_be.shared.DTOs.TicketDTO;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarEstadoTicketRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.ObservacionRequest;
 import com.inventarios.pc.inventarios_pc_be.shared.requests.CambiarEstadoTicketRequest.CambiarEstadoTicketRequestBuilder;
+import com.inventarios.pc.inventarios_pc_be.shared.responses.ComputadoresResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketIdResponse;
 import com.inventarios.pc.inventarios_pc_be.shared.responses.TicketsResponse;
 
@@ -440,8 +441,21 @@ public class TicketServiceImplementation implements ITicketService {
 
                             computador.setUbicacion(ubicacionDestino);
                             //computador.setResponsable(null);
-                            computadorRepository.save(computador);
-                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
+                            Computador computadorActualizado =computadorRepository.save(computador);
+                            ComputadoresResponse computadorResponse = new ComputadoresResponse();
+        computadorResponse.setId(computadorActualizado.getId());
+        computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+        computadorResponse.setSede(computadorActualizado.getUbicacion().getArea().getSede().getNombre());
+        computadorResponse.setArea(computadorActualizado.getUbicacion().getArea().getNombre());
+        computadorResponse.setUbicacion(computadorActualizado.getUbicacion().getNombre());
+        computadorResponse.setNombre(computadorActualizado.getNombre());
+        computadorResponse.setPlaca(computadorActualizado.getPlaca());
+        computadorResponse.setModelo(computadorActualizado.getModelo());
+        computadorResponse.setSerial(computadorActualizado.getSerial());
+        computadorResponse.setMarca(computadorActualizado.getMarca().getNombre());
+        computadorResponse.setEstadoDispositivo(computadorActualizado.getEstadoDispositivo().getNombre());
+        computadorResponse.setIpAsignada(computadorActualizado.getIpAsignada());
+        notificationController.sendNotification("COMPUTADOR", computadorActualizado.getId(), computadorResponse);
 
                         }
                         if (cambiarEstadoTicketRequest.getResuelto() == false) {
@@ -451,8 +465,21 @@ public class TicketServiceImplementation implements ITicketService {
 
                             computador.setUbicacion(ubicacionOrigen);
 
-                            computadorRepository.save(computador);
-                            notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
+                            Computador computadorActualizado =computadorRepository.save(computador);
+                            ComputadoresResponse computadorResponse = new ComputadoresResponse();
+        computadorResponse.setId(computadorActualizado.getId());
+        computadorResponse.setTipoPC(computador.getTipoPC().getNombre());
+        computadorResponse.setSede(computadorActualizado.getUbicacion().getArea().getSede().getNombre());
+        computadorResponse.setArea(computadorActualizado.getUbicacion().getArea().getNombre());
+        computadorResponse.setUbicacion(computadorActualizado.getUbicacion().getNombre());
+        computadorResponse.setNombre(computadorActualizado.getNombre());
+        computadorResponse.setPlaca(computadorActualizado.getPlaca());
+        computadorResponse.setModelo(computadorActualizado.getModelo());
+        computadorResponse.setSerial(computadorActualizado.getSerial());
+        computadorResponse.setMarca(computadorActualizado.getMarca().getNombre());
+        computadorResponse.setEstadoDispositivo(computadorActualizado.getEstadoDispositivo().getNombre());
+        computadorResponse.setIpAsignada(computadorActualizado.getIpAsignada());
+        notificationController.sendNotification("COMPUTADOR", computadorActualizado.getId(), computadorResponse);
                         }
                         
                         break;

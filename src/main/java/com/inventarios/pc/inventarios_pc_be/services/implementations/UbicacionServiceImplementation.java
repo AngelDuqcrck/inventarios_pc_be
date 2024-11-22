@@ -124,15 +124,6 @@ public class UbicacionServiceImplementation implements IUbicacionService {
         ubicacion.setEstaOcupada(false);
 
         Ubicacion ubicacionCreada = ubicacionRepository.save(ubicacion);
-        UbicacionResponse ubicacionResponse = new UbicacionResponse();
-        ubicacionResponse.setId(ubicacionCreada.getId());
-        ubicacionResponse.setNombre(ubicacionCreada.getNombre());
-        ubicacionResponse.setDesc(ubicacionCreada.getNombre());
-        ubicacionResponse.setArea(ubicacionCreada.getArea().getNombre());
-        ubicacionResponse.setSede(ubicacionCreada.getArea().getSede().getNombre());
-        ubicacionResponse.setDeleteFlag(ubicacionCreada.getDeleteFlag());
-        ubicacionResponse.setEstaOcupada(ubicacionCreada.getEstaOcupada());
-        notificationController.sendNotification("UBICACION", ubicacionCreada.getId(), ubicacionResponse);
         UbicacionDTO ubicacionCreadaDTO = new UbicacionDTO();
         BeanUtils.copyProperties(ubicacionCreada, ubicacionCreadaDTO);
         return ubicacionCreadaDTO;

@@ -10,6 +10,7 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -19,6 +20,7 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 
 @Configuration
 @EnableWebSocketMessageBroker
+@Controller
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     
@@ -36,17 +38,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
 
-        .setAllowedOrigins(
-            "http://192.168.9.152",
-            "http://192.168.9.152:80",
-            "http://localhost:4200",
-            "http://192.168.1.5:83"
-        )
-            .withSockJS()
-            .setWebSocketEnabled(true)
-            .setSessionCookieNeeded(true)
-            .setHeartbeatTime(25000)
-            .setDisconnectDelay(5000);
+            .setAllowedOriginPatterns("http://192.168.1.5")
+            .withSockJS();
     }
 
     @Override
@@ -85,23 +78,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .queueCapacity(25);
     }
      
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/ws/**")
-                    .allowedOrigins(
-                        "http://192.168.9.152",
-                        "http://192.168.9.152:80",
-                        "http://localhost:4200",
-                        "http://192.168.1.5:83"
-                    )
-                    .allowedMethods("GET", "POST")
-                    .allowCredentials(true)
-                    .maxAge(3600);
-            }
-        };
-    }
+    
     
 }

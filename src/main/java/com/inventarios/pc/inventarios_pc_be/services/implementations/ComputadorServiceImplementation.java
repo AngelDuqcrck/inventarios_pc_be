@@ -313,7 +313,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         computadorResponse.setMarca(computadorCreado.getMarca().getNombre());
         computadorResponse.setEstadoDispositivo(computadorCreado.getEstadoDispositivo().getNombre());
         computadorResponse.setIpAsignada(computadorCreado.getIpAsignada());
-        notificationController.sendNotification("COMPUTADOR", computadorCreado.getId(), computadorResponse);
+        notificationController.sendNotification("NEWCOMPUTADOR", computadorCreado.getId(), computadorResponse);
         DispositivoPC dispositivoPc = new DispositivoPC();
 
         EstadoDispositivo estadoTorre = estadoDispositivoRepository.findByNombre("En uso").orElse(null);
@@ -440,8 +440,8 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         computador.setEstadoDispositivo(estadoDispositivo);
 
-        computadorRepository.save(computador);
-        notificationController.sendNotification("COMPUTADORNEWUSER", computador.getId(), computador);
+        Computador computadorCreado = computadorRepository.save(computador);
+        notificationController.sendNotification("COMPUTADORNEWUSER", computador.getId(), computadorCreado);
     }
 
     @Override
@@ -839,7 +839,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
 
         computador.setEstadoDispositivo(nuevoEstadoDispositivo);
         computadorRepository.save(computador);
-        notificationController.notifyStatusUpdate("COMPUTADOR", computador.getId(), computador.getEstadoDispositivo().getNombre(), null);
+        notificationController.sendNotification("COMPUTADOR", computador.getId(), computador);
     }
 
     @Override
@@ -867,8 +867,10 @@ public class ComputadorServiceImplementation implements IComputadorService {
         if(computadorRepository.existsByPlacaIgnoreCaseAndIdNot(computadorDTO.getPlaca(), computadorId)){
             throw new DuplicateEntityException("Ya existe un computador registrado con la placa "+computadorDTO.getPlaca());
         }
-        if(computadorRepository.existsByIpAsignadaIgnoreCaseAndIdNot(computadorDTO.getIpAsignada(), computadorId)){
-            throw new DuplicateEntityException("Ya existe un computador registrado con la ip "+computadorDTO.getIpAsignada());
+        if(computadorDTO.getIpAsignada() != null){
+            if(computadorRepository.existsByIpAsignadaIgnoreCase(computadorDTO.getIpAsignada())){
+                throw new DuplicateEntityException("Ya existe un computador registrado con la ip "+computadorDTO.getIpAsignada());
+            }
         }
         Ubicacion ubicacionActual = computador.getUbicacion();
         BeanUtils.copyProperties(computadorDTO, computador);

@@ -120,14 +120,6 @@ public class AreaServiceImplementation implements IAreaService {
         areaPC.setDeleteFlag(false);
 
         AreaPC areaCreada = areaRepository.save(areaPC);
-        AreaResponse areaResponse = new AreaResponse();
-        areaResponse.setId(areaCreada.getId());
-        areaResponse.setNombre(areaCreada.getNombre());
-        areaResponse.setDesc(areaCreada.getNombre());
-        areaResponse.setRol(areaCreada.getRol().getNombre());
-        areaResponse.setSede(areaCreada.getSede().getNombre());
-        areaResponse.setDeleteFlag(areaCreada.getDeleteFlag());
-        notificationController.sendNotification("AREA", areaCreada.getId(), areaResponse);
         AreaDTO areaCreadaDTO = new AreaDTO();
         BeanUtils.copyProperties(areaCreada, areaCreadaDTO);
 
