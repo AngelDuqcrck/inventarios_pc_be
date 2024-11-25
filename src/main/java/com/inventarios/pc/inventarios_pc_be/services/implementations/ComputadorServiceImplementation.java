@@ -868,7 +868,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             throw new DuplicateEntityException("Ya existe un computador registrado con la placa "+computadorDTO.getPlaca());
         }
         if(computadorDTO.getIpAsignada() != null){
-            if(computadorRepository.existsByIpAsignadaIgnoreCase(computadorDTO.getIpAsignada())){
+            if(computadorRepository.existsByIpAsignadaIgnoreCaseAndIdNot(computadorDTO.getIpAsignada(), computadorId)){
                 throw new DuplicateEntityException("Ya existe un computador registrado con la ip "+computadorDTO.getIpAsignada());
             }
         }
