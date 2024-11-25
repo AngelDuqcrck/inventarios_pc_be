@@ -36,9 +36,9 @@ CREATE TABLE IF NOT EXISTS sedes_pc
 
 -- Insertamos las sedes si no existen en el sistema
 INSERT IGNORE INTO sedes_pc (id, direccion, descripcion, nombre, delete_flag) VALUES
-    (1, 'Av. 11E# 8-41 COLSAG', 'Principal...', 'Sede Principal', 0),
-    (2, 'Cl. 8 # 11E-62 COLSAG', 'COLSAG...', 'Sede Colsag', 0),
-    (3, 'COLSAG', 'ESPECIALISTAS...', 'Centro de Especialistas', 0);
+    (1, 'Av. 11E# 8-41 COLSAG', '', 'Sede Principal', 0),
+    (2, 'Cl. 8 # 11E-62 COLSAG', '', 'Sede Colsag', 0),
+    (3, 'COLSAG', '', 'Centro de Especialistas', 0);
 
 -- Creamos la tabla areas_PC si no existe
 CREATE TABLE IF NOT EXISTS areas_pc (
@@ -55,9 +55,6 @@ CREATE TABLE IF NOT EXISTS areas_pc (
 
 -- Insertamos las áreas si no existen en el sistema
 INSERT IGNORE INTO areas_pc (id, sede_id, rol_id, nombre, descripcion, delete_flag) VALUES
-    (1, 1, 2, 'Consultorios', 'Zona de consultorios', 0),
-    (2, 1, 3, 'Talento Humano', 'Zona empleados', 0),
-    (3, 2, 3, 'Gerencia', 'Zona Jefe', 0),
     (4, 1, 4, 'Sistemas', 'Zona de Sistemas de la sede principal', 0),
     (5, 2, 4, 'Sistemas SC', 'Zona de Sistemas de la sede Colsag', 0),
     (6, 3, 4, 'Sistemas SCE', 'Zona de Sistemas del Centro de Especialistas', 0);
@@ -76,9 +73,6 @@ CREATE TABLE IF NOT EXISTS ubicaciones (
 
 -- Insertamos las ubicaciones por defecto si no existen en el sistema
 INSERT IGNORE INTO ubicaciones (area_id, id, nombre, descripcion, esta_ocupada, delete_flag) VALUES
-    (1, 1, 'Consultorio 101', 'Consultorio', false, 0),
-    (2, 2, 'Tesoreria', 'Finanzas csa', false, 0),
-    (2, 3, 'Seguridad y Salud en el Trabajo', 'SGST', false, 0),
     (4, 4, 'Bodega de Sistemas', 'Bodega de Sistemas de la sede principal', false, 0),
     (5, 5, 'Bodega de Sistemas SC', 'Bodega de Sistemas de la sede Colsag', false, 0),
     (6, 6, 'Bodega de Sistemas SCE', 'Bodega de Sistemas del Centro de Especialistas', false, 0);
@@ -240,7 +234,7 @@ INSERT IGNORE INTO tipo_dispositivos (id, nombre, delete_flag) VALUES
     (3, "Monitor", 0),
     (4, "Impresora", 0),
     (5, "Audifonos", 0),
-    (6, "Unidad de fuente de alimentacion (PSU)", 0),
+    (6, "Unidad de fuente de alimentacion (UFA)", 0),
     (7, "Parlantes", 0),
     (8, "Torre", 0);
 

@@ -15,9 +15,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.inventarios.pc.inventarios_pc_be.security.JwtGenerador;
 import com.inventarios.pc.inventarios_pc_be.services.implementations.UsuarioServiceImplementation;
@@ -55,16 +57,26 @@ public class AuthController {
          */
         @PostMapping("/login")
         public ResponseEntity<AuthResponse> login(@RequestBody LoginDTO loginDTO) {
+                try {
+                        Authentication authentication = authenticationManager.authenticate(
+                                        new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(),
+                                                        loginDTO.getPassword()));
 
-                Authentication authentication = authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(loginDTO.getCorreo(), loginDTO.getPassword()));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                        String accessToken = jwtGenerador.generarToken(authentication);
+                        String refreshToken = jwtGenerador.generarRefreshToken(authentication);
 
-                String accessToken = jwtGenerador.generarToken(authentication);
-                String refreshToken = jwtGenerador.generarRefreshToken(authentication);
-
-                return new ResponseEntity<>(new AuthResponse(accessToken, refreshToken), HttpStatus.OK);
+                        return new ResponseEntity<>(new AuthResponse(accessToken, refreshToken), HttpStatus.OK);
+                } catch (UsernameNotFoundException e) {
+                        if (e.getMessage().contains("La cuenta está inactiva")) {
+                                throw new ResponseStatusException(
+                                                HttpStatus.FORBIDDEN,
+                                                "La cuenta está inactiva. Contacte al administrador.",
+                                                e);
+                        }
+                        throw e;
+                }
         }
 
         /**
@@ -186,5 +198,4 @@ public class AuthController {
                 }
         }
 
-        
 }

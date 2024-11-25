@@ -30,6 +30,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByCorreo(username).orElseThrow(
                 () -> new UsernameNotFoundException("Sesión no válida o usuario no encontrado"));
 
+                if (Boolean.TRUE.equals(usuario.getDeleteFlag())) {
+                    throw new UsernameNotFoundException("La cuenta está inactiva");
+                }
 
         // Nos traemos la lista de autoridades a traves de la lista de roles
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
