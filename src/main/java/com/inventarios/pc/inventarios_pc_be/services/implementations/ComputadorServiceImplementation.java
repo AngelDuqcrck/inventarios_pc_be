@@ -830,6 +830,11 @@ public class ComputadorServiceImplementation implements IComputadorService {
                             + computador.getNombre().toLowerCase() + " fue dado de baja");
                     softwareCSARepository.save(softwareCSA);
                 }
+
+                computador.setResponsable(null);
+                
+                Ubicacion bodegaSistemas = ubicacionRepository.findById(4).orElse(null);
+                computador.setUbicacion(bodegaSistemas);
                 break;
 
             default:
@@ -875,7 +880,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
         Ubicacion ubicacionActual = computador.getUbicacion();
         BeanUtils.copyProperties(computadorDTO, computador);
         computador.setId(computadorId);
-
+        
         if (computadorDTO.getTipoPC() != null) {
             TipoPC tipoPC = tipoPcRepository.findById(computadorDTO.getTipoPC()).orElse(null);
 
@@ -1099,7 +1104,9 @@ public class ComputadorServiceImplementation implements IComputadorService {
         ComputadorDTO computadorActualizadoDTO = new ComputadorDTO();
         BeanUtils.copyProperties(computadorActualizado, computadorActualizadoDTO);
         computadorActualizadoDTO.setTipoPC(computadorActualizado.getTipoPC().getId());
-        computadorActualizadoDTO.setResponsable(computadorActualizado.getResponsable().getId());
+        if(computadorActualizado.getResponsable() != null){
+            computadorActualizadoDTO.setResponsable(computadorActualizado.getResponsable().getId());
+        }
         computadorActualizadoDTO.setUbicacion(computadorActualizado.getUbicacion().getId());
         computadorActualizadoDTO.setMarca(computadorActualizado.getMarca().getId());
         computadorActualizadoDTO.setProcesador(computadorActualizado.getProcesador().getId());

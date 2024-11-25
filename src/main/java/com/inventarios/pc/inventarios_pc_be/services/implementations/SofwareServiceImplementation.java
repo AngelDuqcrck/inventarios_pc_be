@@ -11,6 +11,7 @@ import com.inventarios.pc.inventarios_pc_be.controllers.NotificationController;
 import com.inventarios.pc.inventarios_pc_be.entities.SoftwarePC;
 import com.inventarios.pc.inventarios_pc_be.entities.TipoSoftware;
 import com.inventarios.pc.inventarios_pc_be.exceptions.DeleteNotAllowedException;
+import com.inventarios.pc.inventarios_pc_be.exceptions.DuplicateEntityException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SelectNotAllowedException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.SoftwareNotFoundException;
 import com.inventarios.pc.inventarios_pc_be.exceptions.TypeSoftwareNotFoundException;
@@ -65,6 +66,9 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
             SelectNotAllowedException(String.format(IS_NOT_ALLOWED, "SELECCIONAR ESTE TIPO DE SOFTWARE").toUpperCase());
         }
 
+        if(softwarePcRepository.existsByNombreIgnoreCaseAndVersion(softwarePcDTO.getNombre(), softwarePcDTO.getVersion())){
+            throw new SelectNotAllowedException("Ya existe un software registrado con el nombre "+softwarePcDTO.getNombre()+" y la version "+softwarePcDTO.getVersion());
+        }
         BeanUtils.copyProperties(softwarePcDTO, softwarePC);
         softwarePC.setTipoSoftware(tipoSoftware);
         softwarePC.setDeleteFlag(false);
@@ -139,6 +143,9 @@ public class SofwareServiceImplementation implements ISoftwarePcService {
                     String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL SOFTWARE "+softwarePC.getNombre()+" PORQUE SE ENCUENTRA INACTIVO").toUpperCase());
         }
 
+        if(softwarePcRepository.existsByNombreIgnoreCaseAndVersionAndIdNot(softwarePcDTO.getNombre(), softwarePcDTO.getVersion(), id)){
+            throw new DuplicateEntityException("Ya existe un software registrado con el nombre "+softwarePcDTO.getNombre()+" y la version "+softwarePcDTO.getVersion());
+        }
         BeanUtils.copyProperties(softwarePcDTO, softwarePC);
         softwarePC.setDeleteFlag(false);
         if (softwarePcDTO.getTipoSoftware() != null) {
