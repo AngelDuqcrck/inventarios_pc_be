@@ -18,7 +18,7 @@ public interface ISolicitudService {
 
         public List<SolicitudesResponse> listarSolicitudesByUsuario(String correo) throws UserNotFoundException;
 
-        public SolicitudIdResponse listarSolicitudById(Integer solicitudId, String correo)
+        public SolicitudIdResponse listarSolicitudById(Integer solicitudId, String correo, Boolean editar)
                 throws RequestNotFoundException, UserNotFoundException, StateNotFoundException, SelectNotAllowedException;
 
         public SolicitudDTO crearSolicitudAdministrativo(SolicitudDTO solicitudDTO, Integer tipoSolicitudId)

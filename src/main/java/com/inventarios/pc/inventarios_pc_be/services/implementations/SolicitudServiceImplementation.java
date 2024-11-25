@@ -199,7 +199,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
     }
 
     @Override
-    public SolicitudIdResponse listarSolicitudById(Integer solicitudId, String correo)
+    public SolicitudIdResponse listarSolicitudById(Integer solicitudId, String correo, Boolean editar)
             throws RequestNotFoundException, UserNotFoundException, StateNotFoundException, SelectNotAllowedException {
 
         Solicitudes solicitud = solicitudRepository.findById(solicitudId).orElse(null);
@@ -245,7 +245,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
         Integer rol = usuario.getRolId().getId();
 
-        if (rol == 1) {
+        if (rol == 1 && editar == true) {
 
             Integer estadoSolicitudActual = solicitud.getEstadoSolicitudes().getId();
 

@@ -38,8 +38,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
 
-            .setAllowedOriginPatterns("http://192.168.1.5")
-            //.setAllowedOriginPatterns("http://localhost:8080")
+            // .setAllowedOriginPatterns("http://192.168.1.5")
+            .setAllowedOriginPatterns("http://localhost:4200")
             .withSockJS();
     }
 
