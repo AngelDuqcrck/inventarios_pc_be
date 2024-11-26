@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS roles
 INSERT
 IGNORE INTO roles (delete_flag,id,nombre) VALUES
     (0,1,"ADMIN"),
-    (0,2,"EMPLEADO_ASISTENCIAL"),
-    (0,3,"EMPLEADO_ADMINISTRATIVO"),
-    (0,4,"TECNICO_SISTEMAS");
+    (0,2,"ASISTENCIAL"),
+    (0,3,"ADMINISTRATIVO"),
+    (0,4,"SISTEMAS");
 
 -- Creamos la tabla sedes_PC si no existe
 CREATE TABLE IF NOT EXISTS sedes_pc

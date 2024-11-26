@@ -30,7 +30,7 @@ public class PropietarioController {
     @Autowired
     private IPropietarioService propietarioService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PostMapping("/crear")
     public ResponseEntity<HttpResponse> crearPropietario(@RequestBody PropietarioDTO propietarioDTO) throws  DuplicateEntityException {
         propietarioService.crearPropietario(propietarioDTO);
@@ -41,7 +41,7 @@ public class PropietarioController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping
     public ResponseEntity<List<PropietarioDTO>> listarPropietario(){
         return ResponseEntity.ok(
@@ -54,7 +54,7 @@ public class PropietarioController {
         );
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/{id}")
     public ResponseEntity<PropietarioDTO> listarPropietarioById(@PathVariable Integer id)
             throws OwnerNotFoundException {
@@ -63,7 +63,7 @@ public class PropietarioController {
         return new ResponseEntity<>(propietarioDTO, HttpStatus.OK);
     }
 
-     @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<HttpResponse> actualizarPropietario(@PathVariable Integer id,
             @RequestBody PropietarioDTO propietarioDTO) throws OwnerNotFoundException, UpdateNotAllowedException, DuplicateEntityException {
@@ -75,7 +75,7 @@ public class PropietarioController {
             HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/activar/{id}")
         public ResponseEntity<HttpResponse> activarPropietario(@PathVariable Integer id)
                         throws ActivateNotAllowedException, OwnerNotFoundException {
@@ -86,7 +86,7 @@ public class PropietarioController {
                                 HttpStatus.OK);
         }
 
-      @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/eliminar/{id}")
         public ResponseEntity<HttpResponse> eliminarPropietario(@PathVariable Integer id)
                         throws DeleteNotAllowedException, OwnerNotFoundException {

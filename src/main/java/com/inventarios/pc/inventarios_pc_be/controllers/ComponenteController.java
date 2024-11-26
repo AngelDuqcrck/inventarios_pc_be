@@ -35,7 +35,7 @@ public class ComponenteController {
         @Autowired
         private IComponenteService componenteService;
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearComponente(@RequestBody ComponenteDTO componenteDTO)
                         throws ComponentNotFoundException, SelectNotAllowedException {
@@ -47,7 +47,7 @@ public class ComponenteController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping
         public ResponseEntity<List<ComponenteResponse>> listarCompoenetes() {
                 return ResponseEntity.ok(
@@ -59,7 +59,7 @@ public class ComponenteController {
                                 }).collect(Collectors.toList()));
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PutMapping("/actualizar/{componenteId}")
         public ResponseEntity<HttpResponse> actualizarComponente(@PathVariable Integer componenteId,
                         @RequestBody ComponenteDTO componenteDTO)
@@ -71,7 +71,7 @@ public class ComponenteController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/eliminar/{componenteId}")
         public ResponseEntity<HttpResponse> eliminarComponente(@PathVariable Integer componenteId)
                         throws DeleteNotAllowedException, ComponentNotFoundException {
@@ -83,7 +83,7 @@ public class ComponenteController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/activar/{componenteId}")
         public ResponseEntity<HttpResponse> activarComponente(@PathVariable Integer componenteId)
                         throws ActivateNotAllowedException, ComponentNotFoundException {
@@ -95,7 +95,7 @@ public class ComponenteController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping("/{id}")
         public ResponseEntity<ComponenteResponse> listarComponenteById(@PathVariable Integer id)
                         throws ComponentNotFoundException {

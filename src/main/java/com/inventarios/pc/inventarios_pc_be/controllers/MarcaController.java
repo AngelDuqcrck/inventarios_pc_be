@@ -29,7 +29,7 @@ public class MarcaController {
         @Autowired
         IMarcaService marcaService;
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearMarca(@RequestBody MarcaDTO marcaDTO) throws DuplicateEntityException {
                 marcaService.crearMarca(marcaDTO);
@@ -40,7 +40,7 @@ public class MarcaController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping
         public ResponseEntity<List<MarcaDTO>> listarMarcas() {
                 return ResponseEntity.ok(
@@ -53,7 +53,7 @@ public class MarcaController {
 
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping("/{id}")
         public ResponseEntity<MarcaDTO> listarMarcaById(@PathVariable Integer id) throws MarcaNotFoundException {
                 MarcaDTO marcaDTO = marcaService.listarMarcaById(id);
@@ -61,7 +61,7 @@ public class MarcaController {
                 return new ResponseEntity<>(marcaDTO, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PutMapping("/actualizar/{marcaId}")
         public ResponseEntity<HttpResponse> actualizarMarca(@PathVariable Integer marcaId,
                         @RequestBody MarcaDTO marcaDTO) throws MarcaNotFoundException, UpdateNotAllowedException, DuplicateFormatFlagsException {
@@ -72,7 +72,7 @@ public class MarcaController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/eliminar/{marcaId}")
         public ResponseEntity<HttpResponse> eliminarMarca(@PathVariable Integer marcaId)
                         throws DeleteNotAllowedException, MarcaNotFoundException {
@@ -83,7 +83,7 @@ public class MarcaController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/activar/{marcaId}")
         public ResponseEntity<HttpResponse> activarMarca(@PathVariable Integer marcaId)
                         throws ActivateNotAllowedException, MarcaNotFoundException {
