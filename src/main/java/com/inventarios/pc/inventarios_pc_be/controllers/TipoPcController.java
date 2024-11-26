@@ -30,7 +30,7 @@ public class TipoPcController {
         @Autowired
         private ITipoPcService tipoPcService;
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearTipoPc(@RequestBody TipoComputadorDTO tipoPC) throws  DuplicateFormatFlagsException {
                 tipoPcService.crearTipoPC(tipoPC);
@@ -41,7 +41,7 @@ public class TipoPcController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping
         public ResponseEntity<List<TipoComputadorDTO>> listarTiposPC() {
                 return ResponseEntity.ok(
@@ -54,7 +54,7 @@ public class TipoPcController {
 
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PutMapping("/actualizar/{id}")
         public ResponseEntity<HttpResponse> actualizarTipoPc(@PathVariable Integer id,
                         @RequestBody TipoComputadorDTO tipoComputadorDTO) throws DuplicateEntityException,UpdateNotAllowedException, TypePcNotFoundException {
@@ -66,7 +66,7 @@ public class TipoPcController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/eliminar/{id}")
         public ResponseEntity<HttpResponse> eliminarTipoPc(@PathVariable Integer id)
                         throws TypePcNotFoundException, DeleteNotAllowedException {
@@ -77,7 +77,7 @@ public class TipoPcController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/activar/{id}")
         public ResponseEntity<HttpResponse> activarTipoPc(@PathVariable Integer id)
                         throws TypePcNotFoundException, ActivateNotAllowedException {

@@ -227,10 +227,10 @@ public class TicketServiceImplementation implements ITicketService {
     @Override
     public List<TicketsResponse> listarTicketsByUsuario(String correo)
             throws RolNotFoundException, UserNotFoundException {
-        Rol rol = rolRepository.findByNombre("TECNICO_SISTEMAS").orElse(null);
+        Rol rol = rolRepository.findByNombre("SISTEMAS").orElse(null);
 
         if (rol == null) {
-            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL TECNICO").toUpperCase());
+            throw new RolNotFoundException(String.format(IS_NOT_FOUND, "EL ROL SISTEMAS").toUpperCase());
         }
 
         Usuario usuario = usuarioRepository.findByCorreoAndRolId(correo, rol).orElse(null);
@@ -653,7 +653,7 @@ public class TicketServiceImplementation implements ITicketService {
     private void asignarTecnicoATicket(Integer tecnicoId, Tickets ticket)
             throws RolNotFoundException, UserNotFoundException {
 
-        Rol rol = rolRepository.findByNombre("TECNICO_SISTEMAS").orElse(null);
+        Rol rol = rolRepository.findByNombre("SISTEMAS").orElse(null);
 
         if (rol == null) {
             throw new RolNotFoundException(String.format(IS_NOT_FOUND, "ROL").toUpperCase());

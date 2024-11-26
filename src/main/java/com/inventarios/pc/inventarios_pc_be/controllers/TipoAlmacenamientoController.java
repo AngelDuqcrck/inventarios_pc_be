@@ -29,7 +29,7 @@ public class TipoAlmacenamientoController {
     @Autowired
     private ITipoAlmacenamientoService tipoAlmacenamientoService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PostMapping("/crear")
     public ResponseEntity<HttpResponse> crearTipoAlmacenamiento(
             @RequestBody TipoAlmacenamientoDTO tipoAlmacenamientoDTO) throws DuplicateEntityException {
@@ -41,7 +41,7 @@ public class TipoAlmacenamientoController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping
     public ResponseEntity<List<TipoAlmacenamientoDTO>> listarTiposdeAlmacenamiento() {
         return ResponseEntity.ok(
@@ -53,7 +53,7 @@ public class TipoAlmacenamientoController {
                 }).collect(Collectors.toList()));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/{id}")
     public ResponseEntity<TipoAlmacenamientoDTO> listarTipoAlmacenamientoById(@PathVariable Integer id)
             throws TypeStorageNotFoundException {
@@ -62,7 +62,7 @@ public class TipoAlmacenamientoController {
         return new ResponseEntity<>(tipoAlmacenamientoDTO, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<HttpResponse> actualizarTipoAlmacenamiento(@PathVariable Integer id,
             @RequestBody TipoAlmacenamientoDTO tipoAlmacenamientoDTO) throws DuplicateEntityException,TypeStorageNotFoundException, UpdateNotAllowedException {
@@ -74,7 +74,7 @@ public class TipoAlmacenamientoController {
             HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/activar/{id}")
         public ResponseEntity<HttpResponse> activarTipoAlmacenamiento(@PathVariable Integer id)
                         throws ActivateNotAllowedException, TypeStorageNotFoundException {
@@ -85,7 +85,7 @@ public class TipoAlmacenamientoController {
                                 HttpStatus.OK);
         }
 
-      @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/eliminar/{id}")
         public ResponseEntity<HttpResponse> eliminarTipoAlmacenamiento(@PathVariable Integer id)
                         throws DeleteNotAllowedException, TypeStorageNotFoundException {

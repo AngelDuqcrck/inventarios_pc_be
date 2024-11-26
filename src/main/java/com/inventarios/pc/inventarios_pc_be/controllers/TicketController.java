@@ -85,7 +85,7 @@ public class TicketController {
                 return new ResponseEntity<>(ticketIdResponse, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
+        @PreAuthorize("hasAuthority('SISTEMAS')")
         @GetMapping("/usuario/{correo}")
         public ResponseEntity<List<TicketsResponse>> listarTicketByUsuario(@PathVariable String correo)
                         throws RolNotFoundException, UserNotFoundException {
@@ -94,7 +94,7 @@ public class TicketController {
                 return new ResponseEntity<>(ticketsResponses, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
+        @PreAuthorize("hasAuthority('SISTEMAS')")
         @PostMapping("/observacion")
         public ResponseEntity<HttpResponse> registrarObservacion(@RequestBody ObservacionRequest observacionRequest)
                         throws TicketNotFoundException, SelectNotAllowedException {
@@ -106,7 +106,7 @@ public class TicketController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/finalizar")
         public ResponseEntity<HttpResponse> finalizarTicket(@RequestBody CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
                         throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException {
@@ -118,7 +118,7 @@ public class TicketController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('TECNICO_SISTEMAS')")
+        @PreAuthorize("hasAuthority('SISTEMAS')")
         @PostMapping("/reasignacion")
         public ResponseEntity<HttpResponse> solicitarReasginacionTicket(@RequestBody CambiarEstadoTicketRequest cambiarEstadoTicketRequest)
                         throws SelectNotAllowedException, TicketNotFoundException, StateNotFoundException, TypeRequestNotFoundException {

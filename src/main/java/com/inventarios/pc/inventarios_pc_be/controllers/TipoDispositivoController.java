@@ -29,7 +29,7 @@ public class TipoDispositivoController {
         @Autowired
         private ITipoDispositivoService tipoDispositivoService;
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearTipoDispositivo(@RequestBody TipoDispositivoDTO tipoDispositivoDTO) throws DuplicateEntityException {
                 tipoDispositivoService.creaDispositivoDTO(tipoDispositivoDTO);
@@ -40,7 +40,7 @@ public class TipoDispositivoController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping
         public ResponseEntity<List<TipoDispositivoDTO>> listarTiposDispositivos() {
                 return ResponseEntity.ok(
@@ -53,7 +53,7 @@ public class TipoDispositivoController {
 
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PutMapping("/actualizar/{id}")
         public ResponseEntity<HttpResponse> actualizarTipoDispositivo(@PathVariable Integer id,
                         @RequestBody TipoDispositivoDTO tipoDispositivoDTO) throws DuplicateEntityException,UpdateNotAllowedException , TypeDeviceNotFoundException {
@@ -65,7 +65,7 @@ public class TipoDispositivoController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/eliminar/{id}")
         public ResponseEntity<HttpResponse> eliminarTipoDispositivo(@PathVariable Integer id)
                         throws TypeDeviceNotFoundException, DeleteNotAllowedException {
@@ -76,7 +76,7 @@ public class TipoDispositivoController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/activar/{id}")
         public ResponseEntity<HttpResponse> activarTipoDispositivo(@PathVariable Integer id)
                         throws TypeDeviceNotFoundException, ActivateNotAllowedException {

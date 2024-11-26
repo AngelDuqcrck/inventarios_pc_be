@@ -32,7 +32,7 @@ public class ReporteController {
     @Autowired
     private ReporteService reportService;
     
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/hoja-de-vida/{computadorId}")
     public ResponseEntity<byte[]> downloadHojaDeVida(@PathVariable Integer computadorId) throws IOException, ComputerNotFoundException, Exception {
         HojaVidaPcResponse hojaVidaPcResponse = historialComputadorService.hojaDeVidaPc(computadorId);

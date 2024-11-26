@@ -40,7 +40,7 @@ public class SoftwarePcController {
          * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no
          *                                       existe.
          */
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearSoftware(@RequestBody SoftwarePcDTO softareDTO)
                         throws TypeSoftwareNotFoundException, SelectNotAllowedException {
@@ -57,7 +57,7 @@ public class SoftwarePcController {
          *
          * @return Lista de DTOs de software.
          */
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping
         public ResponseEntity<List<SoftwareResponse>> listarSoftware() {
                 return ResponseEntity.ok(
@@ -81,7 +81,7 @@ public class SoftwarePcController {
          * @throws TypeSoftwareNotFoundException Si el tipo de software especificado no
          *                                       existe.
          */
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PutMapping("/actualizar/{softwareId}")
         public ResponseEntity<HttpResponse> actualizarSoftware(@PathVariable Integer softwareId,
                         @RequestBody SoftwarePcDTO softwarePcDTO)
@@ -105,7 +105,7 @@ public class SoftwarePcController {
          * @throws SoftwareNotFoundException Si el software con el ID especificado no
          *                                   existe.
          */
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/eliminar/{softwareId}")
         public ResponseEntity<HttpResponse> eliminarSoftware(@PathVariable Integer softwareId)
                         throws DeleteNotAllowedException, SoftwareNotFoundException {
@@ -125,7 +125,7 @@ public class SoftwarePcController {
          * @throws SoftwareNotFoundException Si el software con el ID especificado no
          *                                   existe.
          */
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping("/{id}")
         public ResponseEntity<SoftwareResponse> listarSoftwareById(@PathVariable Integer id)
                         throws SoftwareNotFoundException {
@@ -133,7 +133,7 @@ public class SoftwarePcController {
                 return new ResponseEntity<>(softwareResponse, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/activar/{softwareId}")
         public ResponseEntity<HttpResponse> activarSoftware(@PathVariable Integer softwareId)
                         throws ActivateNotAllowedException, SoftwareNotFoundException {

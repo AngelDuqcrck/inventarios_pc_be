@@ -25,7 +25,7 @@ public class TiposController {
     @Autowired
     private ITiposService tiposService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/tc")
     public ResponseEntity<List<TipoComponenteDTO>> getTipoComponente(){
         return ResponseEntity.ok(
@@ -36,7 +36,7 @@ public class TiposController {
                 }).collect(Collectors.toList()));
     }
     
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/td")
     public ResponseEntity<List<TipoDocDTO>> getTipoDocumentos(){
         return ResponseEntity.ok(
@@ -47,7 +47,7 @@ public class TiposController {
                 }).collect(Collectors.toList()));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/ts")
     public ResponseEntity<List<TipoSoftwDTO>> getTipoSoftware(){
         return ResponseEntity.ok(
@@ -58,7 +58,7 @@ public class TiposController {
                 }).collect(Collectors.toList()));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/ed")
     public ResponseEntity<List<EstadosDispositivoDTO>> getEstadosDisp(){
         return ResponseEntity.ok(
@@ -69,7 +69,7 @@ public class TiposController {
                 }).collect(Collectors.toList()));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/almram")
     public ResponseEntity<List<TipoComponenteDTO>> getTipoAlmacenamientoRam(){
         return ResponseEntity.ok(

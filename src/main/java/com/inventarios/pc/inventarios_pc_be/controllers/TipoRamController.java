@@ -30,7 +30,7 @@ public class TipoRamController {
     @Autowired
     private ITipoRamService tipoRamService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PostMapping("/crear")
     public ResponseEntity<HttpResponse> crearTipoAlmacenamiento(@RequestBody TipoRamDTO tipoRamDTO) throws DuplicateEntityException {
         tipoRamService.crearTipoRam(tipoRamDTO);
@@ -41,7 +41,7 @@ public class TipoRamController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping
     public ResponseEntity<List<TipoRamDTO>> listarTiposRam() {
         return ResponseEntity.ok(
@@ -53,7 +53,7 @@ public class TipoRamController {
                 }).collect(Collectors.toList()));
     }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/{id}")
     public ResponseEntity<TipoRamDTO> listarTipoRamById(@PathVariable Integer id)
             throws TypeRamNotFoundException {
@@ -62,7 +62,7 @@ public class TipoRamController {
         return new ResponseEntity<>(tipoRamDTO, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<HttpResponse> actualizarTipoRam(@PathVariable Integer id,
             @RequestBody TipoRamDTO tipoRamDTO) throws TypeRamNotFoundException, UpdateNotAllowedException, DuplicateEntityException {
@@ -74,7 +74,7 @@ public class TipoRamController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PostMapping("/activar/{id}")
     public ResponseEntity<HttpResponse> activarTipoRam(@PathVariable Integer id)
             throws ActivateNotAllowedException, TypeRamNotFoundException {
@@ -85,7 +85,7 @@ public class TipoRamController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<HttpResponse> eliminarTipoRam(@PathVariable Integer id)
             throws DeleteNotAllowedException, TypeRamNotFoundException {

@@ -31,7 +31,7 @@ public class HistorialComputadorController {
     @Autowired
     private IHistorialComputadorService historialComputadorService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PostMapping("/vincular-dispositivo")
     public ResponseEntity<HttpResponse> vincularDispositivo(@RequestParam Integer computadorId,
             @RequestParam Integer dispositivoId)
@@ -44,7 +44,7 @@ public class HistorialComputadorController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PostMapping("/vincular-software")
     public ResponseEntity<HttpResponse> vincularSoftware(@RequestParam Integer computadorId,
             @RequestParam Integer softwareId)
@@ -57,7 +57,7 @@ public class HistorialComputadorController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PostMapping("/desvincular-dispositivo")
     public ResponseEntity<HttpResponse> desvincularDispositivo(@RequestParam Integer computadorId,
             @RequestParam Integer dispositivoId, @RequestParam String justificacion)
@@ -70,7 +70,7 @@ public class HistorialComputadorController {
                 HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @PostMapping("/desvincular-software")
     public ResponseEntity<HttpResponse> desvincularSoftware(@RequestParam Integer computadorId,
             @RequestParam Integer softwareId, @RequestParam String justificacion)
@@ -102,7 +102,7 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(softwareXPcResponse, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/computador-vinculado/{dispositivoId}")
     public ResponseEntity<ComputadoresResponse> listarComputadorVinculadoByDispositivo(@PathVariable Integer dispositivoId) throws DeviceNotFoundException, SelectNotAllowedException {
         ComputadoresResponse computadoresResponse = historialComputadorService.listarComputadorVinculadoByDispositivo(dispositivoId);
@@ -110,7 +110,7 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(computadoresResponse, HttpStatus.OK);
     }
     
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/cv-pc/{computadorId}")
     public ResponseEntity<HojaVidaPcResponse> hojaDeVidaPc(@PathVariable Integer computadorId)
             throws ComputerNotFoundException {
@@ -119,7 +119,7 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(hojaVidaPcResponse, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/pc/{computadorId}")
     public ResponseEntity<HistorialResponse> listarHistorialDispositivoXPc(@PathVariable Integer computadorId)
             throws ComputerNotFoundException {
@@ -128,7 +128,7 @@ public class HistorialComputadorController {
         return new ResponseEntity<>(historialResponse, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
     @GetMapping("/ubicacion-computador/{computadorId}")
     public ResponseEntity<HistorialUbicacionesXPcResponse> listarUbicacionesXPc(@PathVariable Integer computadorId)throws ComputerNotFoundException{
         HistorialUbicacionesXPcResponse historialUbicacionesXPcResponse = historialComputadorService.listarHistorialUbicacionesXPc(computadorId);

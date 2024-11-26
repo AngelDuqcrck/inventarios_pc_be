@@ -203,7 +203,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
         String tokenRecuperacion = jwtGenerador.generarTokenRecuperacion(correo);
          // Definir la ruta de acceso a la página de cambio de contraseña
-        String urlRecuperacion = "http://192.168.8.2:83/cambiar-contrasena?token="+tokenRecuperacion;                                                                                               // la
+        String urlRecuperacion = "http://localhost:4200/cambiar-contrasena?token="+tokenRecuperacion;                                                                                               // la
                                                                                                         
 
         emailService.sendEmail(correo, "Solicitud de Cambio de Contraseña",

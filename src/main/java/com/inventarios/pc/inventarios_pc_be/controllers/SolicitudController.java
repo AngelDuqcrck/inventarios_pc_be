@@ -30,7 +30,7 @@ public class SolicitudController {
         @Autowired
         private ISolicitudService solicitudService;
 
-        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL','ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN')")
         @PostMapping("/crear/asistencial")
         public ResponseEntity<HttpResponse> crearSolicitudAsistencial(@RequestBody SolicitudDTO solicitudDTO,
                         @RequestParam Integer tipoSolicitudId)
@@ -46,7 +46,7 @@ public class SolicitudController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('EMPLEADO_ADMINISTRATIVO')")
+        @PreAuthorize("hasAnyAuthority('ASISTENCIAL','ADMINISTRATIVO')")
         @PostMapping("/crear/administrativo")
         public ResponseEntity<HttpResponse> crearSolicitudAdministrativo(@RequestBody SolicitudDTO solicitudDTO,
                         @RequestParam Integer tipoSolicitudId)
@@ -62,7 +62,7 @@ public class SolicitudController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL', 'EMPLEADO_ADMINISTRATIVO', 'ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ASISTENCIAL', 'ADMINISTRATIVO', 'ADMIN')")
         @PutMapping("/editar/{solicitudId}")
         public ResponseEntity<HttpResponse> editarSolicitud(@PathVariable Integer solicitudId,
                         @RequestBody ActualizarSolicitudRequest solicitudRequest)  throws RequestNotFoundException, SelectNotAllowedException, UpdateNotAllowedException,
@@ -84,7 +84,7 @@ public class SolicitudController {
                 return new ResponseEntity<>(solicitudesResponses, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL', 'EMPLEADO_ADMINISTRATIVO')")
+        @PreAuthorize("hasAnyAuthority('ASISTENCIAL', 'ADMINISTRATIVO')")
         @GetMapping("/usuario/{usuario}")
         public ResponseEntity<List<SolicitudesResponse>> listarSolicitudesByUsuario(@PathVariable String usuario)
                         throws UserNotFoundException {
@@ -94,7 +94,7 @@ public class SolicitudController {
                 return new ResponseEntity<>(solicitudesResponses, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAnyAuthority('EMPLEADO_ASISTENCIAL', 'EMPLEADO_ADMINISTRATIVO')")
+        @PreAuthorize("hasAnyAuthority('ASISTENCIAL', 'ADMINISTRATIVO')")
         @PostMapping("/cancelar-solicitud/{solicitudId}")
         public ResponseEntity<HttpResponse> cancelarSolicitud(@PathVariable Integer solicitudId)
                         throws StateNotFoundException, RequestNotFoundException, SelectNotAllowedException {

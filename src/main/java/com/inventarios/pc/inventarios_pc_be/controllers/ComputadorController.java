@@ -32,7 +32,7 @@ public class ComputadorController {
         @Autowired
         private IComputadorService computadorService;
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearComputador(@RequestBody ComputadorDTO computadorDTO)
                         throws TypePcNotFoundException, SelectNotAllowedException, UserNotFoundException,
@@ -47,7 +47,7 @@ public class ComputadorController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/ubicar")
         public ResponseEntity<HttpResponse> ubicarComputador(@RequestBody UbicarPcRequest ubicarPcRequest)
                         throws ComputerNotFoundException, SelectNotAllowedException,
@@ -69,7 +69,7 @@ public class ComputadorController {
                 return new ResponseEntity<>(computadorIdResponse, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping("/estado")
         public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByEstadoId() {
                 List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadoresByEstadoId(1);
@@ -77,7 +77,7 @@ public class ComputadorController {
                 return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping
         public ResponseEntity<List<ComputadoresResponse>> listarComputadores() {
                 List<ComputadoresResponse> computadoresResponses = computadorService.listarComputadores();
@@ -95,7 +95,7 @@ public class ComputadorController {
                 return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping("/usuario/{usuarioId}")
         public ResponseEntity<List<ComputadoresResponse>> listarComputadoresByUsuario(@PathVariable Integer usuarioId)
                         throws UserNotFoundException {
@@ -115,6 +115,7 @@ public class ComputadorController {
                 return new ResponseEntity<>(computadoresResponses, HttpStatus.OK);
         }
 
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PutMapping("/actualizar/{computadorId}")
         public ResponseEntity<HttpResponse> actualizarComputador(@PathVariable Integer computadorId,
                         @RequestBody ComputadorDTO computadorDTO)
@@ -132,7 +133,7 @@ public class ComputadorController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/baja/{computadorId}")
         public ResponseEntity<HttpResponse> darBajaComputador(@PathVariable Integer computadorId)
                         throws ComputerNotFoundException, DeleteNotAllowedException {
@@ -144,7 +145,7 @@ public class ComputadorController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/cambiar-estado")
         public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestParam Integer computadorId,
                         @RequestParam Integer nuevoEstadoDispositivoId)

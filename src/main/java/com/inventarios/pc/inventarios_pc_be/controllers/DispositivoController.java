@@ -34,7 +34,7 @@ public class DispositivoController {
         @Autowired
         private IDispositivoService dispositivoService;
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/crear")
         public ResponseEntity<HttpResponse> crearDispositivo(@RequestBody DispositivoRequest dispositivoRequest)
                         throws TypeDeviceNotFoundException, MarcaNotFoundException, StateNotFoundException,
@@ -46,7 +46,7 @@ public class DispositivoController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping
         public ResponseEntity<List<DispositivoResponse>> listarDispositivos() {
                 return ResponseEntity.ok(
@@ -62,7 +62,7 @@ public class DispositivoController {
                                 }).collect(Collectors.toList()));
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping("/listbytipe-state")
         public ResponseEntity<List<DispositivoResponse>> listarDispTipoDisponible(@RequestParam Integer tipoDispositivo) {
                 return ResponseEntity.ok(
@@ -82,7 +82,7 @@ public class DispositivoController {
         }
 
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PutMapping("/actualizar/{dispositivoId}")
         public ResponseEntity<HttpResponse> actualizarDispositivo(@PathVariable Integer dispositivoId,
                         @RequestBody DispositivoRequest dispositivoRequest) throws TypeDeviceNotFoundException,
@@ -104,7 +104,7 @@ public class DispositivoController {
                 return new ResponseEntity<>(dispositivoResponse, HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @DeleteMapping("/eliminar/{dispositivoId}")
         public ResponseEntity<HttpResponse> eliminarDispositivo(@PathVariable Integer dispositivoId)
                         throws DeviceNotFoundException, DeleteNotAllowedException {
@@ -115,7 +115,7 @@ public class DispositivoController {
                                 HttpStatus.OK);
         }
 
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @PostMapping("/cambiar-estado")
         public ResponseEntity<HttpResponse> cambiarEstadoDispositivo(@RequestBody CambiarEstadoDispositivoRequest cambiarEstadoDispositivoRequest)
                         throws DeviceNotFoundException, StateNotFoundException, ChangeNotAllowedException, ComputerNotFoundException, SelectNotAllowedException {

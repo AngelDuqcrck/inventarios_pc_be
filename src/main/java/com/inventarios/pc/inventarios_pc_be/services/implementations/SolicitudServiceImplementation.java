@@ -487,7 +487,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
 
                 }
 
-            } else if (rol == 2 || rol == 3) { // Rol EMPLEADO_ASISTENCIAL o EMPLEADO_ADMINISTRATIVO
+            } else if (rol == 2 || rol == 3) { // Rol ASISTENCIAL o ADMINISTRATIVO
                 computador = new Computador();
                 if (solicitudRequest.getComputador() != null) {
                     computador = computadorRepository.findById(solicitudRequest.getComputador())
