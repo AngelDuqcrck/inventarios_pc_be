@@ -261,6 +261,11 @@ public class AreaServiceImplementation implements IAreaService {
         }else{
             areaPC.setRol(areaPC.getRol());
         }
+        if(areaDTO.getDesc() == null){
+            throw new UpdateNotAllowedException(String.format(IS_NOT_ALLOWED, "ACTUALIZAR EL ÁREA "+areaPC.getNombre()+" PORQUE NO SE HA ENTERADO UNA DESCRIPCIÓN").toUpperCase());
+        } else {
+            areaPC.setDesc(areaDTO.getDesc());
+        }
         AreaPC areaActualizada = areaRepository.save(areaPC);
         AreaDTO areaActualizadaDTO = new AreaDTO();
         BeanUtils.copyProperties(areaActualizada, areaActualizadaDTO);
