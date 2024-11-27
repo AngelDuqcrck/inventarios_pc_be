@@ -53,16 +53,16 @@ public class EmailService {
         "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
         "    <title>Email</title>\n" +
         "    <style>\n" +
-        "        * { font-family: Tahoma; margin: 0; padding: 0;}\n" +
-        "        .container { padding: 20px; background-color: #f4f4f4; }\n" +
+        "        * { font-family: Tahoma; margin: 0; padding: 0; background-color: #ffffff; }\n" +
+        "        .container { padding: 10px; background-color: #ffffff; }\n" +
         "        .imagen { text-align: center; margin-bottom: 7px; }\n" +
-        "        .imagen img { display: block; margin: 0 auto; max-width: 300px; height: auto; }\n" +
-        "        .titulo { text-align: center; margin-bottom: 15px; color: #005ba8; }\n" +
-        "        .header { border-bottom: 2px solid #005ba8; color: #000000; padding: 10px 0; text-align: center; padding-bottom: 20px; }\n" +
-        "        .content { margin: 20px 0; text-align: center; color: #005ba8; }\n" +
+        "        .imagen img { display: block; margin: 0 auto; max-width: 120px; height: auto; }\n" +
+        "        .titulo { text-align: center; margin-bottom: 15px; color: #000000; }\n" +
+        "        .header { border-bottom: 2px solid #005ba8; color: #000000; padding: 10px 0; text-align: center; padding-bottom: 10px; }\n" +
+        "        .content { margin: 10px 0; text-align: center; color: #005ba8; }\n" +
         "        .content p { margin-left: 20px; }\n" +
         "        .footer { border-top: 2px solid #005ba8; color: #000000; text-align: center; padding: 10px 0; }\n" +
-        "        button { margin-top: 20px; padding-left: 20px; padding-right: 20px; color: white; width: auto; height: auto; padding-top: 10px; padding-bottom: 10px; border: 3px solid #005ba8; border-radius: 30px; transition: all 0.2s; cursor: pointer; background: #005ba8; font-size: 1.3em; font-weight: 550; }\n" +
+        "        button { margin-top: 10px; margin-bottom: 10px; padding-left: 20px; padding-right: 20px; color: white; width: auto; height: auto; padding-top: 10px; padding-bottom: 10px; border: 3px solid #005ba8; border-radius: 30px; transition: all 0.2s; cursor: pointer; background: #005ba8; font-size: 1.3em; font-weight: 550; }\n" +
         "        button:hover { background: #005ba8; color: white; font-size: 1.4em; }\n" +
         "        @media (max-width: 768px) { \n" +
         "            button { font-size: 1.3em; padding: 8px 18px; }\n" +
@@ -84,10 +84,11 @@ public class EmailService {
         "        </div>\n" +
         "        <div class=\"content\">\n" +
         "            <div class=\"titulo\">\n" +
-        "                <h2 style=\"font-weight: lighter;\">" + mensaje + "</h2>\n" +
+        "                <h2 style=\"font-weight: lighter; font-size: 15px;\">" + mensaje + "</h2>\n" +
         "                <a href=\"" + mensaje2 + "\" target=\"_blank\">\n" +
         "                    <button>Restablecer Contraseña</button>\n" +
         "                </a>\n" +
+        "               <h2 style=\"font-weight: lighter; font-size: 14px;\">Tenga en cuenta que la nueva contraseña debe ser de contener: <br> </br>  Al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial ( @!$%&*#()_+-=)</h2>\n" +
         "            </div>\n" +
         "        </div>\n" +
         "        <div class=\"footer\">\n" +
