@@ -50,7 +50,7 @@ public class DashboardServiceImplementation implements IDashboardService{
 
         dashboardResponse.setCantidad1OF(computadorRepository.findByPropietario(propietarioRepository.findById(1).orElse(null)).size()); //EQUIPOS PC LISTAR
         dashboardResponse.setCantidad1CSA(computadorRepository.findByPropietario(propietarioRepository.findById(2).orElse(null)).size());
-        dashboardResponse.setCantidad1Total(dispositivoRepository.findByTipoDispositivo(tipoDispositivoRepository.findById(1).orElse(null)).size());
+        dashboardResponse.setCantidad1Total(computadorRepository.findAll().size());
 
         dashboardResponse.setCantidad2OF(dispositivoRepository.findByTipoDispositivoAndPropietario(tipoDispositivoRepository.findById(2).orElse(null), propietarioRepository.findById(1).orElse(null)).size());
         dashboardResponse.setCantidad2CSA(dispositivoRepository.findByTipoDispositivoAndPropietario(tipoDispositivoRepository.findById(2).orElse(null), propietarioRepository.findById(2).orElse(null)).size());
