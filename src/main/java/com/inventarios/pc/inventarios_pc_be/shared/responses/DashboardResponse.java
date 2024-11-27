@@ -12,18 +12,22 @@ import lombok.NoArgsConstructor;
 public class DashboardResponse {
 
     private String nombre1;
+    private int cantidad1Total;
     private int cantidad1OF;
     private int cantidad1CSA;
 
     private String nombre2;
+    private int cantidad2Total;
     private int cantidad2OF;
     private int cantidad2CSA;
 
     private String nombre3;
+    private int cantidad3Total;
     private int cantidad3OF;
     private int cantidad3CSA;
 
     private String nombre4;
+    private int cantidad4Total;
     private int cantidad4OF;
     private int cantidad4CSA;
     

@@ -50,15 +50,21 @@ public class DashboardServiceImplementation implements IDashboardService{
 
         dashboardResponse.setCantidad1OF(computadorRepository.findByPropietario(propietarioRepository.findById(1).orElse(null)).size()); //EQUIPOS PC LISTAR
         dashboardResponse.setCantidad1CSA(computadorRepository.findByPropietario(propietarioRepository.findById(2).orElse(null)).size());
+        dashboardResponse.setCantidad1Total(dispositivoRepository.findByTipoDispositivo(tipoDispositivoRepository.findById(1).orElse(null)).size());
 
         dashboardResponse.setCantidad2OF(dispositivoRepository.findByTipoDispositivoAndPropietario(tipoDispositivoRepository.findById(2).orElse(null), propietarioRepository.findById(1).orElse(null)).size());
         dashboardResponse.setCantidad2CSA(dispositivoRepository.findByTipoDispositivoAndPropietario(tipoDispositivoRepository.findById(2).orElse(null), propietarioRepository.findById(2).orElse(null)).size());
+        dashboardResponse.setCantidad2Total(dispositivoRepository.findByTipoDispositivo(tipoDispositivoRepository.findById(2).orElse(null)).size());
+
 
         dashboardResponse.setCantidad3OF(dispositivoRepository.findByTipoDispositivoAndPropietario(tipoDispositivoRepository.findById(1).orElse(null), propietarioRepository.findById(1).orElse(null)).size());
         dashboardResponse.setCantidad3CSA(dispositivoRepository.findByTipoDispositivoAndPropietario(tipoDispositivoRepository.findById(1).orElse(null), propietarioRepository.findById(2).orElse(null)).size());
+        dashboardResponse.setCantidad3Total(dispositivoRepository.findByTipoDispositivo(tipoDispositivoRepository.findById(1).orElse(null)).size());
 
         dashboardResponse.setCantidad4OF(dispositivoRepository.findByTipoDispositivoAndPropietario(tipoDispositivoRepository.findById(3).orElse(null), propietarioRepository.findById(1).orElse(null)).size());
         dashboardResponse.setCantidad4CSA(dispositivoRepository.findByTipoDispositivoAndPropietario(tipoDispositivoRepository.findById(3).orElse(null), propietarioRepository.findById(2).orElse(null)).size());
+        dashboardResponse.setCantidad4Total(dispositivoRepository.findByTipoDispositivo(tipoDispositivoRepository.findById(3).orElse(null)).size());
+        
         dashboardResponse.setCantidad5(dispositivoRepository.findByTipoDispositivo(tipoDispositivoRepository.findById(6).orElse(null)).size());
         dashboardResponse.setCantidad6(dispositivoRepository.findByTipoDispositivo(tipoDispositivoRepository.findById(7).orElse(null)).size());
         dashboardResponse.setCantidad7(solicitudRepository.findByEstadoSolicitudes(estadoSolicitudesRepository.findById(1).orElse(null)).size());
