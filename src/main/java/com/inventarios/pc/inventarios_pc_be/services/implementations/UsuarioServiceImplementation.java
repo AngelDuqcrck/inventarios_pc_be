@@ -207,7 +207,7 @@ public class UsuarioServiceImplementation implements IUsuarioService {
                                                                                                         
 
         emailService.sendEmail(correo, "Solicitud de Cambio de Contraseña",
-                "Para restablecer su contraseña, presione el siguiente botón",
+                "Para cambiar la contraseña y completar la solicitud, por favor ingrese al siguiente enlace:",
                 urlRecuperacion);
     }
 

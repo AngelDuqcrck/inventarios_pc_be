@@ -116,13 +116,13 @@ public class AuthController {
         public ResponseEntity<HttpResponse> recuperarPassword(@RequestParam String correo)
                         throws EmailNotFoundException {
 
-                ResponseEntity<HttpResponse> response = new ResponseEntity<>(
-                                new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
-                                                "Se le ha enviado un correo con instrucciones para restablecer su contraseña"),
-                                HttpStatus.OK);
+                
                 usuarioService.enviarTokenRecuperacion(correo);
 
-                return response;
+                return new ResponseEntity<>(
+                        new HttpResponse(HttpStatus.OK.value(), HttpStatus.OK, HttpStatus.OK.getReasonPhrase(),
+                                        "Se le ha enviado un correo con instrucciones para restablecer su contraseña"),
+                        HttpStatus.OK);
 
         }
 
