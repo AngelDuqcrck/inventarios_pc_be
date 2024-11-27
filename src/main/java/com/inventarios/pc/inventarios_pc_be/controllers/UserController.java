@@ -76,13 +76,8 @@ public class UserController {
          * @return ResponseEntity que contiene una lista de objetos UsuariosResponse y
          *         el estado HTTP OK.
          */
-        @PreAuthorize("hasAuthority('ADMIN')")
+        @PreAuthorize("hasAnyAuthority('ADMIN', 'SISTEMAS')")
         @GetMapping
-        // public ResponseEntity<List<UsuariosResponse>> listarUsuarios() {
-        // List<UsuariosResponse> usuariosResponses =
-        // usuarioServiceImplementation.listarUsuarios();
-        // return new ResponseEntity<>(usuariosResponses, HttpStatus.OK);
-        // }
         public ResponseEntity<List<UsuarioResponse>> listarUsuarios() {
                 return ResponseEntity.ok(
                                 usuarioServiceImplementation.listarUsuarios().stream().map(usuario -> {
