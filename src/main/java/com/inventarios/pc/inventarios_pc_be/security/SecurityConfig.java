@@ -83,7 +83,7 @@ public class SecurityConfig {
 public CorsConfigurationSource corsConfigurationSource() { 
     CorsConfiguration configuration = new CorsConfiguration(); 
     configuration.setAllowedOrigins(List.of(
-        "http://localhost:4200"
+        "http://192.168.8.2:83"
     )); 
     configuration.setAllowedMethods(Arrays.asList(
         "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"

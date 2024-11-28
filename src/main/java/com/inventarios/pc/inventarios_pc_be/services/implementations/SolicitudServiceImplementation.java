@@ -111,6 +111,7 @@ public class SolicitudServiceImplementation implements ISolicitudService {
         solicitudesResponse.setResponsable(solicitudCreadaAsistencial.getUsuario().getPrimerNombre() + " " + solicitudCreadaAsistencial.getUsuario().getPrimerApellido());
         solicitudesResponse.setTipoSolicitud(solicitudCreadaAsistencial.getTipoSolicitudes().getNombre());
         solicitudesResponse.setTitulo(solicitudCreadaAsistencial.getTipoSolicitudes().getNombre());
+        solicitudesResponse.setRole(solicitudCreadaAsistencial.getUsuario().getRolId().getNombre());
         notificationController.sendNotification("NEWSOLICITUD", solicitudAsistencial.getId(), solicitudesResponse);
         BeanUtils.copyProperties(solicitudCreadaAsistencial, solicitudAsistencialCreadaDTO);
         

@@ -21,6 +21,8 @@ public class ComputadoresResponse {
     private String area;
 
     private String ubicacion;
+
+    private String propietario;
    
     private String nombre;
     

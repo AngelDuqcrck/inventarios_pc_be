@@ -16,6 +16,8 @@ public class SolicitudesResponse {
 
     public String responsable;
 
+    public String role;
+
     public String tipoSolicitud;
 
     public String estadoSolicitud;

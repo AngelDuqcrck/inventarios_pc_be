@@ -611,6 +611,7 @@ public class ComputadorServiceImplementation implements IComputadorService {
             computadorResponse.setArea(computador.getUbicacion().getArea().getNombre());
             computadorResponse.setUbicacion(computador.getUbicacion().getNombre());
             computadorResponse.setEstadoDispositivo(computador.getEstadoDispositivo().getNombre());
+            computadorResponse.setPropietario(computador.getPropietario().getNombre());
 
             computadoresResponses.add(computadorResponse);
         }
